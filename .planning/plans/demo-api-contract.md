@@ -60,8 +60,8 @@ All bodies JSON. Errors: `{ "error": string, "reason"?: string, "need"?: string 
 | `pnpm status` | up/down + port |
 | `pnpm users` | GET `/__db`, print a table (email, role, hash) |
 | `pnpm jwt <email> [password]` | POST `/login` (default password = local part + `123`), print the token and its decoded payload |
-
-Note: the script is `jwt`, not `login` — `pnpm login` is pnpm's own registry command. Scripts also pass `--disable-warning=ExperimentalWarning`.
 | `pnpm dev` | run server in foreground |
 | `pnpm test` | `node --experimental-strip-types --test test/*.test.ts` |
 | `pnpm check` | `tsc --noEmit` |
+
+Note: the script is `jwt`, not `login` — `pnpm login` is pnpm's own registry command. Scripts also pass `--disable-warning=ExperimentalWarning`.
