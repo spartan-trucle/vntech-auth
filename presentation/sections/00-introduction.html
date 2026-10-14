@@ -1,8 +1,167 @@
 <!-- ============ 00 · INTRODUCTION ============ -->
+<style>
+/* section 0 only: every selector is prefixed .s0- */
+.s0-two { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: start; }
+.s0-two.wide-left { grid-template-columns: 7fr 5fr; }
+.s0-col { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.s0-col .code { font-size: 15.5px; line-height: 1.5; padding: 12px 16px; }
+.s0-col .code-label { margin-bottom: -6px; }
+.code .s0-bad { background: var(--reject-wash); color: var(--reject); border-radius: 4px; padding: 1px 2px; }
+.code .s0-warn { color: var(--tn-yellow); font-weight: 600; }
+.s0-q { display: flex; align-items: baseline; gap: 12px; }
+.s0-q .chip { flex: none; }
+.s0-hotel { display: flex; align-items: center; gap: 10px; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--hairline-soft); font-size: 17px; color: var(--muted); }
+.s0-hotel b { color: var(--ink); }
+</style>
 <section class="slide divider" data-section="divider-00">
   <div class="divider-num">00</div>
   <div class="section-tag"><i></i>INTRODUCTION</div>
   <h2>Introduction</h2>
   <p class="lead">Two questions every request must answer, and the two status codes that go with them.</p>
   <div class="foot"><span>3 / 9</span><span>introduction</span></div>
+</section>
+
+<!-- 0.1 The problem: an endpoint with no checks -->
+<section class="slide" data-section="intro-problem">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-bug"/></svg>0.1 · The problem</div>
+  <h2>With no checks, anyone who knows the URL can delete user 42</h2>
+  <div class="s0-two wide-left">
+    <div class="s0-col">
+      <div class="code-label">the endpoint you wrote last week</div>
+<pre class="code">app.delete("/users/:id", async (req, res) =&gt; {
+  await db.users.delete(req.params.id);
+  res.status(204).end();
+});</pre>
+      <div class="code-label" data-step="1">a stranger, no login, no token</div>
+<pre class="code" data-step="1">$ curl -X DELETE https://api.shop.example/users/42
+
+HTTP/1.1 <span class="s0-bad">204 No Content</span>   <span class="c">// user 42 is gone</span></pre>
+    </div>
+    <ul class="points tight">
+      <li>The code works. It does exactly what it says, for whoever calls it.</li>
+      <li data-step="1"><span class="chip risk">bug</span>The server never asked who sent the request, or whether they may do this.</li>
+      <li data-step="2"><div class="s0-q"><span class="chip hot">1</span><span><b>Who are you?</b> A logged-in admin, a customer, or nobody?</span></div></li>
+      <li data-step="2"><div class="s0-q"><span class="chip hot">2</span><span><b>May you do this?</b> Delete <em>this</em> user, right now?</span></div></li>
+      <li data-step="2">Every request must answer both questions before it touches the database.</li>
+    </ul>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>introduction</span></div>
+</section>
+
+<!-- 0.2 AuthN vs AuthZ -->
+<section class="slide" data-section="intro-authn-authz">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-fingerprint"/></svg>0.2 · AuthN vs AuthZ</div>
+  <h2>Authentication finds out who you are. Authorization decides what you may do.</h2>
+  <div class="two" style="gap:26px; flex:1; min-height:0;">
+    <div class="card lift">
+      <svg class="ic"><use href="#ic-fingerprint"/></svg>
+      <div class="k">AuthN · authentication</div>
+      <div class="t">Who are you?</div>
+      <p>You prove an identity: a password, a 6-digit code from your phone, or "Login with Google".</p>
+      <p>Result: the server knows <code>user_id = 42</code>, or it knows nothing.</p>
+<pre class="code" style="margin-top:0; font-size:15px; padding:10px 14px;">POST /login  { "email": "an@shop.vn", "password": "…" }
+→ 200  Set-Cookie: sid=9f2c…   <span class="c">// now we know: user 42</span></pre>
+      <div class="s0-hotel"><svg class="ic" style="width:32px;height:32px;padding:7px;"><use href="#ic-user"/></svg><span>Hotel: the front desk <b>checks your ID card</b> before giving you a key.</span></div>
+    </div>
+    <div class="card lift">
+      <svg class="ic"><use href="#ic-key"/></svg>
+      <div class="k">AuthZ · authorization</div>
+      <div class="t">What may you do?</div>
+      <p>The server knows who you are and checks the rules: a <code>viewer</code> may list users but may not delete them.</p>
+      <p>Result: allowed, or refused.</p>
+<pre class="code" style="margin-top:0; font-size:15px; padding:10px 14px;">DELETE /users/7   <span class="c">// user 42, role: viewer</span>
+→ 403  <span class="c">// viewers may not delete users</span></pre>
+      <div class="s0-hotel"><svg class="ic" style="width:32px;height:32px;padding:7px;"><use href="#ic-key"/></svg><span>Hotel: your key card <b>opens room 702</b>, not 703, not the staff room.</span></div>
+    </div>
+  </div>
+  <p class="caption" data-step="1" style="margin:0; font-size:17px;"><span class="chip hot" style="margin-right:8px;">order</span>AuthN always runs first. You cannot decide what someone may do before you know who they are.</p>
+  <div class="foot"><span>0 / 0</span><span>introduction</span></div>
+</section>
+
+<!-- 0.3 401 vs 403 -->
+<section class="slide" data-section="intro-401-403">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-gate"/></svg>0.3 · 401 vs 403</div>
+  <h2>401 means "log in first". 403 means "logging in again will not help".</h2>
+  <div class="s0-two">
+    <div class="s0-col">
+      <div class="code-label">no token at all</div>
+<pre class="code">GET /admin/users
+<span class="c">(no Cookie, no Authorization header)</span>
+
+HTTP/1.1 <span class="s0-warn">401 Unauthorized</span></pre>
+      <ul class="points tight">
+        <li><b>AuthN failed.</b> The server does not know who you are: token missing, expired, or fake.</li>
+        <li>The name is misleading. It really means <em>unauthenticated</em>.</li>
+        <li><span class="chip ok">client</span>Send the user to the login page.</li>
+      </ul>
+    </div>
+    <div class="s0-col">
+      <div class="code-label">valid token, role: viewer</div>
+<pre class="code">GET /admin/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9…
+
+HTTP/1.1 <span class="s0-bad">403 Forbidden</span></pre>
+      <ul class="points tight">
+        <li><b>AuthZ failed.</b> The server knows you are user 42, a viewer, and viewers may not do this.</li>
+        <li>Logging in again gives the same user and the same answer.</li>
+        <li><span class="chip ok">client</span>Show "You don't have access". Don't redirect.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="caption" data-step="1" style="margin:0; font-size:17px;"><span class="chip risk" style="margin-right:8px;">common bug</span>Return <code>401</code> to a logged-in viewer and the frontend sends them to login, they log in, hit <code>401</code> again: an endless loop.</p>
+  <div class="foot"><span>0 / 0</span><span>introduction</span></div>
+</section>
+
+<!-- 0.4 Where auth sits in one request -->
+<section class="slide" data-section="intro-request-path">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-route"/></svg>0.4 · Where auth lives in a request</div>
+  <h2>Every request passes two checkpoints before it reaches the database</h2>
+  <div class="chart meter" style="flex:1; min-height:0; justify-content:center;">
+    <svg viewBox="0 0 1000 300" role="img" aria-label="Browser sends a cookie or bearer token; auth middleware checks who you are and returns 401 on failure; the route handler checks permission and returns 403 on failure; then the database">
+      <defs>
+        <marker id="s0-arrow" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" class="sv-ink"/></marker>
+        <marker id="s0-arrow-risk" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" class="sv-bar-risk"/></marker>
+      </defs>
+
+      <use href="#gl-client" class="gl" x="14" y="62" width="70" height="70"/>
+      <text x="49" y="158" text-anchor="middle" class="sv-lbl">browser</text>
+
+      <path d="M96 98 H292" class="sv-line" marker-end="url(#s0-arrow)"/>
+      <text x="104" y="84" class="sv-code" style="font-size:14px;">Cookie: sid=9f2c…</text>
+      <text x="104" y="124" class="sv-lbl-sm" style="font-size:14px;">or</text>
+      <text x="126" y="124" class="sv-code" style="font-size:14px;">Authorization:</text>
+      <text x="126" y="144" class="sv-code" style="font-size:14px;">Bearer eyJ…</text>
+
+      <rect x="300" y="56" width="214" height="86" rx="12" class="sv-box-hot"/>
+      <text x="318" y="90" class="sv-lbl">auth middleware</text>
+      <text x="318" y="118" class="sv-hot" style="font-size:15px;">AuthN · who are you?</text>
+
+      <path d="M516 98 H566" class="sv-line" marker-end="url(#s0-arrow)"/>
+
+      <rect x="574" y="56" width="214" height="86" rx="12" class="sv-box-hot"/>
+      <text x="592" y="90" class="sv-lbl">route handler</text>
+      <text x="592" y="118" class="sv-hot" style="font-size:15px;">AuthZ · may you?</text>
+
+      <path d="M790 98 H850" class="sv-line" marker-end="url(#s0-arrow)"/>
+      <use href="#gl-server" class="gl" x="862" y="62" width="70" height="70"/>
+      <text x="897" y="158" text-anchor="middle" class="sv-lbl">database</text>
+
+      <path d="M407 144 V186" class="sv-risk-line" marker-end="url(#s0-arrow-risk)"/>
+      <text x="407" y="210" text-anchor="middle" class="sv-risk">401</text>
+      <text x="407" y="230" text-anchor="middle" class="sv-lbl-sm" style="font-size:14px;">no valid ticket → log in</text>
+
+      <path d="M681 144 V186" class="sv-risk-line" marker-end="url(#s0-arrow-risk)"/>
+      <text x="681" y="210" text-anchor="middle" class="sv-risk">403</text>
+      <text x="681" y="230" text-anchor="middle" class="sv-lbl-sm" style="font-size:14px;">known user, not allowed</text>
+
+      <g data-step="1">
+        <path d="M14 254 V264 H514 V254" class="sv-hot-line"/>
+        <text x="264" y="290" text-anchor="middle" class="sv-hot">sections 1–3 · AuthN</text>
+        <path d="M574 254 V264 H986 V254" class="sv-hot-line"/>
+        <text x="780" y="290" text-anchor="middle" class="sv-hot">section 4 · AuthZ + common bugs</text>
+      </g>
+    </svg>
+    <figcaption data-step="1">Map of the talk: passwords, then how the server remembers you, then "Login with Google". After that, permissions and the four bugs interns hit most.</figcaption>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>introduction</span></div>
 </section>
