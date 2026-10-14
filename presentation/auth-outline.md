@@ -77,7 +77,7 @@ Nội dung rút gọn từ [spartan-khanhdo/auth-security-lecture](https://githu
 
 ## 5. Demo — "The Forger"
 
-Code ở `demo/` (ngoài `presentation/`): 1 server Node + TypeScript (Node 22.18+, chạy `.ts` trực tiếp), dữ liệu trong memory, JWT HS256 tự viết ~30 dòng bằng `node:crypto` để intern đọc được, bcrypt qua `bcryptjs` (pure JS, không cần build native).
+Code ở `demo/` (ngoài `presentation/`): 1 server Node + TypeScript (Node 22.6+, chạy `.ts` trực tiếp qua `--experimental-strip-types`), dữ liệu trong memory, JWT HS256 tự viết ~30 dòng bằng `node:crypto` để intern đọc được, bcrypt qua `bcryptjs` (pure JS, không cần build native).
 
 - **5.1 Setup:** `cd demo && pnpm start` → server `:4000`. Endpoint: `POST /register`, `POST /login` (trả cả session cookie và JWT), `GET /me`, `GET /admin/users` (chỉ role admin), `GET /__db` (xem bảng users — thấy hash bcrypt, không thấy password).
 - **5.2 Đang chạy gì:** trích `demo/src/jwt.ts` (sign / verify, chỉ chấp nhận `HS256`) và middleware `requireAuth` / `requirePermission`.

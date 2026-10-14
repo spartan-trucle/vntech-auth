@@ -216,7 +216,7 @@ to=attacker&amp;amount=5000000</pre>
   <div class="s4-checklist">
     <ul class="points">
       <li><span class="chip">password</span>Hash with <code>bcrypt</code> or <code>argon2</code> from a library. Never store, log or return the password.</li>
-      <li><span class="chip">password</span>Failed login says "Wrong email or password". Never reveal which one was wrong.</li>
+      <li><span class="chip">password</span>Failed login says "Email or password is wrong". Never reveal which one was wrong.</li>
       <li><span class="chip">token</span>Store tokens in <code>HttpOnly; Secure; SameSite</code> cookies, not <code>localStorage</code>.</li>
       <li><span class="chip">token</span>Verify every JWT with a library and a fixed algorithm. Nothing secret in the payload.</li>
       <li><span class="chip">token</span>Short access tokens (15 min). Logout deletes the refresh token on the server.</li>
