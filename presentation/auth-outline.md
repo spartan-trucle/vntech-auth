@@ -82,7 +82,7 @@ Code ở `demo/` (ngoài `presentation/`): 1 server Node + TypeScript (Node 22.1
 - **5.1 Setup:** `cd demo && pnpm start` → server `:4000`. Endpoint: `POST /register`, `POST /login` (trả cả session cookie và JWT), `GET /me`, `GET /admin/users` (chỉ role admin), `GET /__db` (xem bảng users — thấy hash bcrypt, không thấy password).
 - **5.2 Đang chạy gì:** trích `demo/src/jwt.ts` (sign / verify, chỉ chấp nhận `HS256`) và middleware `requireAuth` / `requirePermission`.
 - **5.3 Đoán trước:** bảng 4 thay đổi, khán giả đoán status code trước, bấm → để lật đáp án: gọi `/me` không token (`401`) · viewer gọi `/admin/users` (`403`) · sửa payload `role: admin` giữ nguyên chữ ký (`401`) · gửi `alg: none` (`401`).
-- **5.4 Live:** slide gọi thật tới `localhost:4000`, hiển thị JWT tách 3 màu, chỉnh payload trực tiếp trên slide rồi gửi → thấy `401`. Chạy song song ở terminal: `pnpm users` (xem hash), `pnpm login viewer@demo.vn`. Không có server (GitHub Pages) → slide phát lại bản ghi.
+- **5.4 Live:** slide gọi thật tới `localhost:4000`, hiển thị JWT tách 3 màu, chỉnh payload trực tiếp trên slide rồi gửi → thấy `401`. Chạy song song ở terminal: `pnpm users` (xem hash), `pnpm jwt viewer@demo.vn`. Không có server (GitHub Pages) → slide phát lại bản ghi.
 - **5.5 Vì sao sửa JWT không qua được:** server tính lại HMAC từ header + payload mới bằng secret → khác chữ ký cũ. Muốn giả được phải có secret → **secret lộ = mọi thứ lộ**: để trong env, không commit.
 
 ## 99. Cảm ơn + Kahoot
