@@ -1,24 +1,10 @@
 <!-- ============ 00 · INTRODUCTION ============ -->
-<style>
-/* section 0 only: every selector is prefixed .s0- */
-.s0-two { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: start; }
-.s0-two.wide-left { grid-template-columns: 7fr 5fr; }
-.s0-col { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
-.s0-col .code { font-size: 15.5px; line-height: 1.5; padding: 12px 16px; }
-.s0-col .code-label { margin-bottom: -6px; }
-.code .s0-bad { background: var(--reject-wash); color: var(--reject); border-radius: 4px; padding: 1px 2px; }
-.code .s0-warn { color: var(--tn-yellow); font-weight: 600; }
-.s0-q { display: flex; align-items: baseline; gap: 12px; }
-.s0-q .chip { flex: none; }
-.s0-hotel { display: flex; align-items: center; gap: 10px; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--hairline-soft); font-size: 17px; color: var(--muted); }
-.s0-hotel b { color: var(--ink); }
-</style>
 <section class="slide divider" data-section="divider-00">
   <div class="divider-num">00</div>
   <div class="section-tag"><i></i>INTRODUCTION</div>
   <h2>Introduction</h2>
   <p class="lead">Two questions every request must answer, and the two status codes that go with them.</p>
-  <div class="foot"><span>3 / 9</span><span>introduction</span></div>
+  <div class="foot"><span>3 / 46</span><span>introduction</span></div>
 </section>
 
 <!-- 0.1 The problem: an endpoint with no checks -->
@@ -45,7 +31,7 @@ HTTP/1.1 <span class="s0-bad">204 No Content</span>   <span class="c">// user 42
       <li data-step="2">Every request must answer both questions before it touches the database.</li>
     </ul>
   </div>
-  <div class="foot"><span>0 / 0</span><span>introduction</span></div>
+  <div class="foot"><span>4 / 46</span><span>introduction</span></div>
 </section>
 
 <!-- 0.2 AuthN vs AuthZ -->
@@ -75,7 +61,7 @@ HTTP/1.1 <span class="s0-bad">204 No Content</span>   <span class="c">// user 42
     </div>
   </div>
   <p class="caption" data-step="1" style="margin:0; font-size:17px;"><span class="chip hot" style="margin-right:8px;">order</span>AuthN always runs first. You cannot decide what someone may do before you know who they are.</p>
-  <div class="foot"><span>0 / 0</span><span>introduction</span></div>
+  <div class="foot"><span>5 / 46</span><span>introduction</span></div>
 </section>
 
 <!-- 0.3 401 vs 403 -->
@@ -109,7 +95,7 @@ HTTP/1.1 <span class="s0-bad">403 Forbidden</span></pre>
     </div>
   </div>
   <p class="caption" data-step="1" style="margin:0; font-size:17px;"><span class="chip risk" style="margin-right:8px;">common bug</span>Return <code>401</code> to a logged-in viewer and the frontend sends them to login, they log in, hit <code>401</code> again: an endless loop.</p>
-  <div class="foot"><span>0 / 0</span><span>introduction</span></div>
+  <div class="foot"><span>6 / 46</span><span>introduction</span></div>
 </section>
 
 <!-- 0.4 Where auth sits in one request -->
@@ -163,5 +149,5 @@ HTTP/1.1 <span class="s0-bad">403 Forbidden</span></pre>
     </svg>
     <figcaption data-step="1">Map of the talk: passwords, then how the server remembers you, then "Login with Google". After that, permissions and the four bugs interns hit most.</figcaption>
   </div>
-  <div class="foot"><span>0 / 0</span><span>introduction</span></div>
+  <div class="foot"><span>7 / 46</span><span>introduction</span></div>
 </section>

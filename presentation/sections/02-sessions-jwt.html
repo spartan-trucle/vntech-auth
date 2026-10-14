@@ -4,61 +4,10 @@
   <div class="section-tag"><i></i>SECTION 2</div>
   <h2>Staying logged in</h2>
   <p class="lead">HTTP forgets you after every request. Session cookies and JWTs are two ways to carry a ticket.</p>
-  <div class="foot"><span>5 / 9</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>15 / 46</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- Section 2 styles. Selectors are scoped to this section's slides; colors use theme tokens only. -->
-<style>
-  :is([data-section="session-cookie"], [data-section="jwt-tamper"], [data-section="token-storage"]) .code { font-size: 15px; line-height: 1.55; padding: 12px 16px; }
-  :is([data-section="jwt-decoder"], [data-section="jwt-readable"], [data-section="jwt-tamper"]) .s2-h { color: var(--reject); }
-  :is([data-section="jwt-decoder"], [data-section="jwt-readable"], [data-section="jwt-tamper"]) .s2-p { color: var(--tn-purple); }
-  :is([data-section="jwt-decoder"], [data-section="jwt-readable"], [data-section="jwt-tamper"]) .s2-s { color: var(--tn-cyan); }
-  :is([data-section="jwt-decoder"], [data-section="jwt-readable"], [data-section="jwt-tamper"]) .s2-dot { color: var(--muted); font-weight: 700; }
-  :is([data-section="jwt-decoder"], [data-section="jwt-tamper"]) .s2-bad { color: var(--reject); font-weight: 700; }
-  :is([data-section="jwt-decoder"], [data-section="jwt-tamper"]) .s2-good { color: var(--allow); font-weight: 700; }
-
-  #s2-jwt-token {
-    font-family: var(--mono); font-size: 20px; line-height: 1.5; word-break: break-all;
-    padding: 14px 18px; background: var(--surface-alt); border-radius: var(--r-md);
-  }
-  #s2-jwt-paste { display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--muted); }
-  #s2-jwt-input {
-    flex: 1; min-width: 0; font-family: var(--mono); font-size: 14px; color: var(--ink);
-    background: var(--surface-alt); border: 1px solid var(--hairline); border-radius: var(--r-sm); padding: 8px 12px;
-  }
-  #s2-jwt-input:focus { outline: none; border-color: var(--accent); }
-  #s2-jwt-sample { height: 34px; padding: 0 14px; font-family: var(--mono); font-size: 13.5px; color: var(--accent-strong); background: none; border: 0; border-radius: 6px; cursor: pointer; }
-  #s2-jwt-parts { grid-template-columns: 0.9fr 1.6fr 0.9fr; gap: 18px; }
-  #s2-jwt-parts .card { padding: 14px 18px; gap: 8px; }
-  #s2-jwt-parts .k.s2-h, #s2-jwt-parts .k.s2-p, #s2-jwt-parts .k.s2-s { color: inherit; }
-  #s2-jwt-parts .code { margin-top: 0; font-size: 15.5px; line-height: 1.5; padding: 10px 12px; white-space: pre-wrap; word-break: break-all; }
-  #s2-jwt-parts .code .c { font-style: normal; }
-  #s2-jwt-parts p { font-size: 16px; }
-
-  #s2-sessions td, #s2-sessions th { padding-top: 8px; padding-bottom: 8px; }
-  #s2-sessions .mono { font-size: 15px; }
-  #s2-sessions tr.s2-mine td { color: var(--ink); background: var(--accent-wash); }
-
-  #s2-vs td:nth-child(2), #s2-vs td:nth-child(3) { width: 38%; }
-
-  #s2-store .card p { font-size: 16.5px; }
-  #s2-store .card .code { margin-top: 0; }
-  #s2-store .s2-risk-card { border-color: var(--reject); }
-  #s2-store .s2-risk-card .k { color: var(--reject); }
-  #s2-store .s2-ok-card { border-color: var(--allow); }
-  #s2-store .s2-ok-card .k { color: var(--allow); }
-
-  #s2-dodont .card { padding: 18px 22px; }
-  #s2-dodont .s2-risk-card { border-color: var(--reject); }
-  #s2-dodont .s2-risk-card .k { color: var(--reject); }
-  #s2-dodont .s2-ok-card .k { color: var(--allow); }
-  #s2-dodont .points li { font-size: 17.5px; padding: 8px 0; }
-
-  #s2-trap { border-color: var(--reject); padding: 16px 18px; gap: 8px; }
-  #s2-trap .k { color: var(--reject); }
-  #s2-trap p { font-size: 16.5px; }
-  #s2-trap .code { font-size: 14px; padding: 10px 12px; margin-top: 4px; }
-</style>
 
 <!-- 2.1 -->
 <section class="slide" data-section="http-forgets">
@@ -86,7 +35,7 @@ GET /orders
       <li data-step="2">Two kinds of ticket: <span class="chip hot">session cookie</span> the server remembers you · <span class="chip hot">JWT</span> the ticket remembers you.</li>
     </ul>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>16 / 46</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.2 -->
@@ -124,7 +73,7 @@ GET /orders
       </ul>
     </div>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>17 / 46</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.3 -->
@@ -158,7 +107,7 @@ GET /orders
       </div>
     </div>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>18 / 46</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.4 -->
@@ -181,7 +130,7 @@ atob("<span class="s2-p" id="s2-b64-in"></span>")
       <li data-step="2">The signature (next slide) stops people from <b>changing</b> the token. It does nothing to stop them <b>reading</b> it.</li>
     </ul>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>19 / 46</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.5 -->
@@ -216,7 +165,7 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
       </div>
     </div>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>20 / 46</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.6 -->
@@ -239,7 +188,7 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
       <li data-step="2">The usual fix: keep <code>exp</code> short. Next slide.</li>
     </ul>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>21 / 46</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.7 -->
@@ -261,7 +210,7 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
     </div>
     <div class="chart meter"><svg id="s2-tl" role="img" aria-label="Timeline: an access token renewed every 15 minutes by a long-lived refresh token, and what happens after logout"></svg></div>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>22 / 46</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.8 -->
@@ -291,7 +240,7 @@ document.cookie   <span class="c">// "" (JS cannot see it)</span></pre>
       <li data-step="2"><span class="chip">trade-off</span> The browser sends cookies by itself, which opens the door to CSRF. <code>SameSite</code> closes most of it. Both attacks: XSS (4.5) and CSRF (4.6).</li>
     </ul>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>23 / 46</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.9 -->
@@ -320,7 +269,7 @@ document.cookie   <span class="c">// "" (JS cannot see it)</span></pre>
       </ul>
     </div>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>24 / 46</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <script>

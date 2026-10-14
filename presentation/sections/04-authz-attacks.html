@@ -1,36 +1,10 @@
-<!-- ============ 04 · PERMISSIONS &AMP; COMMON ATTACKS ============ -->
-<style>
-/* section 4 only: every selector is prefixed .s4- */
-.s4-col { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
-.s4-col .code { font-size: 15px; line-height: 1.5; padding: 12px 16px; }
-.s4-col .code-label { margin-bottom: -6px; }
-.s4-two { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: start; }
-.s4-two.wide-left { grid-template-columns: 7fr 5fr; }
-.s4-chain { display: flex; align-items: center; gap: 10px; font-size: 18px; color: var(--muted); }
-.s4-tbl td { text-align: center; font-family: var(--mono); font-size: 20px; }
-.s4-tbl th { text-align: center; }
-.s4-tbl td:first-child, .s4-tbl th:first-child { text-align: left; }
-.s4-tbl .s4-yes { color: var(--allow); font-weight: 700; }
-.s4-tbl .s4-no { color: var(--muted-soft); }
-.code .s4-bad { background: var(--reject-wash); color: var(--reject); border-radius: 4px; padding: 1px 2px; }
-.code .s4-ok { color: var(--allow); font-weight: 600; }
-.s4-ui { display: flex; flex-direction: column; gap: 10px; padding: 14px 18px; border: 1px solid var(--panel-border); border-radius: var(--r-md); background: var(--surface-alt); }
-.s4-ui-row { display: flex; align-items: center; gap: 10px; font-size: 18px; color: var(--ink); }
-.s4-ui-row .s4-grow { flex: 1; font-family: var(--mono); font-size: 16px; }
-.s4-btn { font-family: var(--sans); font-size: 15px; font-weight: 600; padding: 6px 14px; border-radius: var(--r-sm); border: 1px solid var(--hairline); background: var(--surface); color: var(--body); }
-.s4-btn.s4-ghost { border-style: dashed; color: var(--muted-soft); background: transparent; text-decoration: line-through; }
-.s4-ui-cap { font-family: var(--mono); font-size: 13.5px; color: var(--muted); }
-.s4-checklist { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; align-content: start; }
-.s4-checklist .points li { font-size: 18px; padding: 10px 0; }
-.s4-checklist .points li:first-child { border-top: 0; padding-top: 0; }
-.s4-checklist .chip { min-width: 74px; justify-content: center; }
-</style>
+<!-- ============ 04 · PERMISSIONS & COMMON ATTACKS ============ -->
 <section class="slide divider" data-section="divider-04">
   <div class="divider-num">04</div>
   <div class="section-tag"><i></i>SECTION 4</div>
-  <h2>Permissions &amp; common attacks</h2>
+  <h2>Permissions &amp; attacks</h2>
   <p class="lead">Who can do what, and the four bugs that let attackers skip the check.</p>
-  <div class="foot"><span>7 / 9</span><span>section 4 · authz &amp; attacks</span></div>
+  <div class="foot"><span>32 / 46</span><span>section 4 · permissions &amp; attacks</span></div>
 </section>
 
 <!-- 4.1 RBAC -->
@@ -69,7 +43,7 @@ if (can(user, <span class="hl">"orders:delete"</span>)) {
       </ul>
     </div>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 4 · permissions &amp; attacks</span></div>
+  <div class="foot"><span>33 / 46</span><span>section 4 · permissions &amp; attacks</span></div>
 </section>
 
 <!-- 4.2 Hiding the button is not authorization -->
@@ -100,7 +74,7 @@ HTTP/1.1 <span class="s4-ok">403 Forbidden</span></pre>
       <li data-step="2"><span class="chip ok">rule</span>Hiding buttons is for a nice UI. Every permission check must also run on the backend, on every request.</li>
     </ul>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 4 · permissions &amp; attacks</span></div>
+  <div class="foot"><span>34 / 46</span><span>section 4 · permissions &amp; attacks</span></div>
 </section>
 
 <!-- 4.3 Broken access control / IDOR -->
@@ -129,7 +103,7 @@ HTTP/1.1 <span class="s4-ok">403 Forbidden</span></pre>
       <li data-step="2">Random IDs (UUIDs) make guessing harder, but they are not the fix. IDs leak in logs and links.</li>
     </ul>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 4 · permissions &amp; attacks</span></div>
+  <div class="foot"><span>35 / 46</span><span>section 4 · permissions &amp; attacks</span></div>
 </section>
 
 <!-- 4.4 SQL injection -->
@@ -166,7 +140,7 @@ WHERE email = 'an@shop.example'
       </ul>
     </div>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 4 · permissions &amp; attacks</span></div>
+  <div class="foot"><span>36 / 46</span><span>section 4 · permissions &amp; attacks</span></div>
 </section>
 
 <!-- 4.5 XSS -->
@@ -199,7 +173,7 @@ WHERE email = 'an@shop.example'
       </ul>
     </div>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 4 · permissions &amp; attacks</span></div>
+  <div class="foot"><span>37 / 46</span><span>section 4 · permissions &amp; attacks</span></div>
 </section>
 
 <!-- 4.6 CSRF -->
@@ -232,7 +206,7 @@ to=attacker&amp;amount=5000000</pre>
       </ul>
     </div>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 4 · permissions &amp; attacks</span></div>
+  <div class="foot"><span>38 / 46</span><span>section 4 · permissions &amp; attacks</span></div>
 </section>
 
 <!-- 4.7 Take-home checklist -->
@@ -255,5 +229,5 @@ to=attacker&amp;amount=5000000</pre>
       <li><span class="chip">attack</span>Let the framework escape output, no <code>innerHTML</code> with user text. Cookie forms get <code>SameSite</code> + a CSRF token.</li>
     </ul>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 4 · permissions &amp; attacks</span></div>
+  <div class="foot"><span>39 / 46</span><span>section 4 · permissions &amp; attacks</span></div>
 </section>

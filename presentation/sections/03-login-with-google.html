@@ -1,46 +1,11 @@
 <!-- ============ 03 · LOGIN WITH GOOGLE ============ -->
-<style>
-  /* 3.1 · a fake "connect your calendar" screen that asks for the Google password */
-  .s3-mock { max-width: 430px; width: 100%; justify-self: center; gap: 10px; box-shadow: var(--shadow); }
-  .s3-mock-bar { display: flex; align-items: center; gap: 6px; padding-bottom: 10px; border-bottom: 1px solid var(--hairline-soft); }
-  .s3-mock-bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--hairline); }
-  .s3-mock-bar code { margin-left: 8px; font-size: 13.5px; color: var(--muted); background: transparent; padding: 0; }
-  .s3-mock label { display: flex; flex-direction: column; gap: 5px; font-size: 15px; color: var(--muted); }
-  .s3-field { font-family: var(--mono); font-size: 16px; color: var(--ink); padding: 9px 12px; border: 1px solid var(--hairline); border-radius: var(--r-sm); background: var(--surface-alt); }
-  .s3-field.s3-bad { border-color: var(--reject); background: var(--reject-wash); }
-  .s3-btn { align-self: flex-start; margin-top: 4px; font-weight: 700; font-size: 16px; color: var(--surface); background: var(--accent); border-radius: var(--r-sm); padding: 9px 22px; }
-  /* 3.2 · role names are long ("accounts.google.com"), so the quad title steps down */
-  .s3-roles .card { padding: 18px 18px; gap: 8px; }
-  .s3-roles .card .t { font-size: 22px; overflow-wrap: anywhere; }
-  .s3-roles .card p { font-size: 16.5px; }
-  .s3-valet .card { padding: 14px 18px; gap: 8px; }
-  .s3-valet .card p { font-size: 17px; }
-  /* 3.3 · progress row above the flow; later chips appear with each step */
-  .s3-stepper { display: flex; gap: 10px; flex-wrap: wrap; }
-  .s3-code-sm { fill: var(--ink); font-family: var(--mono); font-size: 14px; }
-  .s3-note { margin: 0; font-size: 16px; color: var(--muted); }
-  /* 3.4 · access token vs id token */
-  .s3-tok .card { padding: 14px 18px; gap: 6px; }
-  .s3-tok .card p { font-size: 16.5px; }
-  .s3-tok .code { font-size: 15px; padding: 12px 16px; }
-  .s3-jwt { color: var(--muted); }
-  /* 3.5 · compact factor cards above the comparison table */
-  .s3-factors { gap: 16px; }
-  .s3-factors .card { flex-direction: row; align-items: center; gap: 14px; padding: 12px 16px; border-radius: var(--r-md); }
-  .s3-factors .card .t { font-size: 19px; }
-  .s3-factors .card p { font-size: 15.5px; }
-  .s3-mfa .tbl td { padding: 7px 14px; font-size: 16px; }
-  /* 3.6 · do / don't */
-  .s3-dd .card { padding: 18px 22px; gap: 6px; }
-  .s3-dd .points.tight li { font-size: 17.5px; padding: 8px 0; }
-</style>
 
 <section class="slide divider" data-section="divider-03">
   <div class="divider-num">03</div>
   <div class="section-tag"><i></i>SECTION 3</div>
   <h2>Login with Google</h2>
   <p class="lead">Let another app act for a user without ever seeing their password. OAuth 2.0, OpenID Connect, MFA.</p>
-  <div class="foot"><span>6 / 9</span><span>section 3 · login with google</span></div>
+  <div class="foot"><span>25 / 46</span><span>section 3 · login with google</span></div>
 </section>
 
 <!-- 3.1 -->
@@ -52,7 +17,7 @@
       <div class="s3-mock-bar"><i></i><i></i><i></i><code>calapp.vn/connect</code></div>
       <div class="t">CalApp</div>
       <p>Connect your Google Calendar to see your week.</p>
-      <label>Google email<div class="s3-field">truc@gmail.com</div></label>
+      <label>Google email<div class="s3-field">you@gmail.com</div></label>
       <label>Google password<div class="s3-field s3-bad">●●●●●●●●●●</div></label>
       <div class="s3-btn">Connect</div>
     </div>
@@ -63,7 +28,7 @@
       <li data-step="3"><span class="chip hot">what we want</span> Read the calendar only · take it back per app · the password <b>never leaves Google</b>.</li>
     </ul>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 3 · login with google</span></div>
+  <div class="foot"><span>26 / 46</span><span>section 3 · login with google</span></div>
 </section>
 
 <!-- 3.2 -->
@@ -108,7 +73,7 @@
       </div>
     </div>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 3 · login with google</span></div>
+  <div class="foot"><span>27 / 46</span><span>section 3 · login with google</span></div>
 </section>
 
 <!-- 3.3 -->
@@ -125,7 +90,7 @@
   <div class="chart meter"><svg id="s3-flow-flow" role="img" aria-label="Authorization Code flow between the browser, the CalApp backend, accounts.google.com and the Calendar API"></svg></div>
   <div class="flow-ctl"><div class="seg"><button id="s3-flow-replay" class="icon" aria-label="Replay" title="Replay"><svg class="ic"><use href="#ic-replay"/></svg></button></div><p class="readout" id="s3-flow-readout"></p></div>
   <p class="s3-note">SPA or mobile app? It cannot hide a <code>client_secret</code>, so it adds <b>PKCE</b>: a random one-time proof sent in place of the secret.</p>
-  <div class="foot"><span>0 / 0</span><span>section 3 · login with google</span></div>
+  <div class="foot"><span>28 / 46</span><span>section 3 · login with google</span></div>
 </section>
 
 <!-- 3.4 -->
@@ -154,10 +119,10 @@
 {
   "iss":   "https://accounts.google.com",
   "sub":   "110248495921238986420",
-  "email": "truc@gmail.com",
-  "name":  "Truc Le",
+  "email": "you@gmail.com",
+  "name":  "An Nguyen",
   "aud":   "1234-calapp.apps.googleusercontent.com",
-  "exp":   1760445000
+  "exp":   1791947700
 }</pre>
       <ul class="points tight" data-step="1">
         <li><span class="chip hot">verify</span> Signature with Google's public key, <code>iss</code> is Google, <code>aud</code> is <b>your</b> <code>client_id</code>, <code>exp</code> not passed. A library does all four.</li>
@@ -165,7 +130,7 @@
       </ul>
     </div>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 3 · login with google</span></div>
+  <div class="foot"><span>29 / 46</span><span>section 3 · login with google</span></div>
 </section>
 
 <!-- 3.5 -->
@@ -191,7 +156,7 @@
       <li><span class="chip hot">MFA is AuthN</span> It happens at login. With "Login with Google", <b>Google</b> asks for the second factor. Your app never sees it; it just receives the <code>id_token</code>.</li>
     </ul>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 3 · login with google</span></div>
+  <div class="foot"><span>30 / 46</span><span>section 3 · login with google</span></div>
 </section>
 
 <!-- 3.6 -->
@@ -220,7 +185,7 @@
       </ul>
     </div>
   </div>
-  <div class="foot"><span>0 / 0</span><span>section 3 · login with google</span></div>
+  <div class="foot"><span>31 / 46</span><span>section 3 · login with google</span></div>
 </section>
 
 <script>
@@ -335,7 +300,7 @@
   async function consent(w, animate) {
     if (animate) {
       w.G.set('hot');
-      await hop(w, ['Sign in · truc@gmail.com', 'password ●●●●●●●●●●'], P.B, P.mid, { cls: 'sv-box-hot', wire: 'BG' });
+      await hop(w, ['Sign in · you@gmail.com', 'password ●●●●●●●●●●'], P.B, P.mid, { cls: 'sv-box-hot', wire: 'BG' });
       w.say('You type the password <strong>on Google\'s page</strong>. It goes from the browser to Google, nowhere else.');
       await w.sleep(900);
       const ask = card(w.layer, [
@@ -390,7 +355,7 @@
       w.say('CalApp calls the Calendar API with <code>Authorization: Bearer …</code>. The API checks the token and its scope.');
       await w.sleep(800);
       await hop(w, ['200 OK · 12 events'], [720, 222], [560, 100], { cls: 'sv-box-hot', wire: 'AR' });
-      await hop(w, ['your week, rendered'], P.A, P.park, { wire: 'BA', keep: true });
+      await hop(w, ['your week, rendered'], P.A, [250, 64], { wire: 'BA', keep: true });
       w.say('Calendar read. CalApp never saw the password, and you can <strong>revoke this one app</strong> any time.');
     }
     status(w, 'B', 'shows your week');
