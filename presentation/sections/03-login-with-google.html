@@ -1,4 +1,40 @@
 <!-- ============ 03 · LOGIN WITH GOOGLE ============ -->
+<style>
+  /* 3.1 · a fake "connect your calendar" screen that asks for the Google password */
+  .s3-mock { max-width: 430px; width: 100%; justify-self: center; gap: 10px; box-shadow: var(--shadow); }
+  .s3-mock-bar { display: flex; align-items: center; gap: 6px; padding-bottom: 10px; border-bottom: 1px solid var(--hairline-soft); }
+  .s3-mock-bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--hairline); }
+  .s3-mock-bar code { margin-left: 8px; font-size: 13.5px; color: var(--muted); background: transparent; padding: 0; }
+  .s3-mock label { display: flex; flex-direction: column; gap: 5px; font-size: 15px; color: var(--muted); }
+  .s3-field { font-family: var(--mono); font-size: 16px; color: var(--ink); padding: 9px 12px; border: 1px solid var(--hairline); border-radius: var(--r-sm); background: var(--surface-alt); }
+  .s3-field.s3-bad { border-color: var(--reject); background: var(--reject-wash); }
+  .s3-btn { align-self: flex-start; margin-top: 4px; font-weight: 700; font-size: 16px; color: var(--surface); background: var(--accent); border-radius: var(--r-sm); padding: 9px 22px; }
+  /* 3.2 · role names are long ("accounts.google.com"), so the quad title steps down */
+  .s3-roles .card { padding: 18px 18px; gap: 8px; }
+  .s3-roles .card .t { font-size: 22px; overflow-wrap: anywhere; }
+  .s3-roles .card p { font-size: 16.5px; }
+  .s3-valet .card { padding: 14px 18px; gap: 8px; }
+  .s3-valet .card p { font-size: 17px; }
+  /* 3.3 · progress row above the flow; later chips appear with each step */
+  .s3-stepper { display: flex; gap: 10px; flex-wrap: wrap; }
+  .s3-code-sm { fill: var(--ink); font-family: var(--mono); font-size: 14px; }
+  .s3-note { margin: 0; font-size: 16px; color: var(--muted); }
+  /* 3.4 · access token vs id token */
+  .s3-tok .card { padding: 14px 18px; gap: 6px; }
+  .s3-tok .card p { font-size: 16.5px; }
+  .s3-tok .code { font-size: 15px; padding: 12px 16px; }
+  .s3-jwt { color: var(--muted); }
+  /* 3.5 · compact factor cards above the comparison table */
+  .s3-factors { gap: 16px; }
+  .s3-factors .card { flex-direction: row; align-items: center; gap: 14px; padding: 12px 16px; border-radius: var(--r-md); }
+  .s3-factors .card .t { font-size: 19px; }
+  .s3-factors .card p { font-size: 15.5px; }
+  .s3-mfa .tbl td { padding: 7px 14px; font-size: 16px; }
+  /* 3.6 · do / don't */
+  .s3-dd .card { padding: 18px 22px; gap: 6px; }
+  .s3-dd .points.tight li { font-size: 17.5px; padding: 8px 0; }
+</style>
+
 <section class="slide divider" data-section="divider-03">
   <div class="divider-num">03</div>
   <div class="section-tag"><i></i>SECTION 3</div>
@@ -6,3 +42,364 @@
   <p class="lead">Let another app act for a user without ever seeing their password. OAuth 2.0, OpenID Connect, MFA.</p>
   <div class="foot"><span>6 / 9</span><span>section 3 · login with google</span></div>
 </section>
+
+<!-- 3.1 -->
+<section class="slide" data-section="oauth-problem">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-lock"/></svg>3.1 · Why not just ask for the password?</div>
+  <h2>An app that has your Google password has all of Google, until you change it</h2>
+  <div class="split even">
+    <div class="card s3-mock" aria-label="A calendar app asking for a Google email and password">
+      <div class="s3-mock-bar"><i></i><i></i><i></i><code>calapp.vn/connect</code></div>
+      <div class="t">CalApp</div>
+      <p>Connect your Google Calendar to see your week.</p>
+      <label>Google email<div class="s3-field">truc@gmail.com</div></label>
+      <label>Google password<div class="s3-field s3-bad">●●●●●●●●●●</div></label>
+      <div class="s3-btn">Connect</div>
+    </div>
+    <ul class="points tight">
+      <li><span class="chip risk">everything</span> With the password CalApp can read Gmail, delete Drive files and change your recovery phone. Not just the calendar.</li>
+      <li data-step="1"><span class="chip risk">no undo</span> You cannot take access back from CalApp alone. Changing the password logs out every app and device you own.</li>
+      <li data-step="2"><span class="chip risk">one more leak</span> CalApp now stores your Google password. Its database leak becomes your Gmail leak.</li>
+      <li data-step="3"><span class="chip hot">what we want</span> Read the calendar only · take it back per app · the password <b>never leaves Google</b>.</li>
+    </ul>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 3 · login with google</span></div>
+</section>
+
+<!-- 3.2 -->
+<section class="slide" data-section="oauth-roles">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-key"/></svg>3.2 · OAuth 2.0 · four roles</div>
+  <h2>OAuth 2.0 hands the app a key that opens one thing, instead of your password</h2>
+  <div class="body">
+    <div class="quad s3-roles">
+      <div class="card">
+        <svg class="ic"><use href="#ic-user"/></svg>
+        <div class="k">resource owner</div>
+        <div class="t">You</div>
+        <p>Own the calendar. The only one who can say yes.</p>
+      </div>
+      <div class="card">
+        <svg class="ic"><use href="#ic-client"/></svg>
+        <div class="k">client</div>
+        <div class="t">CalApp</div>
+        <p>Wants to act for you. Registered with Google, so it has a <code>client_id</code> and a <code>client_secret</code>.</p>
+      </div>
+      <div class="card">
+        <svg class="ic"><use href="#ic-shield"/></svg>
+        <div class="k">authorization server</div>
+        <div class="t">accounts.google.com</div>
+        <p>Checks your password, asks "allow CalApp?", hands out tokens.</p>
+      </div>
+      <div class="card">
+        <svg class="ic"><use href="#ic-server"/></svg>
+        <div class="k">resource server</div>
+        <div class="t">Calendar API</div>
+        <p>Holds the data. Answers only a valid token with the right <code>scope</code>.</p>
+      </div>
+    </div>
+    <div class="two s3-valet" data-step="1" style="gap:22px;">
+      <div class="card">
+        <div><span class="chip risk">master key</span> = your password</div>
+        <p>Opens the doors, the trunk and the glovebox. Hand it to the valet and you handed over the car.</p>
+      </div>
+      <div class="card">
+        <div><span class="chip ok">valet key</span> = <code>access_token</code> with <code>scope=calendar.readonly</code></div>
+        <p>Starts the engine and nothing else. It expires, and you can take it back any time in your Google account.</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 3 · login with google</span></div>
+</section>
+
+<!-- 3.3 -->
+<section class="slide" data-section="oauth-code-flow">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-redirect"/></svg>3.3 · Authorization Code flow</div>
+  <h2>The password goes only to Google. The app gets a one-time code and trades it for a token.</h2>
+  <div class="s3-stepper">
+    <span class="chip hot">1 · redirect to Google</span>
+    <span class="chip hot" data-step="1">2 · log in + Allow</span>
+    <span class="chip hot" data-step="2">3 · back with a code</span>
+    <span class="chip hot" data-step="3">4 · code → token</span>
+    <span class="chip hot" data-step="4">5 · call the API</span>
+  </div>
+  <div class="chart meter"><svg id="s3-flow-flow" role="img" aria-label="Authorization Code flow between the browser, the CalApp backend, accounts.google.com and the Calendar API"></svg></div>
+  <div class="flow-ctl"><div class="seg"><button id="s3-flow-replay" class="icon" aria-label="Replay" title="Replay"><svg class="ic"><use href="#ic-replay"/></svg></button></div><p class="readout" id="s3-flow-readout"></p></div>
+  <p class="s3-note">SPA or mobile app? It cannot hide a <code>client_secret</code>, so it adds <b>PKCE</b>: a random one-time proof sent in place of the secret.</p>
+  <div class="foot"><span>0 / 0</span><span>section 3 · login with google</span></div>
+</section>
+
+<!-- 3.4 -->
+<section class="slide" data-section="oidc-id-token">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-token"/></svg>3.4 · OAuth is not login · OpenID Connect</div>
+  <h2>An access token says what the app may do, not who you are. OIDC adds an <code>id_token</code> for that.</h2>
+  <div class="split even s3-tok">
+    <div class="stack">
+      <div class="card">
+        <div class="k">OAuth 2.0 · scope=calendar.readonly</div>
+        <div><code>access_token: ya29.a0AfH6SMB…</code></div>
+        <p>Means "whoever holds this may read a calendar". It does not say whose, and your app is not meant to open it.</p>
+      </div>
+      <div class="card lift">
+        <div class="k">OpenID Connect · scope=openid email profile</div>
+        <div><code>access_token</code> <b>+ id_token</b></div>
+        <p>A JWT about the user, made for your app. This is what "Login with Google" really is: OAuth plus one extra token.</p>
+      </div>
+      <ul class="points tight" data-step="2">
+        <li><span class="chip risk">don't</span> Log users in with an <code>access_token</code>. A token some other app got for that user would work on yours too.</li>
+      </ul>
+    </div>
+    <div class="stack">
+      <div class="code-label">id_token · decoded · the same JWT as section 2</div>
+<pre class="code"><span class="s3-jwt">eyJhbGciOiJSUzI1NiIsImtpZCI6IjFm…</span>
+{
+  "iss":   "https://accounts.google.com",
+  "sub":   "110248495921238986420",
+  "email": "truc@gmail.com",
+  "name":  "Truc Le",
+  "aud":   "1234-calapp.apps.googleusercontent.com",
+  "exp":   1760445000
+}</pre>
+      <ul class="points tight" data-step="1">
+        <li><span class="chip hot">verify</span> Signature with Google's public key, <code>iss</code> is Google, <code>aud</code> is <b>your</b> <code>client_id</code>, <code>exp</code> not passed. A library does all four.</li>
+        <li><span class="chip ok">store</span> Key the user by <code>sub</code>, not <code>email</code>. A Google email can change; <code>sub</code> never does.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 3 · login with google</span></div>
+</section>
+
+<!-- 3.5 -->
+<section class="slide" data-section="mfa">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-fingerprint"/></svg>3.5 · MFA · multi-factor authentication</div>
+  <h2>A stolen password is not enough when login also needs a second factor of a different kind</h2>
+  <div class="body s3-mfa" style="gap:14px;">
+    <div class="trio s3-factors">
+      <div class="card"><svg class="ic"><use href="#ic-key"/></svg><div><div class="t">Something you know</div><p>password, PIN</p></div></div>
+      <div class="card"><svg class="ic"><use href="#ic-token"/></svg><div><div class="t">Something you have</div><p>phone, security key</p></div></div>
+      <div class="card"><svg class="ic"><use href="#ic-fingerprint"/></svg><div><div class="t">Something you are</div><p>fingerprint, face</p></div></div>
+    </div>
+    <p class="s3-note">Two factors must be two <b>different kinds</b>. Password + security question is still one factor: both are things you know.</p>
+    <table class="tbl compact" data-step="1">
+      <thead><tr><th style="width:17%">Second factor</th><th style="width:40%">How it works</th><th style="width:31%">Weak spot</th><th style="width:12%">Verdict</th></tr></thead>
+      <tbody>
+        <tr><td class="name">TOTP<span>Google Authenticator</span></td><td>Phone and server share a secret. Both turn the clock into a 6-digit code, new every 30 s. Works offline.</td><td>A fake login page can ask for the code and use it within 30 s.</td><td><span class="chip hot">good default</span></td></tr>
+        <tr><td class="name">SMS OTP<span>code by text message</span></td><td>The server texts a 6-digit code to your phone number.</td><td>SIM swap: an attacker talks the carrier into moving your number to their SIM.</td><td><span class="chip risk">weakest</span></td></tr>
+        <tr><td class="name">Passkey<span>fingerprint / face</span></td><td>Your device signs a challenge with a private key. It only answers the real domain.</td><td>Nothing to type, so nothing a fake page can steal.</td><td><span class="chip ok">strongest</span></td></tr>
+      </tbody>
+    </table>
+    <ul class="points tight" data-step="2">
+      <li><span class="chip hot">MFA is AuthN</span> It happens at login. With "Login with Google", <b>Google</b> asks for the second factor. Your app never sees it; it just receives the <code>id_token</code>.</li>
+    </ul>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 3 · login with google</span></div>
+</section>
+
+<!-- 3.6 -->
+<section class="slide" data-section="google-do-dont">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-shield"/></svg>3.6 · Do / Don't</div>
+  <h2>Rent login from a provider, and keep the secret on the server</h2>
+  <div class="two s3-dd" style="gap:24px;">
+    <div class="card">
+      <div><span class="chip ok">do</span></div>
+      <ul class="points tight">
+        <li>Use a provider and its library: Google, Auth0, Keycloak, Cognito.</li>
+        <li>Keep <code>client_secret</code> on the backend, read from env or a secret manager.</li>
+        <li>Ask for the smallest <code>scope</code>: <code>calendar.readonly</code>, not full calendar access.</li>
+        <li>Check that <code>state</code> matches when Google redirects back. No match, no login.</li>
+        <li>Verify the <code>id_token</code> (signature, <code>iss</code>, <code>aud</code>, <code>exp</code>) and key users by <code>sub</code>.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div><span class="chip risk">don't</span></div>
+      <ul class="points tight">
+        <li>Build your own OAuth server.</li>
+        <li>Put <code>client_secret</code> in React code, a mobile app, or git.</li>
+        <li>Ask users for their Google password. Ever.</li>
+        <li>Treat an <code>access_token</code> as proof of who the user is.</li>
+        <li>Rely on SMS codes alone for admin accounts.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>0 / 0</span><span>section 3 · login with google</span></div>
+</section>
+
+<script>
+(() => {
+  const { el, $, scene, steps, glyph } = window.Charts;
+
+  // ---------- 3.3 Authorization Code flow ----------
+  const W = 1100, H = 300;
+  const txt = (p, x, y, cls, t, anchor) =>
+    el('text', anchor ? { x, y, class: cls, 'text-anchor': anchor } : { x, y, class: cls }, p, t);
+  const line = (p, d, cls) => el('path', { d, class: cls }, p);
+  // a message card: one or more lines of small mono text, moved with style.transform
+  const card = (p, lines, cls = 'sv-box') => {
+    const g = el('g', { class: 'pkt-fly' }, p);
+    const lh = 18, h = lines.length * lh + 14;
+    const w = Math.max(...lines.map((l) => l.length)) * 8.4 + 24;
+    el('rect', { x: -w / 2, y: -h / 2, width: w, height: h, rx: 6, class: cls }, g);
+    lines.forEach((t, i) => txt(g, -w / 2 + 12, -h / 2 + 7 + lh * (i + 0.75), 's3-code-sm', t));
+    return g;
+  };
+  const put = (g, x, y) => { g.style.transform = `translate(${x}px, ${y}px)`; };
+  const move = (w, g, x, y) => { if (!w.virtual()) void g.getBoundingClientRect(); put(g, x, y); };
+  const fade = (w, g) => { g.classList.add('pkt-gone'); w.later(() => g.remove(), 400); };
+
+  // where cards start and land, next to each actor
+  const P = { B: [110, 140], A: [465, 70], G: [800, 70], R: [800, 222], mid: [640, 190], park: [330, 205] };
+
+  const w = scene($('s3-flow-flow'), `0 0 ${W} ${H}`, (svg) => {
+    const wires = el('g', {}, svg);
+    const L = {
+      BA: line(wires, 'M78 118 C200 108 340 40 436 36', 'sv-line-soft'),
+      BG: line(wires, 'M78 150 C300 250 640 250 846 64', 'sv-line-soft'),
+      AG: line(wires, 'M494 35 H826', 'sv-line-soft'),
+      AR: line(wires, 'M494 50 C640 60 680 222 826 222', 'sv-line-soft'),
+    };
+    // the browser: where the user is, and the only thing that ever sees the password
+    const B = glyph(svg, { icon: 'gl-client', x: 10, y: 96, size: 64, state: 'hot' });
+    txt(svg, 0, 186, 'sv-lbl', 'your browser');
+    const bSt = txt(svg, 0, 208, 'sv-lbl-sm', '');
+    // the app's backend, centred at the top, name underneath so the wire to Google stays clear
+    const A = glyph(svg, { icon: 'gl-server', x: 440, y: 10, size: 50 });
+    txt(svg, 465, 84, 'sv-lbl', 'CalApp backend', 'middle');
+    txt(svg, 465, 104, 'sv-lbl-sm', 'keeps client_secret', 'middle');
+    const aSt = txt(svg, 465, 126, 'sv-hot', '', 'middle');
+    const G = glyph(svg, { icon: 'gl-server', x: 830, y: 10, size: 50 });
+    txt(svg, 892, 30, 'sv-lbl', 'accounts.google.com');
+    txt(svg, 892, 50, 'sv-lbl-sm', 'authorization server');
+    const gSt = txt(svg, 892, 72, 'sv-hot', '');
+    const R = glyph(svg, { icon: 'gl-server', x: 830, y: 196, size: 50 });
+    txt(svg, 892, 216, 'sv-lbl', 'Calendar API');
+    txt(svg, 892, 236, 'sv-lbl-sm', 'resource server');
+    const rSt = txt(svg, 892, 258, 'sv-hot', '');
+    const backNote = txt(svg, 660, 24, 'sv-lbl-sm', '', 'middle');
+    const sts = [bSt, aSt, gSt, rSt];
+    return {
+      L, A, G, R, B, backNote,
+      st: { B: bSt, A: aSt, G: gSt, R: rSt },
+      clear() {
+        sts.forEach((t) => { t.textContent = ''; t.setAttribute('class', t === bSt ? 'sv-lbl-sm' : 'sv-hot'); });
+        Object.values(L).forEach((l) => l.setAttribute('class', 'sv-line-soft'));
+        [A, G, R].forEach((g) => g.set(''));
+        backNote.textContent = '';
+      },
+    };
+  });
+
+  const status = (w, who, text, cls) => {
+    const t = w.st[who];
+    t.textContent = text;
+    if (cls) t.setAttribute('class', cls);
+  };
+  const lit = (w, key, on) => w.L[key].setAttribute('class', on ? 'sv-hot-line' : 'sv-line-soft');
+  // send a card from one point to another; keep it parked or let it fade on arrival
+  async function hop(w, lines, from, to, { cls = 'sv-box', wire, keep = false } = {}) {
+    const c = card(w.layer, lines, cls);
+    put(c, ...from);
+    if (wire) lit(w, wire, true);
+    move(w, c, ...to);
+    await w.sleep(620);
+    if (wire) lit(w, wire, false);
+    if (!keep) fade(w, c);
+    return c;
+  }
+
+  // Each step function draws its own story when animate is true, and only leaves its end state
+  // (status lines) when replayed as background for a later step.
+  async function redirect(w, animate) {
+    if (animate) {
+      await hop(w, ['click: Connect Google Calendar'], P.B, P.A, { wire: 'BA' });
+      w.A.set('hot');
+      const url = await hop(w, [
+        '302 → accounts.google.com/auth',
+        '  ?client_id=1234-calapp',
+        '  &redirect_uri=calapp.vn/callback',
+        '  &scope=calendar.readonly',
+        '  &state=x7Kq9',
+      ], P.A, P.park, { cls: 'sv-box-hot', wire: 'BA', keep: true });
+      w.say('CalApp answers with a <strong>redirect</strong>: who is asking, where to come back, what it wants, and a random <code>state</code>.');
+      await w.sleep(1200);
+      lit(w, 'BG', true);
+      move(w, url, ...P.mid);
+      await w.sleep(700);
+      lit(w, 'BG', false);
+      w.A.set('');
+      w.G.set('hot');
+      w.say('The browser follows it to Google. CalApp remembers <code>state=x7Kq9</code> for later.');
+    }
+    status(w, 'B', 'on the Google page');
+    status(w, 'A', 'remembers state=x7Kq9');
+  }
+
+  async function consent(w, animate) {
+    if (animate) {
+      w.G.set('hot');
+      await hop(w, ['Sign in · truc@gmail.com', 'password ●●●●●●●●●●'], P.B, P.mid, { cls: 'sv-box-hot', wire: 'BG' });
+      w.say('You type the password <strong>on Google\'s page</strong>. It goes from the browser to Google, nowhere else.');
+      await w.sleep(900);
+      const ask = card(w.layer, [
+        'CalApp wants to:',
+        '  · See your calendar',
+        '',
+        '  [ Cancel ]   [ Allow ]',
+      ], 'sv-box');
+      put(ask, ...P.mid);
+      await w.sleep(900);
+      w.say('Google asks for <strong>consent</strong> for exactly <code>calendar.readonly</code>. You click Allow.');
+    }
+    status(w, 'G', 'password ✓ · Allow ✓');
+    status(w, 'A', 'never saw the password', 'sv-ok');
+  }
+
+  async function callback(w, animate) {
+    if (animate) {
+      w.G.set('hot');
+      await hop(w, ['302 → calapp.vn/callback', '  ?code=4/0AXy9…&state=x7Kq9'], P.G, P.park, { cls: 'sv-box-hot', wire: 'BG' });
+      await hop(w, ['GET /callback?code=4/0AXy9…', '    &state=x7Kq9'], P.B, P.A, { cls: 'sv-box-hot', wire: 'BA' });
+      w.G.set('');
+      w.A.set('hot');
+      status(w, 'A', 'state matches ✓', 'sv-ok');
+      w.say('Google sends the browser back with a <strong>code</strong>. CalApp checks <code>state</code> is the one it sent.');
+      await w.sleep(1100);
+      w.say('The code is not a token yet: it works <strong>once</strong>, for a few minutes, and only with the secret.');
+    }
+    status(w, 'B', 'back on calapp.vn');
+    status(w, 'A', 'has a one-time code', 'sv-hot');
+  }
+
+  async function exchange(w, animate) {
+    w.backNote.textContent = 'server to server · the browser never sees this';
+    if (animate) {
+      w.A.set('hot'); w.G.set('hot');
+      await hop(w, ['POST /token', '  code + client_secret'], [500, 70], [760, 80], { cls: 'sv-box-hot', wire: 'AG' });
+      w.say('The <strong>backend</strong> calls Google directly with the code and its <code>client_secret</code>.');
+      await w.sleep(700);
+      await hop(w, ['access_token: ya29.a0Af…', 'expires_in: 3600'], [760, 80], [560, 80], { cls: 'sv-box-hot', wire: 'AG' });
+      w.G.set('');
+      w.say('Google checks both and returns an <strong>access_token</strong>. The secret never left the server.');
+    }
+    status(w, 'A', 'has access_token · 1 h', 'sv-hot');
+  }
+
+  async function api(w, animate) {
+    if (animate) {
+      w.A.set('hot'); w.R.set('hot');
+      await hop(w, ['GET /calendar/v3/events', 'Authorization: Bearer ya29…'], [540, 90], [700, 222], { cls: 'sv-box-hot', wire: 'AR' });
+      status(w, 'R', 'token ✓ · scope ✓');
+      w.say('CalApp calls the Calendar API with <code>Authorization: Bearer …</code>. The API checks the token and its scope.');
+      await w.sleep(800);
+      await hop(w, ['200 OK · 12 events'], [720, 222], [560, 100], { cls: 'sv-box-hot', wire: 'AR' });
+      await hop(w, ['your week, rendered'], P.A, P.park, { wire: 'BA', keep: true });
+      w.say('Calendar read. CalApp never saw the password, and you can <strong>revoke this one app</strong> any time.');
+    }
+    status(w, 'B', 'shows your week');
+  }
+
+  const story = [redirect, consent, callback, exchange, api];
+  steps('s3-flow', w, story.map((fn, k) => async (w) => {
+    for (let i = 0; i < k; i++) await story[i](w, false);
+    await fn(w, true);
+  }));
+})();
+</script>
