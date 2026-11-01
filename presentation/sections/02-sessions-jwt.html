@@ -4,7 +4,7 @@
   <div class="section-tag"><i></i>SECTION 2</div>
   <h2>Staying logged in</h2>
   <p class="lead">HTTP forgets you after every request. Session cookies and JWTs are two ways to carry a ticket.</p>
-  <div class="foot"><span>17 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>18 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- Section 2 styles. Selectors are scoped to this section's slides; colors use theme tokens only. -->
@@ -21,7 +21,7 @@
     </div>
     <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>A ticket from login</strong>, sent on every request: a session cookie or a JWT.</span></p>
   </div>
-  <div class="foot"><span>18 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>19 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.1 -->
@@ -59,7 +59,7 @@
       </ul>
     </div>
   </div>
-  <div class="foot"><span>19 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>20 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.2 -->
@@ -94,7 +94,7 @@
     </div>
     <ul class="points tight"><li><span class="chip risk">never inside</span>passwords, card numbers, national ID, API keys. Anyone holding the token can read it.</li></ul>
   </div>
-  <div class="foot"><span>20 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>21 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- your turn · before 2.3 -->
@@ -104,7 +104,7 @@
     <h2 class="ask-q">Can you read a JWT&#39;s payload without the secret? How?</h2>
     <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>Yes.</strong> <code>atob()</code> the middle part, or paste it into jwt.io. The secret only protects against changes.</span></p>
   </div>
-  <div class="foot"><span>21 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>22 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.3 -->
@@ -139,7 +139,7 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
       </div>
     </div>
   </div>
-  <div class="foot"><span>22 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>23 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.4 -->
@@ -162,7 +162,7 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
       <li data-step="2">The usual fix: a short <code>exp</code> (15 min), renewed by a refresh token the server can delete.</li>
     </ul>
   </div>
-  <div class="foot"><span>23 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>24 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- your turn · before 2.5 -->
@@ -177,7 +177,7 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
     </div>
     <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>An <code>HttpOnly</code> cookie</strong> by default: any script on the page can read <code>localStorage</code>.</span></p>
   </div>
-  <div class="foot"><span>24 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>25 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.5 -->
@@ -207,7 +207,7 @@ document.cookie   <span class="c">// "" (JS cannot see it)</span></pre>
       <li data-step="2"><span class="chip">trade-off</span> The browser sends cookies by itself, which opens the door to CSRF. <code>SameSite</code> closes most of it. Both attacks: XSS and CSRF (5.4).</li>
     </ul>
   </div>
-  <div class="foot"><span>25 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>26 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.6 -->
@@ -242,7 +242,7 @@ document.cookie   <span class="c">// "" (JS cannot see it)</span></pre>
       <div class="dd-cell dd-yes"><div class="dd-code">process.env.JWT_SECRET</div><div class="dd-why">long, random, per env</div></div>
     </div>
   </div>
-  <div class="foot"><span>26 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>27 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <script>
