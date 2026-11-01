@@ -129,12 +129,8 @@ GET /orders
 <section class="slide ask" data-section="ask-jwt-readable">
   <div class="eyebrow"><svg class="ic"><use href="#ic-question"/></svg>Your turn<span class="chip hot ask-time">30 s · ask your neighbour</span></div>
   <div class="ask-body">
-    <h2 class="ask-q">Can you read a JWT&#39;s payload without the secret?</h2>
-    <div class="ask-opts">
-      <div class="ask-opt"><span class="ask-letter">A</span><span class="ask-txt">No, it&#39;s encrypted</span></div>
-      <div class="ask-opt is-right"><span class="ask-letter">B</span><span class="ask-txt">Yes, it&#39;s only <code>base64</code></span><span class="ask-mark" aria-hidden="true">✓</span></div>
-    </div>
-    <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>Yes.</strong> Anyone holding the token can decode it. The secret only protects against changes.</span></p>
+    <h2 class="ask-q">Can you read a JWT&#39;s payload without the secret? How?</h2>
+    <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>Yes.</strong> <code>atob()</code> the middle part, or paste it into jwt.io. The secret only protects against changes.</span></p>
   </div>
   <div class="foot"><span>22 / 53</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>

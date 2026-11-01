@@ -50,12 +50,8 @@ if (can(user, <span class="hl">"orders:delete"</span>)) {
 <section class="slide ask" data-section="ask-hidden-button">
   <div class="eyebrow"><svg class="ic"><use href="#ic-question"/></svg>Your turn<span class="chip hot ask-time">30 s · ask your neighbour</span></div>
   <div class="ask-body">
-    <h2 class="ask-q">The Delete button is hidden for viewers. Is the API safe?</h2>
-    <div class="ask-opts">
-      <div class="ask-opt"><span class="ask-letter">A</span><span class="ask-txt">Yes, they can&#39;t click it</span></div>
-      <div class="ask-opt is-right"><span class="ask-letter">B</span><span class="ask-txt">No</span><span class="ask-mark" aria-hidden="true">✓</span></div>
-    </div>
-    <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>No.</strong> <code>curl</code> and Postman never see your UI.</span></p>
+    <h2 class="ask-q">The Delete button is hidden for viewers. Is the API safe? How would you check?</h2>
+    <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>No.</strong> Send the <code>DELETE</code> yourself with <code>curl</code> and a viewer&#39;s cookie. curl never sees your UI.</span></p>
   </div>
   <div class="foot"><span>39 / 53</span><span>section 4 · permissions &amp; attacks</span></div>
 </section>

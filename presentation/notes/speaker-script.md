@@ -145,10 +145,10 @@ copy về laptop, bị share trong Slack.
 _~60 s · ⏱ tới 6:10_
 
 **Nói:** Lưu nguyên văn là không được rồi. Vậy thay vào đó mình làm gì? Đọc to câu hỏi: encryption
-với hashing khác nhau chỗ nào, và password thì dùng cái nào? A: encrypt bằng `AES`. B: hash.
+với hashing khác nhau chỗ nào, và password thì dùng cái nào? Câu hỏi mở, không có đáp án gợi ý.
 "30 giây, bàn với người ngồi cạnh." Chờ ~30 s, đừng lấp khoảng lặng. Mời 1–2 người trả lời, hỏi
-"vì sao?" nhưng chưa nói đúng sai. Có người chọn A thì hỏi lại: "key để giải mã nằm ở đâu?"
-**→ 1:** B — hash. Encryption có key là mở ngược lại được; hash thì không đảo ngược được. Nhưng
+"vì sao?" nhưng chưa nói đúng sai. Có người nói "encrypt" thì hỏi lại: "key để giải mã nằm ở đâu?"
+**→ 1:** Hash. Encryption có key là mở ngược lại được; hash thì không đảo ngược được. Nhưng
 không phải hash bằng SHA-256 — mấy slide sau sẽ thấy vì sao.
 **Chốt:** "Giờ xem kỹ hai cái này khác nhau thế nào."
 
@@ -285,13 +285,13 @@ lúc nào, `exp` là hết hạn sau 15 phút. Decode ngay đây bằng `atob`, 
 **Tuỳ chọn:** có ô "paste any JWT" — nếu ai có token thật trong máy, dán vào xem. Bấm `Esc` để trả
 bàn phím cho deck, `↻ sample` để quay lại token mẫu.
 
-### 22 · Your turn — Can you read a JWT's payload without the secret?
+### 22 · Your turn — Can you read a JWT's payload without the secret? How?
 _~60 s · ⏱ tới 18:30_
 
 **Nói:** Slide vừa rồi decode payload ngay trong browser. Câu hỏi: không có secret thì có đọc được
-payload của JWT không? A: không, nó được mã hoá. B: có, nó chỉ là `base64`. "30 giây." Chờ, rồi nghe
+payload của JWT không, và đọc bằng cách nào? Câu hỏi mở. "30 giây." Chờ, rồi nghe
 1–2 câu. Cả phòng im thì gợi ý: "slide trước mình có dùng secret để decode không?"
-**→ 1:** B. Ai cầm token là decode được. Secret chỉ chống *sửa*, không chống *đọc*.
+**→ 1:** Có — nó chỉ là `base64`. Ai cầm token là decode được. Secret chỉ chống *sửa*, không chống *đọc*.
 **Chốt:** "Vậy payload được để gì, không được để gì?"
 
 ### 23 · Anyone who holds the token can read the payload. No secret needed.
@@ -498,13 +498,13 @@ bảng.
 **→ 2:** Vì sao? Mai có thêm role `support` được phép xoá. Mình sửa một dòng trong bảng, chứ không phải
 40 câu `if`.
 
-### 39 · Your turn — The Delete button is hidden for viewers. Is the API safe?
+### 39 · Your turn — The Delete button is hidden for viewers. Is the API safe? How would you check?
 _~60 s · ⏱ tới 36:20_
 
-**Nói:** Câu này cho các bạn frontend. Nút Delete đã ẩn với viewer. Vậy API có an toàn không? A: có,
-họ đâu có bấm được. B: không. "30 giây." Chờ, rồi nghe 1–2 câu. Hỏi người chọn A: "ngoài cái nút ra,
+**Nói:** Câu này cho các bạn frontend. Nút Delete đã ẩn với viewer. Vậy API có an toàn không, và kiểm tra
+bằng cách nào? Câu hỏi mở. "30 giây." Chờ, rồi nghe 1–2 câu. Ai nói "an toàn" thì hỏi: "ngoài cái nút ra,
 còn cách nào gửi một request `DELETE`?"
-**→ 1:** B. curl và Postman không bao giờ thấy UI của bạn.
+**→ 1:** Không. curl và Postman không bao giờ thấy UI của bạn.
 **Chốt:** "Xem attacker làm chuyện đó thế nào."
 
 ### 40 · The frontend hid the Delete button. Anyone with curl can still call the API.
