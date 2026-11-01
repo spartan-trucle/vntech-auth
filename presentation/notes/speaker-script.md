@@ -190,14 +190,12 @@ thời gian CPU. Tăng cost lên 1 là gấp đôi thời gian. Argon2id là l�
 ### 14 · Let a well-known library do the hashing. Your job is to not leak anything around it.
 _~60 s · ⏱ tới 11:00_
 
-**Nói:** Mang về được gì? Bên trái — nên làm: hash bằng `bcrypt.hash(password, 12)` hoặc
-`argon2.hash` của thư viện có người maintain. Kiểm tra bằng `bcrypt.compare`. Login sai thì luôn
-trả đúng một câu: "Email or password is wrong". Đặt tên cột là `password_hash` để không ai nhầm
-nó với password thật.
-Bên phải — đừng làm: tự viết hàm hash, hay dùng `md5` / `sha256` cho password. Tự hash rồi so bằng
-`==` — để `compare` của thư viện làm. Log body của request `/login` — vậy là log luôn password. Trả
-`res.json(user)` — vậy là gửi luôn hash ra ngoài. Và đừng báo "No account with this email", vì nó
-cho attacker biết email nào có tồn tại.
+**Nói:** Mang về được gì? Mỗi hàng: bên trái đừng làm, bên phải nên làm. Đọc từ trên xuống.
+- **Hash:** đừng `md5` hay `sha256` — nhanh, crack trong vài giây. Dùng `bcrypt.hash(pw, 12)`: chậm có chủ đích, có salt sẵn.
+- **Compare:** đừng tự hash rồi so `==` — sót salt, lộ timing. Dùng `bcrypt.compare`, thư viện làm đúng.
+- **Error:** đừng báo "No account with this email" — attacker biết email nào tồn tại. Một câu cho mọi trường hợp: "Email or password is wrong".
+- **Leaks:** đừng log `req.body` hay `res.json(user)` — log luôn password, gửi luôn hash ra ngoài. Chỉ log `user.id`, chỉ trả `{ id, email }`.
+- **Column:** đừng đặt tên cột `password` — nhìn như password thật. Đặt `password_hash`, nói đúng nó chứa gì.
 **Chốt:** Thuật toán thì thư viện lo. Việc của mình là đừng làm rò rỉ gì xung quanh nó.
 
 ---
@@ -313,12 +311,12 @@ tấn công này — XSS và CSRF — mình gặp lại ở 4.5 và 4.6.
 ### 24 · Use a library, keep tokens short-lived, and keep them out of JavaScript's reach.
 _~60 s · ⏱ tới 21:00_
 
-**Nói:** Mang về. Nên làm: dùng session của framework hoặc thư viện JWT, đừng tự viết. Cookie luôn có
-`HttpOnly; Secure; SameSite=Lax`. Verify mọi JWT bằng thư viện và ghim thuật toán. Access token ngắn,
-`exp` khoảng 15 phút, refresh token nằm trên server. Logout thì xoá session row hoặc refresh token.
-Đừng làm: để password, số thẻ, thông tin cá nhân trong payload — ai cũng đọc được. Gọi `decode()` rồi
-tin kết quả — chỉ `verify()` mới kiểm signature. Để token trong `localStorage`. Phát JWT sống cả mấy
-ngày mà không có cách huỷ. Và commit secret dùng để ký — đọc nó từ env.
+**Nói:** Mang về. Mỗi hàng: trái đừng làm, phải nên làm.
+- **Verify:** đừng `jwt.decode` rồi tin luôn — bỏ qua signature. Dùng `jwt.verify` và ghim `algorithms: ["HS256"]`.
+- **Payload:** đừng nhét password, số thẻ vào payload — ai cũng đọc được. Chỉ để `sub`, `role`, `exp`.
+- **Storage:** đừng để token trong `localStorage` — script nào cũng đọc được. Dùng cookie `HttpOnly; Secure; SameSite=Lax`, JavaScript không đọc được.
+- **Lifetime:** đừng cho `exp` 30 ngày — bị lộ là xài được cả tháng. Access token 15 phút, refresh token nằm trên server, logout thì xoá refresh.
+- **Secret:** đừng hardcode secret rồi commit vào git — ai có nó cũng ký được token. Đọc từ `process.env.JWT_SECRET`, dài, random, mỗi env một cái.
 
 ---
 
@@ -412,13 +410,12 @@ thứ hai. App của mình không bao giờ thấy, chỉ nhận `id_token`.
 ### 31 · Rent login from a provider, and keep the secret on the server
 _~60 s · ⏱ tới 29:00_
 
-**Nói:** Mang về. Nên làm: dùng provider và thư viện của nó — Google, Auth0, Keycloak, Cognito.
-`client_secret` chỉ ở backend, đọc từ env hoặc secret manager. Xin `scope` nhỏ nhất —
-`calendar.readonly`, không phải toàn quyền lịch. Kiểm `state` khớp khi Google redirect về; không khớp
-thì không login. Verify `id_token` và lưu user theo `sub`.
-Đừng làm: tự build OAuth server. Để `client_secret` trong code React, trong app mobile, hay trong git.
-Hỏi password Google của user — không bao giờ. Coi `access_token` là bằng chứng user là ai. Và chỉ dựa
-vào mã SMS cho tài khoản admin.
+**Nói:** Mang về. Mỗi hàng: trái đừng làm, phải nên làm.
+- **Provider:** đừng hỏi password Google của user, đừng tự build OAuth server. Redirect sang Google và dùng SDK của nó — hoặc Auth0, Keycloak, Cognito.
+- **Secret:** đừng để `client_secret` trong React, app mobile hay git — ai cũng đọc được bundle. Chỉ ở backend, đọc từ env.
+- **Scope:** đừng xin `scope=calendar` — toàn quyền đọc ghi. Xin `calendar.readonly`, nhỏ nhất mà đủ dùng.
+- **Callback:** đừng nhận bất kỳ `?code=` nào — attacker có thể làm mình login vào tài khoản của họ. Kiểm `state` khớp; không khớp thì không login.
+- **Identity:** đừng login bằng `access_token` — token của app khác cũng xài được trên app mình. Verify `id_token`, lưu user theo `sub` vì `sub` không bao giờ đổi.
 
 ---
 

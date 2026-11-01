@@ -247,26 +247,32 @@ document.cookie   <span class="c">// "" (JS cannot see it)</span></pre>
 <section class="slide" data-section="sessions-do-dont">
   <div class="eyebrow"><svg class="ic"><use href="#ic-shield"/></svg>2.9 · Do / Don't</div>
   <h2>Use a library, keep tokens short-lived, and keep them out of JavaScript's reach.</h2>
-  <div class="two" id="s2-dodont" style="gap:22px; flex:1; min-height:0; align-items:start;">
-    <div class="card s2-ok-card">
-      <div class="k">do</div>
-      <ul class="points tight">
-        <li>Use your framework's session or a JWT library. Don't hand-roll either.</li>
-        <li>Set cookies with <code>HttpOnly; Secure; SameSite=Lax</code>.</li>
-        <li>Verify every JWT with a library, and pin the algorithm: <code>algorithms: ["HS256"]</code>.</li>
-        <li>Keep access tokens short (<code>exp</code> ≈ 15 min). Refresh tokens live on the server.</li>
-        <li>On logout, delete the session row or the refresh token.</li>
-      </ul>
+  <div class="dd-grid">
+    <div class="dd-row dd-head"><span></span><span class="dd-no">✗ don't</span><span class="dd-yes">✓ do</span></div>
+    <div class="dd-row">
+      <div class="dd-topic">verify</div>
+      <div class="dd-cell dd-no"><div class="dd-code">jwt.decode(token) <em>then trust it</em></div><div class="dd-why">skips the signature</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code">jwt.verify(token, secret, { algorithms: [&quot;HS256&quot;] })</div><div class="dd-why">checks signature and alg</div></div>
     </div>
-    <div class="card s2-risk-card">
-      <div class="k">don't</div>
-      <ul class="points tight">
-        <li>Put passwords, card numbers or personal data in a JWT payload. Anyone can read it.</li>
-        <li>Call <code>decode()</code> and trust the result. Only <code>verify()</code> checks the signature.</li>
-        <li>Store tokens in <code>localStorage</code>.</li>
-        <li>Issue JWTs that live for days with no way to cancel them.</li>
-        <li>Commit the signing secret. Read it from env.</li>
-      </ul>
+    <div class="dd-row">
+      <div class="dd-topic">payload</div>
+      <div class="dd-cell dd-no"><div class="dd-code">{ password, cardNumber }</div><div class="dd-why">anyone can read it</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code">{ sub, role, exp }</div><div class="dd-why">only what the user may see</div></div>
+    </div>
+    <div class="dd-row">
+      <div class="dd-topic">storage</div>
+      <div class="dd-cell dd-no"><div class="dd-code">localStorage.setItem(&quot;token&quot;, jwt)</div><div class="dd-why">any script can read it</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code">Set-Cookie: …; HttpOnly; Secure; SameSite=Lax</div><div class="dd-why">JavaScript can't read it</div></div>
+    </div>
+    <div class="dd-row">
+      <div class="dd-topic">lifetime</div>
+      <div class="dd-cell dd-no"><div class="dd-code">exp: 30 days</div><div class="dd-why">stolen = works for a month</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code">access 15 min <i>+</i> refresh <em>on the server</em></div><div class="dd-why">delete refresh on logout</div></div>
+    </div>
+    <div class="dd-row">
+      <div class="dd-topic">secret</div>
+      <div class="dd-cell dd-no"><div class="dd-code">const SECRET = &quot;abc123&quot; <em>in git</em></div><div class="dd-why">anyone can mint tokens</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code">process.env.JWT_SECRET</div><div class="dd-why">long, random, per env</div></div>
     </div>
   </div>
   <div class="foot"><span>24 / 46</span><span>section 2 · sessions &amp; jwt</span></div>

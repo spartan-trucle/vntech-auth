@@ -163,26 +163,32 @@
 <section class="slide" data-section="google-do-dont">
   <div class="eyebrow"><svg class="ic"><use href="#ic-shield"/></svg>3.6 · Do / Don't</div>
   <h2>Rent login from a provider, and keep the secret on the server</h2>
-  <div class="two s3-dd" style="gap:24px;">
-    <div class="card">
-      <div><span class="chip ok">do</span></div>
-      <ul class="points tight">
-        <li>Use a provider and its library: Google, Auth0, Keycloak, Cognito.</li>
-        <li>Keep <code>client_secret</code> on the backend, read from env or a secret manager.</li>
-        <li>Ask for the smallest <code>scope</code>: <code>calendar.readonly</code>, not full calendar access.</li>
-        <li>Check that <code>state</code> matches when Google redirects back. No match, no login.</li>
-        <li>Verify the <code>id_token</code> (signature, <code>iss</code>, <code>aud</code>, <code>exp</code>) and key users by <code>sub</code>.</li>
-      </ul>
+  <div class="dd-grid">
+    <div class="dd-row dd-head"><span></span><span class="dd-no">✗ don't</span><span class="dd-yes">✓ do</span></div>
+    <div class="dd-row">
+      <div class="dd-topic">provider</div>
+      <div class="dd-cell dd-no"><div class="dd-code"><em>ask for the Google password</em> <i>·</i> <em>build your own OAuth server</em></div><div class="dd-why">one leak = all of Google</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code"><em>redirect to Google + its SDK</em></div><div class="dd-why">Google / Auth0 / Keycloak / Cognito</div></div>
     </div>
-    <div class="card">
-      <div><span class="chip risk">don't</span></div>
-      <ul class="points tight">
-        <li>Build your own OAuth server.</li>
-        <li>Put <code>client_secret</code> in React code, a mobile app, or git.</li>
-        <li>Ask users for their Google password. Ever.</li>
-        <li>Treat an <code>access_token</code> as proof of who the user is.</li>
-        <li>Rely on SMS codes alone for admin accounts.</li>
-      </ul>
+    <div class="dd-row">
+      <div class="dd-topic">secret</div>
+      <div class="dd-cell dd-no"><div class="dd-code">client_secret <em>in React, mobile, git</em></div><div class="dd-why">anyone can read the bundle</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code"><em>backend only,</em> process.env.GOOGLE_CLIENT_SECRET</div><div class="dd-why">never reaches the browser</div></div>
+    </div>
+    <div class="dd-row">
+      <div class="dd-topic">scope</div>
+      <div class="dd-cell dd-no"><div class="dd-code">scope=calendar</div><div class="dd-why">full read + write</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code">scope=calendar.readonly</div><div class="dd-why">smallest that works</div></div>
+    </div>
+    <div class="dd-row">
+      <div class="dd-topic">callback</div>
+      <div class="dd-cell dd-no"><div class="dd-code"><em>accept any</em> ?code=</div><div class="dd-why">lets an attacker log you in as them</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code"><em>check</em> state <em>matches</em></div><div class="dd-why">no match, no login</div></div>
+    </div>
+    <div class="dd-row">
+      <div class="dd-topic">identity</div>
+      <div class="dd-cell dd-no"><div class="dd-code"><em>log in with the</em> access_token</div><div class="dd-why">any app's token works on yours</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code"><em>verify</em> id_token<em>, key users by</em> sub</div><div class="dd-why">sub never changes</div></div>
     </div>
   </div>
   <div class="foot"><span>31 / 46</span><span>section 3 · login with google</span></div>
