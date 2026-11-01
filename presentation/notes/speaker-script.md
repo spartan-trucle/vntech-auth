@@ -1,6 +1,6 @@
 # Kịch bản nói — Authentication & Authorization
 
-Mỗi slide một mục, theo đúng thứ tự deck (số slide = số ở footer, `12 / 46`). **Nói** là phần bạn
+Mỗi slide một mục, theo đúng thứ tự deck (số slide = số ở footer, `12 / 53`). **Nói** là phần bạn
 dẫn; các dòng **→ k** là những `data-step` (bấm mũi tên phải rồi nói dòng đó, kèm thứ vừa hiện
 ra trên màn hình); **Chốt** là câu để lại trong đầu mọi người trước khi qua slide tiếp theo.
 Thời gian ghi ở đầu mỗi slide là ước lượng, `⏱ tới m:ss` là đồng hồ tích luỹ khi rời slide đó.
@@ -13,28 +13,34 @@ làm login. Nói chậm, hỏi khán phòng nhiều, thuật ngữ kỹ thuật 
 
 - Mở deck qua HTTP (`cd presentation && python3 -m http.server 8000`, mở `http://localhost:8000`),
   bấm `F` để fullscreen.
-- Phím: `→` / `←` để step, `O` xem overview, `T` đổi theme sáng. Ở slide 44: `L` / `S` / `A`.
+- Phím: `→` / `←` để step, `O` xem overview, `T` đổi theme sáng. Ở slide 51: `L` / `S` / `A`.
 - Terminal thứ hai, trước khi lên nói: `cd demo && pnpm start` (server chạy nền trên `:4000`).
   Lần đầu trên máy mới thì `pnpm install` trước.
-- Nhảy tới slide 44, kiểm tra chip góc trên hiện `● live · :4000` (xanh), không phải `○ recording`.
+- Nhảy tới slide 51, kiểm tra chip góc trên hiện `● live · :4000` (xanh), không phải `○ recording`.
   Rồi quay về slide 1 bằng `Home`.
 - Chuẩn bị sẵn Kahoot (câu hỏi trong `presentation/notes/kahoot-questions.md`, 12 câu), mở game ở
-  một tab khác để lấy PIN cho slide 46.
+  một tab khác để lấy PIN cho slide 53.
 
 ## Thời lượng
 
 | Phần | Slide | Dự kiến | Đồng hồ |
 |---|---|---|---|
 | Cover + outline + 00 Giới thiệu | 1–7 | 4 phút | 0:00 → 4:00 |
-| 01 Mật khẩu | 8–14 | 7 phút | 4:00 → 11:00 |
-| 02 Session & JWT | 15–24 | 10 phút | 11:00 → 21:00 |
-| 03 Login with Google | 25–31 | 8 phút | 21:00 → 29:00 |
-| 04 Phân quyền & 4 lỗi | 32–39 | 9 phút | 29:00 → 38:00 |
-| 05 Demo | 40–45 | 7 phút | 38:00 → 45:00 |
-| Cảm ơn: Q&A + Kahoot | 46 | ~10 phút | 45:00 → 55:00 |
+| 01 Mật khẩu | 8–16 | 9 phút | 4:00 → 13:00 |
+| 02 Session & JWT | 17–29 | 13 phút | 13:00 → 26:00 |
+| 03 Login with Google | 30–36 | 8 phút | 26:00 → 34:00 |
+| 04 Phân quyền & 4 lỗi | 37–46 | 11 phút | 34:00 → 45:00 |
+| 05 Demo | 47–52 | 7 phút | 45:00 → 52:00 |
+| Cảm ơn: Q&A + Kahoot | 53 | ~10 phút | 52:00 → 62:00 |
 
-**Nếu bị trễ:** nói ngắn lại các slide "Do / Don't" (14, 24, 31) — chỉ đọc tiêu đề và một dòng
-mỗi cột, vì slide 39 gom lại hết. Đừng bao giờ bỏ slide 44 — demo live mới là thứ mọi người nhớ.
+Có 7 slide **"Your turn"** (10, 13, 18, 22, 27, 39, 42), mỗi slide ~1 phút: đọc câu hỏi, chờ ~30 s
+cho mọi người bàn với người bên cạnh, nghe 1–2 câu trả lời, rồi `→` lật đáp án. Nhờ vậy phần nói
+dài **~52 phút** (trước là ~45), cộng ~10 phút Q&A + Kahoot.
+
+**Nếu bị trễ:** nói ngắn lại các slide "Do / Don't" (16, 29, 36) — chỉ đọc tiêu đề và một dòng
+mỗi cột, vì slide 46 gom lại hết. Câu hỏi "Your turn" thì rút thời gian chờ xuống ~15 s và chỉ
+nghe một câu trả lời, đừng bỏ hẳn: đó là lúc cả phòng được nói. Đừng bao giờ bỏ slide 51 —
+demo live mới là thứ mọi người nhớ.
 
 ---
 
@@ -115,7 +121,7 @@ cách nào, rồi "Login with Google". Section 4 là AuthZ và bốn lỗi inter
 
 ---
 
-# Phần 1 — Mật khẩu · ⏱ 4:00 → 11:00
+# Phần 1 — Mật khẩu · ⏱ 4:00 → 13:00
 
 ### 8 · Divider 01 — Passwords
 _~10 s · ⏱ tới 4:10_
@@ -135,8 +141,19 @@ Gmail và app ngân hàng của chị ấy. Mình làm lộ không chỉ app c�
 **→ 2:** Luật: không bao giờ lưu password gốc. Kể cả "chỉ là môi trường dev" — database dev hay bị
 copy về laptop, bị share trong Slack.
 
-### 10 · Encryption can be undone with a key. A hash cannot be undone at all.
+### 10 · Your turn — Encryption vs hashing: what's the difference, and which one for passwords?
 _~60 s · ⏱ tới 6:10_
+
+**Nói:** Lưu nguyên văn là không được rồi. Vậy thay vào đó mình làm gì? Đọc to câu hỏi: encryption
+với hashing khác nhau chỗ nào, và password thì dùng cái nào? A: encrypt bằng `AES`. B: hash.
+"30 giây, bàn với người ngồi cạnh." Chờ ~30 s, đừng lấp khoảng lặng. Mời 1–2 người trả lời, hỏi
+"vì sao?" nhưng chưa nói đúng sai. Có người chọn A thì hỏi lại: "key để giải mã nằm ở đâu?"
+**→ 1:** B — hash. Encryption có key là mở ngược lại được; hash thì không đảo ngược được. Nhưng
+không phải hash bằng SHA-256 — mấy slide sau sẽ thấy vì sao.
+**Chốt:** "Giờ xem kỹ hai cái này khác nhau thế nào."
+
+### 11 · Encryption can be undone with a key. A hash cannot be undone at all.
+_~60 s · ⏱ tới 7:10_
 
 **Nói:** Vậy mã hoá nó lại là xong? Không. Hai thứ hay bị nhầm. Encryption là hai chiều: khoá lại,
 có key là mở ra được — `decrypt(…, key)` ra lại `"hunter2"`. Mà key phải nằm trên chính server đọc
@@ -148,8 +165,8 @@ bao giờ cần đọc lại password, chỉ cần kiểm tra.
 **→ 1:** Nên password thì hash, không encrypt. Nhưng như slide sau sẽ thấy: không phải hash bằng
 `sha256`.
 
-### 11 · With SHA-256, the same password gives the same hash, and attackers already have a lookup table
-_~80 s · ⏱ tới 7:30_
+### 12 · With SHA-256, the same password gives the same hash, and attackers already have a lookup table
+_~80 s · ⏱ tới 8:30_
 
 **Nói:** Để ý thanh tiến trình ở trên — mình đi từ plaintext, giờ tới SHA-256, rồi salt, rồi bcrypt.
 Bảng này lưu `sha256(password)`. Nhìn An và Bình: hai hash giống y hệt nhau. Vậy là hai người cùng
@@ -161,8 +178,19 @@ Không giây nào.
 hash mỗi giây. Mọi password 8 chữ thường: 26⁸, khoảng 209 tỷ lần đoán — tầm 21 giây.
 **Chốt:** Hash nhanh là tin tốt cho checksum file, tin xấu cho password.
 
-### 12 · A random salt per user makes the same password hash differently every time
-_~70 s · ⏱ tới 8:40_
+### 13 · Your turn — An and Binh both typed 123456. How do we make their stored hashes different?
+_~60 s · ⏱ tới 9:30_
+
+**Nói:** Quay lại An và Bình ở slide trước: cùng gõ `123456`, cùng một hash. Làm sao để hash lưu
+trong DB của hai người khác nhau? A: hash hai lần. B: thêm một giá trị random cho mỗi user. C: bắt
+đặt password mạnh hơn. "30 giây, hỏi người bên cạnh." Chờ ~30 s, rồi nghe 1–2 câu. Ai chọn A: "hash
+hai lần thì An với Bình còn giống nhau không?" (Vẫn giống.) Ai chọn C: tốt, nhưng vẫn sẽ có người
+xài `123456`, và hai hash vẫn trùng.
+**→ 1:** B. Một chuỗi random riêng cho mỗi user, lưu ngay cạnh hash. Nó có tên: **salt**.
+**Chốt:** "Xem salt làm gì với cái bảng này."
+
+### 14 · A random salt per user makes the same password hash differently every time
+_~70 s · ⏱ tới 10:40_
 
 **Nói:** Bước tiếp theo trên thanh: salt. Salt là một chuỗi random tạo riêng cho từng user lúc
 đăng ký, lưu ngay cạnh hash. Nó không phải bí mật. Giờ mình hash `salt + password`. An và Bình vẫn
@@ -172,8 +200,8 @@ cũng không nói gì về Bình — attacker phải làm lại từ đầu cho 
 **→ 2:** Nhưng vẫn còn một vấn đề: SHA-256 vẫn nhanh. Nhắm vào một user thôi thì GPU vẫn đoán 10 tỷ
 lần mỗi giây. Hỏi phòng: vậy làm sao cho nó chậm lại? (Dẫn qua slide sau.)
 
-### 13 · bcrypt is slow on purpose, and keeps its own salt inside the hash string
-_~80 s · ⏱ tới 10:00_
+### 15 · bcrypt is slow on purpose, and keeps its own salt inside the hash string
+_~80 s · ⏱ tới 12:00_
 
 **Nói:** Bước cuối: bcrypt. Đây là một chuỗi bcrypt thật, các bạn sẽ thấy nó trong database. Nhìn
 qua thì như rác, nhưng nó có cấu trúc.
@@ -187,8 +215,8 @@ attacker: 209 tỷ password 8 chữ đó, SHA-256 mất 21 giây trên một GPU
 thời gian CPU. Tăng cost lên 1 là gấp đôi thời gian. Argon2id là lựa chọn mới hơn, cùng ý tưởng.
 **Chốt:** Chậm có chủ đích — chậm với attacker, không đáng kể với user.
 
-### 14 · Let a well-known library do the hashing. Your job is to not leak anything around it.
-_~60 s · ⏱ tới 11:00_
+### 16 · Let a well-known library do the hashing. Your job is to not leak anything around it.
+_~60 s · ⏱ tới 13:00_
 
 **Nói:** Mang về được gì? Mỗi hàng: bên trái đừng làm, bên phải nên làm. Đọc từ trên xuống.
 - **Hash:** đừng `md5` hay `sha256` — nhanh, crack trong vài giây. Dùng `bcrypt.hash(pw, 12)`: chậm có chủ đích, có salt sẵn.
@@ -200,16 +228,27 @@ _~60 s · ⏱ tới 11:00_
 
 ---
 
-# Phần 2 — Giữ trạng thái đăng nhập: Session & JWT · ⏱ 11:00 → 21:00
+# Phần 2 — Giữ trạng thái đăng nhập: Session & JWT · ⏱ 13:00 → 26:00
 
-### 15 · Divider 02 — Staying logged in
-_~10 s · ⏱ tới 11:10_
+### 17 · Divider 02 — Staying logged in
+_~10 s · ⏱ tới 13:10_
 
 **Nói:** Password đúng rồi, login xong rồi. Nhưng HTTP quên mình ngay sau mỗi request. Session
 cookie và JWT là hai cách mang theo một cái "vé".
 
-### 16 · You log in on request 1. On request 2 the server has no idea who you are.
-_~60 s · ⏱ tới 12:10_
+### 18 · Your turn — You logged in. On the next request, how does the server know it's still you?
+_~60 s · ⏱ tới 14:10_
+
+**Nói:** Bạn vừa login xong. Request kế tiếp, `GET /orders` — server biết đó vẫn là bạn bằng cách nào?
+A: nó nhớ IP. B: bạn gửi lại password. C: bạn gửi lại thứ nó đưa cho bạn lúc login. "30 giây, bàn
+với người bên cạnh." Chờ ~30 s, nghe 1–2 câu. Ai chọn A: "cả văn phòng chung một IP wifi thì sao? Đi
+4G thì IP đổi liên tục." Ai chọn B: password đi theo mọi request, và mỗi request lại tốn 250 ms bcrypt.
+**→ 1:** C. Một "vé" server phát lúc login, gửi kèm mọi request: session cookie hoặc JWT. Cả phần
+này nói về hai loại vé đó.
+**Chốt:** "Trước hết, xem vì sao cần vé: HTTP quên bạn ngay sau mỗi request."
+
+### 19 · You log in on request 1. On request 2 the server has no idea who you are.
+_~60 s · ⏱ tới 15:10_
 
 **Nói:** Request 1: `POST /login` → `200 "Welcome, An"`. Request 2: `GET /orders` → `401 "Who are
 you?"`. HTTP là **stateless**: mỗi request đến một mình, server không nhớ request trước đó.
@@ -220,8 +259,8 @@ password, mà mỗi lần kiểm tra bằng bcrypt mất ~250 ms — gọi API n
 **→ 2:** Có hai loại vé. Session cookie: *server* nhớ bạn. JWT: *cái vé* nhớ bạn. Hai slide tới là
 hai loại này.
 
-### 17 · The cookie is only a random ID. Who you are lives in a table on the server.
-_~70 s · ⏱ tới 13:20_
+### 20 · The cookie is only a random ID. Who you are lives in a table on the server.
+_~70 s · ⏱ tới 16:20_
 
 **Nói:** Loại thứ nhất. Login xong, server trả header `Set-Cookie: sid=9f8c…` kèm mấy flag. Từ đó
 browser tự gửi `Cookie: sid=…` theo mọi request, mình không phải code gì. Ba flag quan trọng:
@@ -233,8 +272,8 @@ request đọc `sid`, tra dòng, ra `user_id = 42`. Mỗi request một lần tr
 **→ 2:** Về thử nha: mở DevTools → Application → Cookies. Các bạn sẽ thấy `sid`, không bao giờ thấy
 password.
 
-### 18 · A JWT carries who you are inside the token, plus a signature only the server can make.
-_~70 s · ⏱ tới 14:30_
+### 21 · A JWT carries who you are inside the token, plus a signature only the server can make.
+_~70 s · ⏱ tới 17:30_
 
 **Nói:** Loại thứ hai — chuỗi `eyJ…` các bạn sẽ thấy trong header `Authorization`. Slide này tách nó
 ra ngay trong browser. Ba phần, cách nhau bằng dấu chấm, mỗi phần là base64url.
@@ -246,10 +285,19 @@ lúc nào, `exp` là hết hạn sau 15 phút. Decode ngay đây bằng `atob`, 
 **Tuỳ chọn:** có ô "paste any JWT" — nếu ai có token thật trong máy, dán vào xem. Bấm `Esc` để trả
 bàn phím cho deck, `↻ sample` để quay lại token mẫu.
 
-### 19 · Anyone who holds the token can read the payload. No secret needed.
-_~50 s · ⏱ tới 15:20_
+### 22 · Your turn — Can you read a JWT's payload without the secret?
+_~60 s · ⏱ tới 18:30_
 
-**Nói:** Câu hỏi cho phòng: payload đó có bị mã hoá không? (Chờ.) Không. Mở console bất kỳ,
+**Nói:** Slide vừa rồi decode payload ngay trong browser. Câu hỏi: không có secret thì có đọc được
+payload của JWT không? A: không, nó được mã hoá. B: có, nó chỉ là `base64`. "30 giây." Chờ, rồi nghe
+1–2 câu. Cả phòng im thì gợi ý: "slide trước mình có dùng secret để decode không?"
+**→ 1:** B. Ai cầm token là decode được. Secret chỉ chống *sửa*, không chống *đọc*.
+**Chốt:** "Vậy payload được để gì, không được để gì?"
+
+### 23 · Anyone who holds the token can read the payload. No secret needed.
+_~50 s · ⏱ tới 19:20_
+
+**Nói:** Như cả phòng vừa trả lời: không cần secret. Mở console bất kỳ,
 `atob` phần giữa là ra JSON. Hoặc dán vào jwt.io. **Base64** chỉ viết lại byte bằng 64 ký tự an toàn
 để nhét vừa header hay URL. Ai cũng đảo lại được, giống đổi bảng chữ cái thôi.
 **→ 1:** Nên **đừng bao giờ** để trong payload: password hay hash, số thẻ, CCCD, API key — bất cứ thứ
@@ -257,8 +305,8 @@ gì mình không dám in lên hoá đơn.
 **→ 2:** Để được: user id, role, thời hạn — những thứ user được phép biết về chính mình. Và nhớ:
 signature ở slide sau chống *sửa* token, nó không làm gì để chống *đọc*.
 
-### 20 · Change "viewer" to "admin" and the signature stops matching. The server answers 401.
-_~80 s · ⏱ tới 16:40_
+### 24 · Change "viewer" to "admin" and the signature stops matching. The server answers 401.
+_~80 s · ⏱ tới 20:40_
 
 **Nói:** Vậy đọc được thì sửa được không? Attacker decode token của chính mình:
 `"role": "viewer"`. Sửa payload mất năm giây, vì base64 không phải ổ khoá.
@@ -272,8 +320,8 @@ token là `XxLJzh34…`. Không khớp → `401 Unauthorized`. Signature chống
 tự chỉ định thuật toán: `algorithms: ["HS256"]`.
 **Chốt:** Mình sẽ làm đúng trò này live ở phần demo.
 
-### 21 · Sessions are easy to cancel. JWTs are easy to check without a database. Pick the one you need.
-_~70 s · ⏱ tới 17:50_
+### 25 · Sessions are easy to cancel. JWTs are easy to check without a database. Pick the one you need.
+_~70 s · ⏱ tới 21:50_
 
 **Nói:** Đặt cạnh nhau. "Bạn là ai" nằm ở đâu: session — bảng trên server; JWT — trong token, ở phía
 client. Mỗi request: session tra một lần theo `sid`; JWT chỉ kiểm signature, không tra. Logout hay ban
@@ -284,8 +332,8 @@ nhiều service tự kiểm token, hoặc mobile app.
 danh sách "revoked" thì lại phải tra mỗi request — mất luôn cái lợi.
 **→ 2:** Cách thường làm: giữ `exp` thật ngắn. Slide sau.
 
-### 22 · A short access token limits the damage. A long refresh token saves the user from logging in again.
-_~70 s · ⏱ tới 19:00_
+### 26 · A short access token limits the damage. A long refresh token saves the user from logging in again.
+_~70 s · ⏱ tới 23:00_
 
 **Nói:** Hai token. **Access token** là JWT, sống 15 phút, gửi theo mọi API call trong
 `Authorization: Bearer`. Bị lộ thì chỉ dùng được tối đa 15 phút. **Refresh token** sống 7 tới 30 ngày,
@@ -295,8 +343,19 @@ Nhìn timeline: cứ mỗi 15 phút, refresh token đổi lấy một access tok
 `401` — không còn ai cấp token mới nữa.
 **Chốt:** Logout với JWT = xoá refresh token. Thiệt hại tối đa là phần còn lại của 15 phút.
 
-### 23 · Any script on the page can read localStorage. No script can read an HttpOnly cookie.
-_~60 s · ⏱ tới 20:00_
+### 27 · Your turn — Where would you keep the token in the browser?
+_~60 s · ⏱ tới 24:00_
+
+**Nói:** Có access token rồi. Frontend cất nó ở đâu trong browser? A: `localStorage`. B: cookie
+`HttpOnly`. C: một biến JavaScript. "30 giây, hỏi người bên cạnh — nhất là các bạn frontend." Chờ ~30 s,
+nghe 1–2 câu. Thường có người chọn A vì tutorial hay làm vậy: đừng chê, hỏi lại "script nào trên trang
+đọc được `localStorage`?" Ai chọn C: reload trang là mất, và script trên trang vẫn chạm tới được.
+**→ 1:** B, mặc định. Bất kỳ script nào trên trang cũng đọc được `localStorage`, kể cả script attacker
+chèn vào. JavaScript không đọc được cookie `HttpOnly`.
+**Chốt:** "Slide sau đặt hai chỗ cạnh nhau, và cái giá của cookie."
+
+### 28 · Any script on the page can read localStorage. No script can read an HttpOnly cookie.
+_~60 s · ⏱ tới 25:00_
 
 **Nói:** Token để ở đâu trên browser? Hỏi phòng: ai đang để token trong `localStorage`? (Thường sẽ có
 người giơ tay — không sao, ai cũng từng.) Bên trái: `localStorage.setItem("token", jwt)`. Mọi script
@@ -308,8 +367,8 @@ trả về rỗng — JavaScript, kể cả script của attacker, không bao gi
 **→ 2:** Đánh đổi: browser tự gửi cookie, nên mở cửa cho CSRF. `SameSite` đóng được phần lớn. Hai kiểu
 tấn công này — XSS và CSRF — mình gặp lại ở 4.5 và 4.6.
 
-### 24 · Use a library, keep tokens short-lived, and keep them out of JavaScript's reach.
-_~60 s · ⏱ tới 21:00_
+### 29 · Use a library, keep tokens short-lived, and keep them out of JavaScript's reach.
+_~60 s · ⏱ tới 26:00_
 
 **Nói:** Mang về. Mỗi hàng: trái đừng làm, phải nên làm.
 - **Verify:** đừng `jwt.decode` rồi tin luôn — bỏ qua signature. Dùng `jwt.verify` và ghim `algorithms: ["HS256"]`.
@@ -320,16 +379,16 @@ _~60 s · ⏱ tới 21:00_
 
 ---
 
-# Phần 3 — "Login with Google" · ⏱ 21:00 → 29:00
+# Phần 3 — "Login with Google" · ⏱ 26:00 → 34:00
 
-### 25 · Divider 03 — Login with Google
-_~10 s · ⏱ tới 21:10_
+### 30 · Divider 03 — Login with Google
+_~10 s · ⏱ tới 26:10_
 
 **Nói:** Cái nút ai cũng bấm hằng ngày. Làm sao để một app khác làm việc thay user mà không bao giờ
 thấy password? OAuth 2.0, OpenID Connect, và MFA.
 
-### 26 · An app that has your Google password has all of Google, until you change it
-_~60 s · ⏱ tới 22:10_
+### 31 · An app that has your Google password has all of Google, until you change it
+_~60 s · ⏱ tới 27:10_
 
 **Nói:** Bài toán: CalApp muốn đọc Google Calendar để hiện lịch tuần của bạn. Cách tệ nhất: hiện một
 form hỏi email và password Google. Hỏi phòng: bạn có nhập không? (Chờ.) Có password là CalApp đọc
@@ -341,8 +400,8 @@ của bạn bị lộ.
 **→ 3:** Thứ mình muốn: chỉ đọc lịch · thu hồi được theo từng app · password **không bao giờ rời
 khỏi Google**.
 
-### 27 · OAuth 2.0 hands the app a key that opens one thing, instead of your password
-_~60 s · ⏱ tới 23:10_
+### 32 · OAuth 2.0 hands the app a key that opens one thing, instead of your password
+_~60 s · ⏱ tới 28:10_
 
 **Nói:** OAuth 2.0 có bốn vai. **Resource owner** — bạn, chủ cái lịch, người duy nhất được nói "đồng
 ý". **Client** — CalApp, muốn làm việc thay bạn; nó đăng ký với Google nên có `client_id` và
@@ -353,8 +412,8 @@ không?", phát token. **Resource server** — Calendar API: giữ data, chỉ t
 giữ xe là đưa luôn cả chiếc xe. `access_token` với `scope=calendar.readonly` là chìa valet: chỉ nổ
 máy, không làm gì khác. Nó hết hạn, và bạn thu hồi được bất cứ lúc nào trong tài khoản Google.
 
-### 28 · The password goes only to Google. The app gets a one-time code and trades it for a token.
-_~120 s · ⏱ tới 25:10_
+### 33 · The password goes only to Google. The app gets a one-time code and trades it for a token.
+_~120 s · ⏱ tới 30:10_
 
 **Nói:** Đây là Authorization Code flow, có animation. Thanh chip ở trên cho biết mình đang ở bước
 nào; nút ↻ cạnh dòng chữ để chạy lại bước hiện tại. Đọc dòng chữ bên dưới hình theo từng bước.
@@ -375,8 +434,8 @@ scope, trả 12 sự kiện, CalApp vẽ lịch tuần. Không thấy password, 
 **Chỉ xuống dòng ghi chú:** SPA hay mobile app thì không giấu được `client_secret`, nên thêm **PKCE**
 — một bằng chứng random dùng một lần thay cho secret. Chỉ cần biết tên vậy thôi.
 
-### 29 · An access token says what the app may do, not who you are. OIDC adds an id_token for that.
-_~90 s · ⏱ tới 26:40_
+### 34 · An access token says what the app may do, not who you are. OIDC adds an id_token for that.
+_~90 s · ⏱ tới 31:40_
 
 **Nói:** Một chỗ hay nhầm: OAuth là *authorization*, không phải login. `access_token` với
 `scope=calendar.readonly` nghĩa là "ai cầm cái này thì đọc được một cái lịch". Nó không nói của ai, và
@@ -391,8 +450,8 @@ email Google đổi được, `sub` thì không bao giờ.
 **→ 2:** Và đừng login user bằng `access_token`: một token mà app *khác* xin được cho user đó cũng sẽ
 chạy được trên app của mình.
 
-### 30 · A stolen password is not enough when login also needs a second factor of a different kind
-_~80 s · ⏱ tới 28:00_
+### 35 · A stolen password is not enough when login also needs a second factor of a different kind
+_~80 s · ⏱ tới 33:00_
 
 **Nói:** Còn nếu password bị lộ thì sao? MFA. Ba loại yếu tố: thứ bạn *biết* — password, PIN; thứ bạn
 *có* — điện thoại, security key; thứ bạn *là* — vân tay, khuôn mặt. Hai yếu tố phải **khác loại**.
@@ -407,8 +466,8 @@ thật. Không có gì để gõ, nên trang giả không có gì để lấy. M
 **→ 2:** MFA là chuyện của AuthN, xảy ra lúc login. Với "Login with Google" thì **Google** hỏi yếu tố
 thứ hai. App của mình không bao giờ thấy, chỉ nhận `id_token`.
 
-### 31 · Rent login from a provider, and keep the secret on the server
-_~60 s · ⏱ tới 29:00_
+### 36 · Rent login from a provider, and keep the secret on the server
+_~60 s · ⏱ tới 34:00_
 
 **Nói:** Mang về. Mỗi hàng: trái đừng làm, phải nên làm.
 - **Provider:** đừng hỏi password Google của user, đừng tự build OAuth server. Redirect sang Google và dùng SDK của nó — hoặc Auth0, Keycloak, Cognito.
@@ -419,16 +478,16 @@ _~60 s · ⏱ tới 29:00_
 
 ---
 
-# Phần 4 — Phân quyền & 4 lỗi hay gặp · ⏱ 29:00 → 38:00
+# Phần 4 — Phân quyền & 4 lỗi hay gặp · ⏱ 34:00 → 45:00
 
-### 32 · Divider 04 — Permissions & attacks
-_~10 s · ⏱ tới 29:10_
+### 37 · Divider 04 — Permissions & attacks
+_~10 s · ⏱ tới 34:10_
 
 **Nói:** Xong trạm một. Giờ là trạm hai: ai được làm gì, và bốn lỗi giúp attacker bỏ qua bước kiểm
 tra đó.
 
-### 33 · Your code should ask "may this user delete orders?", never "is this user an admin?"
-_~70 s · ⏱ tới 30:20_
+### 38 · Your code should ask "may this user delete orders?", never "is this user an admin?"
+_~70 s · ⏱ tới 35:20_
 
 **Nói:** **RBAC** — Role-Based Access Control. User có một role, role chỉ là một danh sách permission
 có tên. Bảng: `viewer` chỉ `orders:read`; `editor` thêm `orders:write`; `admin` có cả `orders:delete`.
@@ -439,19 +498,28 @@ bảng.
 **→ 2:** Vì sao? Mai có thêm role `support` được phép xoá. Mình sửa một dòng trong bảng, chứ không phải
 40 câu `if`.
 
-### 34 · The frontend hid the Delete button. Anyone with curl can still call the API.
-_~50 s · ⏱ tới 31:10_
+### 39 · Your turn — The Delete button is hidden for viewers. Is the API safe?
+_~60 s · ⏱ tới 36:20_
+
+**Nói:** Câu này cho các bạn frontend. Nút Delete đã ẩn với viewer. Vậy API có an toàn không? A: có,
+họ đâu có bấm được. B: không. "30 giây." Chờ, rồi nghe 1–2 câu. Hỏi người chọn A: "ngoài cái nút ra,
+còn cách nào gửi một request `DELETE`?"
+**→ 1:** B. curl và Postman không bao giờ thấy UI của bạn.
+**Chốt:** "Xem attacker làm chuyện đó thế nào."
+
+### 40 · The frontend hid the Delete button. Anyone with curl can still call the API.
+_~50 s · ⏱ tới 37:10_
 
 **Nói:** Câu này dành riêng cho các bạn frontend. Viewer nhìn thấy dòng đơn hàng với nút View, còn nút
-Delete thì bị ẩn bằng `{user.role === "admin" && <DeleteButton />}`. Vậy là an toàn chưa? Browser là máy
+Delete thì bị ẩn bằng `{user.role === "admin" && <DeleteButton />}`. Như vừa đoán: chưa an toàn. Browser là máy
 của user: họ mở DevTools, sửa trang, hoặc bỏ qua trang và dùng curl, Postman.
 **→ 1:** Attacker gõ `curl -X DELETE …/orders/1024` với cookie session của chính viewer đó → `204` — xoá
 mất. Bug: API tin UI sẽ kiểm. Không có gì trên server hỏi "user này có được xoá không?"
 **→ 2:** Fix nằm ở server: `requirePermission("orders:delete")` trước handler → `403 Forbidden`. Ẩn nút
 là để UI đẹp. Mọi kiểm tra quyền phải chạy cả ở backend, trên mọi request.
 
-### 35 · "Logged in" is not "allowed": check that the row belongs to this user
-_~80 s · ⏱ tới 32:30_
+### 41 · "Logged in" is not "allowed": check that the row belongs to this user
+_~80 s · ⏱ tới 38:30_
 
 **Nói:** An mở đơn của mình: `GET /orders/1024` → `200`, owner `"an"`. Endpoint này kiểm "có session
 hợp lệ không" rồi dừng. Hỏi phòng: An làm gì tiếp theo? (Chờ — thường có người đoán ra.)
@@ -463,8 +531,18 @@ Không có dòng nào → `404`, giống y như đơn không tồn tại. Lấy 
 body. Còn ID random kiểu UUID thì khó đoán hơn, nhưng không phải cách fix — ID vẫn lộ qua log và link.
 **Chốt:** "Đã login" không có nghĩa là "được phép".
 
-### 36 · Glue user input into a SQL string and the input becomes part of your query
-_~80 s · ⏱ tới 33:50_
+### 42 · Your turn — Someone types ' OR '1'='1 into the password box. What happens?
+_~60 s · ⏱ tới 39:30_
+
+**Nói:** Lỗi tiếp theo. Ai đó gõ `' OR '1'='1` vào ô password. Chuyện gì xảy ra? A: login thất bại.
+B: họ login được, vào tài khoản của ai đó. C: lỗi database. "30 giây, bàn với người bên cạnh." Chờ ~30 s,
+nghe 1–2 câu. Ai chọn C: cũng có lý — chuỗi làm hỏng cú pháp SQL thì đúng là lỗi, nhưng chuỗi này được
+viết để khớp đúng dấu nháy.
+**→ 1:** B, nếu câu SQL được nối bằng `+`. Thường là vào bằng user đầu tiên trong bảng: admin.
+**Chốt:** "Slide sau mổ câu SQL ra để thấy vì sao."
+
+### 43 · Glue user input into a SQL string and the input becomes part of your query
+_~80 s · ⏱ tới 40:50_
 
 **Nói:** Lỗi thứ hai. Handler login build SQL bằng dấu `+`: `"… WHERE email = '" + email + "' AND
 password = '" + password + "'"`. (Cái này còn lưu password plaintext nữa — hai bug một lúc.)
@@ -475,8 +553,8 @@ user. App login bạn vào bằng dòng đầu tiên — thường là admin. Kh
 `bcrypt.compare` password. Giá trị đi riêng khỏi câu SQL; database coi nó là data, không bao giờ là
 code. ORM làm sẵn việc này — nhưng cẩn thận với `raw()` và template string nối giá trị vào.
 
-### 37 · If the page renders user text as HTML, an attacker's script runs in every reader's browser
-_~80 s · ⏱ tới 35:10_
+### 44 · If the page renders user text as HTML, an attacker's script runs in every reader's browser
+_~80 s · ⏱ tới 42:10_
 
 **Nói:** Lỗi thứ ba: XSS. Mallory đăng một comment: "Nice shoes!" kèm một thẻ `<script>` gửi
 `localStorage.token` tới `evil.example`.
@@ -489,8 +567,8 @@ mặc định. Tránh `dangerouslySetInnerHTML` và `innerHTML` với text của
 **→ 3:** Fix số hai: token trong cookie `HttpOnly` như slide 2.8. Lỡ có script chạy, JavaScript cũng
 không đọc được cookie.
 
-### 38 · The browser attaches your cookie to any request, even one that another site started
-_~90 s · ⏱ tới 36:40_
+### 45 · The browser attaches your cookie to any request, even one that another site started
+_~90 s · ⏱ tới 43:40_
 
 **Nói:** Lỗi thứ tư: CSRF. Bối cảnh: bạn đang login `bank.example` ở một tab, session cookie nằm trong
 browser.
@@ -506,8 +584,8 @@ dính CSRF. Nhưng JavaScript phải đọc được nó, nên XSS lấy đượ
 **Chốt:** Cookie `HttpOnly` thì lo CSRF, `localStorage` thì lo XSS. Mặc định của mình vẫn là cookie +
 `SameSite`.
 
-### 39 · Ten things to check before you open a pull request that touches login or data
-_~80 s · ⏱ tới 38:00_
+### 46 · Ten things to check before you open a pull request that touches login or data
+_~80 s · ⏱ tới 45:00_
 
 **Nói:** Mười dòng gom từ tất cả slide "Do / Don't". Chụp hình slide này lại nha. Đọc nhanh theo nhãn:
 - **password:** hash bằng `bcrypt` hoặc `argon2` của thư viện, không lưu, không log, không trả password.
@@ -524,15 +602,15 @@ _~80 s · ⏱ tới 38:00_
 
 ---
 
-# Phần 5 — Demo: "The Forger" · ⏱ 38:00 → 45:00
+# Phần 5 — Demo: "The Forger" · ⏱ 45:00 → 52:00
 
-### 40 · Divider 05 — Demo: The Forger
-_~10 s · ⏱ tới 38:10_
+### 47 · Divider 05 — Demo: The Forger
+_~10 s · ⏱ tới 45:10_
 
 **Nói:** Giờ làm thật. Một login server nhỏ xíu. Mình sẽ sửa một cái JWT, gửi đi, và xem server từ chối.
 
-### 41 · One Node server on :4000, three users in memory. This deck talks to it with plain fetch().
-_~50 s · ⏱ tới 39:00_
+### 48 · One Node server on :4000, three users in memory. This deck talks to it with plain fetch().
+_~50 s · ⏱ tới 46:00_
 
 **Nói:** Setup: một server Node trên port 4000, đã chạy sẵn từ trước bằng lệnh này:
 
@@ -548,8 +626,8 @@ Năm endpoint: `POST /login` trả cả JWT lẫn session cookie; `GET /me` — 
 `viewer`; `GET /__db` — chỉ để demo, xem bảng users: thấy hash, không bao giờ thấy password.
 **→ 1:** Ba seed user: admin, editor, viewer — password là tên cộng `123`. Hôm nay mình đóng vai viewer.
 
-### 42 · The server recomputes the signature first, then checks a permission. Never a role name.
-_~60 s · ⏱ tới 40:00_
+### 49 · The server recomputes the signature first, then checks a permission. Never a role name.
+_~60 s · ⏱ tới 47:00_
 
 **Nói:** Code đang chạy, rút gọn. Bên trái là `demo/src/jwt.ts`, hàm `verify`. Tách ba phần, decode.
 Dòng highlight thứ nhất: `header.alg !== 'HS256'` → từ chối. Không bao giờ để token tự chọn thuật toán.
@@ -561,8 +639,8 @@ không có thì `403` kèm `need: …`. Route `/admin/users` gọi lần lượt
 **→ 1:** `401`: bạn là ai?
 **→ 2:** `403`: biết bạn rồi. Vẫn không.
 
-### 43 · Four requests, four refusals. Guess the status code for each one before we send it.
-_~90 s · ⏱ tới 41:30_
+### 50 · Four requests, four refusals. Guess the status code for each one before we send it.
+_~90 s · ⏱ tới 48:30_
 
 **Nói:** Trước khi chạy — cả phòng đoán nha. Mỗi dòng mình hỏi, lấy đáp án từ khán phòng (giơ tay "401"
 hay "403"), rồi mới bấm mở.
@@ -577,8 +655,8 @@ không biết bạn là ai.
 không tự tắt được bước kiểm tra của chính nó.
 **Chốt:** `401` là "bạn là ai?". `403` là "biết bạn rồi, vẫn không".
 
-### 44 · Log in as a viewer, rewrite the payload to admin, and send it. Every status below comes from the server.
-_~150 s · ⏱ tới 44:00_
+### 51 · Log in as a viewer, rewrite the payload to admin, and send it. Every status below comes from the server.
+_~150 s · ⏱ tới 51:00_
 
 **Kiểm tra trước khi nói:** chip góc trên phải là `● live · :4000` (xanh). Nếu là `○ recording`, xem
 "Nếu server không chạy" bên dưới.
@@ -604,7 +682,7 @@ phím không tới deck.
 **Làm dưới terminal, song song:**
 - `pnpm users` — bảng users đúng như "database" lưu: email, role, hash bcrypt `$2b$…`. Không có password
   nào. Đây là thứ lộ ra nếu database bị dump. (Ghi chú cho presenter: demo dùng cost 10, `$2b$10$…`, để
-  khởi động nhanh; nếu ai hỏi thì production dùng 12 trở lên như slide 13.)
+  khởi động nhanh; nếu ai hỏi thì production dùng 12 trở lên như slide 15.)
 - `pnpm jwt viewer@demo.vn` — log in, in ra JWT với header + payload đã decode. Payload ai cũng đọc được:
   signed, không phải encrypted.
 
@@ -613,8 +691,8 @@ bản ghi theo đúng luật của server: `L` vẫn ra token, `S` vẫn `200`, 
 bad signature`, `alg: none` vẫn `401`. Cứ nói theo đó mà đi tiếp, nói một câu "server hôm nay nghỉ, đây
 là bản ghi lúc nãy", và **đừng debug trên sân khấu**. Phần terminal thì bỏ qua.
 
-### 45 · Change one byte of the payload and the signature no longer matches. Making a new one needs the secret.
-_~60 s · ⏱ tới 45:00_
+### 52 · Change one byte of the payload and the signature no longer matches. Making a new one needs the secret.
+_~60 s · ⏱ tới 52:00_
 
 **Nói:** Vì sao bản giả không qua được. Signature = HMAC-SHA256 của header chấm payload, với secret.
 Lúc login server ký payload `"role":"viewer"`, ra `B4s4…`. Bạn sửa thành `"admin"`, giữ signature. Server
@@ -636,10 +714,10 @@ pnpm stop
 
 ---
 
-# Cảm ơn — Q&A + Kahoot · ⏱ 45:00 → ~55:00
+# Cảm ơn — Q&A + Kahoot · ⏱ 52:00 → ~62:00
 
-### 46 · Thank you + Kahoot
-_~10 phút · ⏱ tới ~55:00_
+### 53 · Thank you + Kahoot
+_~10 phút · ⏱ tới ~62:00_
 
 **Nói:** Xong rồi đó. Cảm ơn mọi người đã nghe. Hỏi đáp trước, rồi một ván Kahoot ngắn: 401 hay 403, hash
 hay encrypt, cookie hay localStorage.
@@ -668,14 +746,14 @@ hay encrypt, cookie hay localStorage.
 
 Chỉ trả lời trong phạm vi slide; mỗi câu dẫn về slide tương ứng.
 
-- **"Vậy nên dùng session hay JWT?"** → Slide 21. Web app một backend, cần logout ngay: session. Nhiều
-  service tự kiểm token, hoặc mobile app: JWT, với access token ngắn + refresh token (slide 22).
-- **"Để token trong localStorage có sao không, team em đang làm vậy?"** → Slide 23 và 37. Một script XSS
+- **"Vậy nên dùng session hay JWT?"** → Slide 25. Web app một backend, cần logout ngay: session. Nhiều
+  service tự kiểm token, hoặc mobile app: JWT, với access token ngắn + refresh token (slide 26).
+- **"Để token trong localStorage có sao không, team em đang làm vậy?"** → Slide 28 và 44. Một script XSS
   là đọc được. Mặc định là cookie `HttpOnly; Secure; SameSite=Lax`.
-- **"Sao không encrypt password, lỡ cần lấy lại cho user?"** → Slide 10. Không bao giờ cần đọc lại
+- **"Sao không encrypt password, lỡ cần lấy lại cho user?"** → Slide 11. Không bao giờ cần đọc lại
   password, chỉ cần kiểm tra.
 - **"Server trả 401 hay 403 khi token hết hạn?"** → Slide 6: `401` — server không còn biết bạn là ai, đi
   login (hoặc refresh) lại.
-- **"Dùng UUID thay cho ID tăng dần là hết IDOR rồi đúng không?"** → Slide 35. Khó đoán hơn, nhưng không
+- **"Dùng UUID thay cho ID tăng dần là hết IDOR rồi đúng không?"** → Slide 41. Khó đoán hơn, nhưng không
   phải fix. Fix là `AND user_id = ?` trong query.
-- **"Ẩn nút ở frontend rồi, backend có cần kiểm nữa không?"** → Slide 34. Có. Ai có curl cũng gọi được API.
+- **"Ẩn nút ở frontend rồi, backend có cần kiểm nữa không?"** → Slide 40. Có. Ai có curl cũng gọi được API.

