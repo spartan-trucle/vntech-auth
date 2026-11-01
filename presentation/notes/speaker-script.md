@@ -13,13 +13,9 @@ làm login. Nói chậm, hỏi khán phòng nhiều, thuật ngữ kỹ thuật 
 
 - Mở deck qua HTTP (`cd presentation && python3 -m http.server 8000`, mở `http://localhost:8000`),
   bấm `F` để fullscreen.
-- Phím: `→` / `←` để step, `O` xem overview, `T` đổi theme sáng. Ở slide 51: `L` / `S` / `A`.
-- Terminal thứ hai, trước khi lên nói: `cd demo && pnpm start` (server chạy nền trên `:4000`).
-  Lần đầu trên máy mới thì `pnpm install` trước.
-- Nhảy tới slide 51, kiểm tra chip góc trên hiện `● live · :4000` (xanh), không phải `○ recording`.
-  Rồi quay về slide 1 bằng `Home`.
+- Phím: `→` / `←` để step, `O` xem overview, `T` đổi theme sáng.
 - Chuẩn bị sẵn Kahoot (câu hỏi trong `presentation/notes/kahoot-questions.md`, 12 câu), mở game ở
-  một tab khác để lấy PIN cho slide 53.
+  một tab khác để lấy PIN cho slide 47.
 
 ## Thời lượng
 
@@ -30,17 +26,15 @@ làm login. Nói chậm, hỏi khán phòng nhiều, thuật ngữ kỹ thuật 
 | 02 Session & JWT | 17–29 | 13 phút | 13:00 → 26:00 |
 | 03 Login with Google | 30–36 | 8 phút | 26:00 → 34:00 |
 | 04 Phân quyền & 4 lỗi | 37–46 | 11 phút | 34:00 → 45:00 |
-| 05 Demo | 47–52 | 7 phút | 45:00 → 52:00 |
-| Cảm ơn: Q&A + Kahoot | 53 | ~10 phút | 52:00 → 62:00 |
+| Cảm ơn: Q&A + Kahoot | 47 | ~10 phút | 45:00 → 55:00 |
 
 Có 7 slide **"Your turn"** (10, 13, 18, 22, 27, 39, 42), mỗi slide ~1 phút: đọc câu hỏi, chờ ~30 s
 cho mọi người bàn với người bên cạnh, nghe 1–2 câu trả lời, rồi `→` lật đáp án. Nhờ vậy phần nói
-dài **~52 phút** (trước là ~45), cộng ~10 phút Q&A + Kahoot.
+dài **~45 phút**, cộng ~10 phút Q&A + Kahoot.
 
 **Nếu bị trễ:** nói ngắn lại các slide "Do / Don't" (16, 29, 36) — chỉ đọc tiêu đề và một dòng
 mỗi cột, vì slide 46 gom lại hết. Câu hỏi "Your turn" thì rút thời gian chờ xuống ~15 s và chỉ
-nghe một câu trả lời, đừng bỏ hẳn: đó là lúc cả phòng được nói. Đừng bao giờ bỏ slide 51 —
-demo live mới là thứ mọi người nhớ.
+nghe một câu trả lời, đừng bỏ hẳn: đó là lúc cả phòng được nói.
 
 ---
 
@@ -59,9 +53,9 @@ giải thích được vì sao là `403` chứ không phải `401`.
 ### 2 · Outline
 _~20 s · ⏱ tới 0:50_
 
-**Nói:** Sáu phần. Giới thiệu ngắn, rồi mật khẩu, rồi làm sao server nhớ mình đã login — session
+**Nói:** Năm phần. Giới thiệu ngắn, rồi mật khẩu, rồi làm sao server nhớ mình đã login — session
 cookie với JWT. Sau đó là nút "Login with Google". Phần bốn là phân quyền và bốn lỗi mà intern hay
-dính nhất. Cuối cùng là demo: mình sẽ thử giả một cái JWT ngay trên sân khấu.
+dính nhất.
 **Chốt:** Có gì thắc mắc thì hỏi luôn nha, đừng để dồn tới cuối.
 
 ### 3 · Divider 00 — Introduction
@@ -318,7 +312,7 @@ token là `XxLJzh34…`. Không khớp → `401 Unauthorized`. Signature chống
 **→ 3:** Bẫy này đã từng xảy ra thật: có server chấp nhận `"alg": "none"` với signature rỗng, hoặc gọi
 `decode()` trong khi ý là `verify()`. Cả hai đều bỏ qua bước kiểm tra. Luôn verify bằng thư viện, và
 tự chỉ định thuật toán: `algorithms: ["HS256"]`.
-**Chốt:** Mình sẽ làm đúng trò này live ở phần demo.
+**Chốt:** Signature chống sửa, nhưng chỉ khi server thật sự verify nó.
 
 ### 25 · Sessions are easy to cancel. JWTs are easy to check without a database. Pick the one you need.
 _~70 s · ⏱ tới 21:50_
@@ -602,122 +596,10 @@ _~80 s · ⏱ tới 45:00_
 
 ---
 
-# Phần 5 — Demo: "The Forger" · ⏱ 45:00 → 52:00
+# Cảm ơn — Q&A + Kahoot · ⏱ 45:00 → ~55:00
 
-### 47 · Divider 05 — Demo: The Forger
-_~10 s · ⏱ tới 45:10_
-
-**Nói:** Giờ làm thật. Một login server nhỏ xíu. Mình sẽ sửa một cái JWT, gửi đi, và xem server từ chối.
-
-### 48 · One Node server on :4000, three users in memory. This deck talks to it with plain fetch().
-_~50 s · ⏱ tới 46:00_
-
-**Nói:** Setup: một server Node trên port 4000, đã chạy sẵn từ trước bằng lệnh này:
-
-```bash
-cd demo && pnpm start
-```
-
-Users nằm trong memory, password hash bằng bcrypt, JWT HS256 với secret đọc từ env, khởi động lại là
-reseed. Deck này gọi nó bằng `fetch()` bình thường, và cứ 2 giây hỏi `GET /__health` để biết đang live
-hay phải phát bản ghi. Terminal bên cạnh chạy `pnpm users` và `pnpm jwt` vào cùng server.
-Năm endpoint: `POST /login` trả cả JWT lẫn session cookie; `GET /me` — tôi là ai, cần token hoặc cookie;
-`GET /admin/users` cần permission `users:list`, chỉ admin có; `POST /register` — user mới luôn là
-`viewer`; `GET /__db` — chỉ để demo, xem bảng users: thấy hash, không bao giờ thấy password.
-**→ 1:** Ba seed user: admin, editor, viewer — password là tên cộng `123`. Hôm nay mình đóng vai viewer.
-
-### 49 · The server recomputes the signature first, then checks a permission. Never a role name.
-_~60 s · ⏱ tới 47:00_
-
-**Nói:** Code đang chạy, rút gọn. Bên trái là `demo/src/jwt.ts`, hàm `verify`. Tách ba phần, decode.
-Dòng highlight thứ nhất: `header.alg !== 'HS256'` → từ chối. Không bao giờ để token tự chọn thuật toán.
-Rồi tính lại HMAC-SHA256 của `head.body` bằng secret **của mình**, so với signature trong token bằng
-`timingSafeEqual`. Hết hạn thì `expired`.
-Bên phải là `demo/src/server.ts`: `requireAuth` — xác thực bằng JWT hoặc cookie, fail thì `401` kèm
-header `X-Auth-Reason`. `requirePermission` — gọi `can(role, permission)`, đúng cái `can()` ở slide 4.1,
-không có thì `403` kèm `need: …`. Route `/admin/users` gọi lần lượt cả hai.
-**→ 1:** `401`: bạn là ai?
-**→ 2:** `403`: biết bạn rồi. Vẫn không.
-
-### 50 · Four requests, four refusals. Guess the status code for each one before we send it.
-_~90 s · ⏱ tới 48:30_
-
-**Nói:** Trước khi chạy — cả phòng đoán nha. Mỗi dòng mình hỏi, lấy đáp án từ khán phòng (giơ tay "401"
-hay "403"), rồi mới bấm mở.
-**→ 1:** Dòng 1: `GET /me` không có header `Authorization`, không cookie → `401`, `missing token`. Server
-không biết bạn là ai — AuthN fail.
-**→ 2:** Dòng 2: token thật của viewer gọi `GET /admin/users` → `403`, `need: users:list`. Server biết
-chính xác bạn là ai, chỉ là không được phép — AuthZ fail.
-**→ 3:** Dòng 3: sửa payload thành `"role":"admin"`, giữ signature cũ → `401`, `bad signature`. Hay có
-người đoán `403` ở dòng này — không, vì server tính lại HMAC trên payload mới, không khớp, nên nó còn
-không biết bạn là ai.
-**→ 4:** Dòng 4: header `"alg":"none"`, bỏ signature → `401`, `alg not allowed`. Chỉ nhận `HS256`. Token
-không tự tắt được bước kiểm tra của chính nó.
-**Chốt:** `401` là "bạn là ai?". `403` là "biết bạn rồi, vẫn không".
-
-### 51 · Log in as a viewer, rewrite the payload to admin, and send it. Every status below comes from the server.
-_~150 s · ⏱ tới 51:00_
-
-**Kiểm tra trước khi nói:** chip góc trên phải là `● live · :4000` (xanh). Nếu là `○ recording`, xem
-"Nếu server không chạy" bên dưới.
-
-**Nói:** Từ giờ mọi status code trên màn hình là server thật trả về. Phím tắt: `L` log in, `S` gửi tới
-`/me`, `A` gửi tới `/admin/users`. Bấm phím thì phải click ra ngoài ô payload trước — đang gõ trong ô thì
-phím không tới deck.
-
-**Làm trên slide, vừa làm vừa nói:**
-1. Bấm **`L`** — log in as `viewer@demo.vn`. Token hiện ra tách ba màu: header, payload, signature. Ô
-   header hiện `HS256`, ô payload hiện JSON đã decode. Dòng trạng thái: "exactly as issued".
-2. Bấm **`S`** — gửi tới `/me` → `200`, body là `viewer@demo.vn`, role viewer, `via: jwt`. Token thật
-   thì chạy.
-3. Bấm **`A`** — gửi tới `/admin/users` → `403`, `need: users:list`. Đúng dòng 2 vừa đoán.
-4. Click vào ô payload, sửa `"viewer"` thành `"admin"`. Để ý: phần payload trong token đổi màu, dòng
-   trạng thái thành "new payload · old signature". Click ra ngoài.
-5. Bấm **`A`** lần nữa → `401`, `X-Auth-Reason: bad signature`. Hỏi phòng: "Có ai nghĩ được `200`
-   không?" — không, giống y slide 2.5.
-6. Bấm nút **Use alg: none** (không có phím tắt) — signature bị bỏ. Bấm **`S`** → `401`,
-   `alg not allowed`.
-7. (Nếu còn giờ) Bấm `L` để lấy lại token sạch.
-
-**Làm dưới terminal, song song:**
-- `pnpm users` — bảng users đúng như "database" lưu: email, role, hash bcrypt `$2b$…`. Không có password
-  nào. Đây là thứ lộ ra nếu database bị dump. (Ghi chú cho presenter: demo dùng cost 10, `$2b$10$…`, để
-  khởi động nhanh; nếu ai hỏi thì production dùng 12 trở lên như slide 15.)
-- `pnpm jwt viewer@demo.vn` — log in, in ra JWT với header + payload đã decode. Payload ai cũng đọc được:
-  signed, không phải encrypted.
-
-**Nếu server không chạy:** chip sẽ ghi `○ recording`, cột response ghi `recorded`. Slide tự phát lại một
-bản ghi theo đúng luật của server: `L` vẫn ra token, `S` vẫn `200`, `A` vẫn `403`, sửa payload vẫn `401
-bad signature`, `alg: none` vẫn `401`. Cứ nói theo đó mà đi tiếp, nói một câu "server hôm nay nghỉ, đây
-là bản ghi lúc nãy", và **đừng debug trên sân khấu**. Phần terminal thì bỏ qua.
-
-### 52 · Change one byte of the payload and the signature no longer matches. Making a new one needs the secret.
-_~60 s · ⏱ tới 52:00_
-
-**Nói:** Vì sao bản giả không qua được. Signature = HMAC-SHA256 của header chấm payload, với secret.
-Lúc login server ký payload `"role":"viewer"`, ra `B4s4…`. Bạn sửa thành `"admin"`, giữ signature. Server
-tính lại bằng secret của nó, ra `sfut…`. Token đang có `B4s4…`. Khác nhau → `401 bad signature`.
-Payload chỉ là base64url, không mã hoá — ai cũng đọc, sửa được. Signature là thứ làm cho mọi chỉnh sửa
-bị phát hiện.
-**→ 1:** Muốn tự ký payload admin thì cần secret. HMAC không chạy ngược được để tìm ra secret.
-**→ 2:** Nên: **secret lộ là hết.** Ai có secret cũng tạo được token admin qua mọi bước kiểm tra, và server
-không phân biệt được.
-**→ 3:** Để nó trong env — `JWT_SECRET` — dài, random, mỗi môi trường một cái khác nhau. Không bao giờ
-commit. Cái `dev-only-secret-change-me` của demo chính là thứ không được ship.
-**Chốt:** Signature bảo vệ token. Secret bảo vệ signature. Giữ secret cho kỹ.
-
-Sau slide này dừng demo ở terminal:
-
-```bash
-pnpm stop
-```
-
----
-
-# Cảm ơn — Q&A + Kahoot · ⏱ 52:00 → ~62:00
-
-### 53 · Thank you + Kahoot
-_~10 phút · ⏱ tới ~62:00_
+### 47 · Thank you + Kahoot
+_~10 phút · ⏱ tới ~55:00_
 
 **Nói:** Xong rồi đó. Cảm ơn mọi người đã nghe. Hỏi đáp trước, rồi một ván Kahoot ngắn: 401 hay 403, hash
 hay encrypt, cookie hay localStorage.

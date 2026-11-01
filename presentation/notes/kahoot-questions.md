@@ -143,11 +143,11 @@ Giới hạn Kahoot đã kiểm: câu hỏi ≤ 120 ký tự, mỗi đáp án �
 
 > **Giải thích:** React {} tự escape nên <script> trong comment chỉ hiện ra dạng chữ. dangerouslySetInnerHTML / innerHTML chạy luôn script → đánh cắp token trong localStorage.
 
-## 5. Demo — The Forger
+## 2b. JWT — sửa payload
 
 ### Q12 · 30 s
 
-**Demo: you edit the JWT payload "role":"viewer" to "admin" and keep the old signature. Server replies?**
+**You edit the JWT payload "role":"viewer" to "admin" and keep the old signature. Server replies?**
 
 - A. 200 OK, you're admin now
 - B. 401, the signature no longer matches ✅
@@ -173,5 +173,5 @@ A calendar app wants to read your Google Calendar. What's the right way to give 
 GET /orders/1024 shows your order. Changing it to /orders/1025 shows a stranger's order. What's the fix?,Hide the order ID in the frontend,Check that the user is logged in,Query WHERE id = ? AND user_id = ?,Return 500 when the ID is wrong,20,3
 "Login query: ""...WHERE email = '"" + email + ""'"". Input ' OR '1'='1 gets in with no password. Best fix?",Block the ' character in the frontend form,Use a parameterized query or an ORM,Wrap the query in try/catch,Return 403 instead of 401 on failure,30,2
 You render a user's comment in React. Which line is the safe default against XSS?,<p dangerouslySetInnerHTML={{ __html: comment }} />,el.innerHTML = comment,<p>{comment}</p>,document.write(comment),30,3
-"Demo: you edit the JWT payload ""role"":""viewer"" to ""admin"" and keep the old signature. Server replies?","200 OK, you're admin now","401, the signature no longer matches","403, viewers can't edit tokens","500, the token can't be parsed",30,2
+"You edit the JWT payload ""role"":""viewer"" to ""admin"" and keep the old signature. Server replies?","200 OK, you're admin now","401, the signature no longer matches","403, viewers can't edit tokens","500, the token can't be parsed",30,2
 ```

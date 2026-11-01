@@ -3,7 +3,7 @@
 
 > **Đối tượng:** Intern Backend + Frontend (đã biết HTTP, REST, viết được API CRUD; chưa từng tự làm login)
 > **Presenter:** Truc Le — toàn bộ
-> **Thời lượng:** ~52 phút + 10 phút Kahoot · ~53 slide (gồm 7 slide câu hỏi "Your turn", mỗi slide ~1 phút)
+> **Thời lượng:** ~45 phút + 10 phút Kahoot · ~47 slide (gồm 7 slide câu hỏi "Your turn", mỗi slide ~1 phút)
 
 File này là nguồn nội dung cho slide. Slide là bản tiếng Anh của outline này, không viết lại tự do.
 Nội dung rút gọn từ [spartan-khanhdo/auth-security-lecture](https://github.com/spartan-khanhdo/auth-security-lecture) cho mức Intern.
@@ -12,7 +12,7 @@ Nội dung rút gọn từ [spartan-khanhdo/auth-security-lecture](https://githu
 - Mỗi khái niệm đi kèm **một thứ intern sẽ gặp ngay tuần đầu**: response 401/403, cookie trong DevTools, chuỗi `eyJ…` trong header, nút "Login with Google".
 - Vấn đề trước, định nghĩa sau. Không có RFC number, không có tên attack hiếm.
 - Mỗi section kết thúc bằng **1 slide "Làm / Đừng làm"** — thứ intern mang về dùng được.
-- Trước vài khái niệm chính có **1 slide "Your turn"**: hỏi khán phòng, 30 s bàn với người bên cạnh, 2–3 lựa chọn A/B/C, bấm → mới lật đáp án. Không đánh số outline (để giữ nguyên 1.2, 2.4…).
+- Trước vài khái niệm chính có **1 slide "Your turn"**: hỏi khán phòng, 30 s bàn với người bên cạnh, có câu 2–3 lựa chọn A/B/C, câu dễ thì để hỏi mở (không lựa chọn), bấm → mới lật đáp án. Không đánh số outline (để giữ nguyên 1.2, 2.4…).
 - **Cắt khỏi bản gốc:** OAuth 1.0, PKCE chi tiết, refresh token reuse detection, key rotation / JWKS, mTLS / service mesh / service-to-service, ABAC, SAML, Micronaut config, timing attack chi tiết.
 
 ---
@@ -24,7 +24,6 @@ Nội dung rút gọn từ [spartan-khanhdo/auth-security-lecture](https://githu
 2. Giữ trạng thái đăng nhập — session cookie vs JWT
 3. "Login with Google" — OAuth 2.0, OIDC, MFA ở mức khái niệm
 4. Phân quyền & 4 lỗi hay gặp — RBAC, Broken Access Control, SQLi, XSS, CSRF
-5. Demo — "The Forger": login server Node + sửa JWT
 99. Cảm ơn + Kahoot
 
 ---
@@ -83,17 +82,9 @@ Nội dung rút gọn từ [spartan-khanhdo/auth-security-lecture](https://githu
 - **4.6 CSRF:** browser tự gửi cookie → trang `evil.com` có form ẩn POST tới `bank.com/transfer` → request đi kèm cookie của user. Fix: `SameSite=Lax/Strict` + CSRF token cho form. JWT trong header `Authorization` không bị CSRF (nhưng lại dễ dính XSS) — không có lựa chọn miễn phí.
 - **4.7 Checklist mang về:** 10 dòng gộp các slide "Làm / Đừng làm".
 
-## 5. Demo — "The Forger"
-
-Code ở `demo/` (ngoài `presentation/`): 1 server Node + TypeScript (Node 22.6+, chạy `.ts` trực tiếp qua `--experimental-strip-types`), dữ liệu trong memory, JWT HS256 tự viết ~30 dòng bằng `node:crypto` để intern đọc được, bcrypt qua `bcryptjs` (pure JS, không cần build native).
-
-- **5.1 Setup:** `cd demo && pnpm start` → server `:4000`. Endpoint: `POST /register`, `POST /login` (trả cả session cookie và JWT), `GET /me`, `GET /admin/users` (chỉ role admin), `GET /__db` (xem bảng users — thấy hash bcrypt, không thấy password).
-- **5.2 Đang chạy gì:** trích `demo/src/jwt.ts` (sign / verify, chỉ chấp nhận `HS256`) và middleware `requireAuth` / `requirePermission`.
-- **5.3 Đoán trước:** bảng 4 thay đổi, khán giả đoán status code trước, bấm → để lật đáp án: gọi `/me` không token (`401`) · viewer gọi `/admin/users` (`403`) · sửa payload `role: admin` giữ nguyên chữ ký (`401`) · gửi `alg: none` (`401`).
-- **5.4 Live:** slide gọi thật tới `localhost:4000`, hiển thị JWT tách 3 màu, chỉnh payload trực tiếp trên slide rồi gửi → thấy `401`. Chạy song song ở terminal: `pnpm users` (xem hash), `pnpm jwt viewer@demo.vn`. Không có server (GitHub Pages) → slide phát lại bản ghi.
-- **5.5 Vì sao sửa JWT không qua được:** server tính lại HMAC từ header + payload mới bằng secret → khác chữ ký cũ. Muốn giả được phải có secret → **secret lộ = mọi thứ lộ**: để trong env, không commit.
-
 ## 99. Cảm ơn + Kahoot
 
 - QR Kahoot + PIN gõ trên sân khấu (giống repo load-balancer).
 - Bộ câu hỏi ~10 câu mức Intern trong `presentation/notes/kahoot-questions.md` (lấy và đơn giản hoá từ `checkpoint-quiz.md` của repo gốc).
+
+> **Không có demo** ở bản Intern (đã bỏ section 5). Thư mục `demo/` không còn dùng trong bài nói.

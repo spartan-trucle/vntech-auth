@@ -886,59 +886,6 @@ body.overview .backdrop { display: none; }
 .s4-checklist .points li:first-child { border-top: 0; padding-top: 0; }
 .s4-checklist .chip { min-width: 74px; justify-content: center; }
 
-/* ---------- section 05 · demo ---------- */
-  /* 5.4 live forger: scoped to #s5-live so nothing leaks into other sections */
-  #s5-live .s5-cols { flex: 1; min-height: 0; display: grid; grid-template-columns: 7fr 5fr; gap: 28px; }
-  #s5-live .s5-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-  #s5-live .s5-ctl .seg { align-self: center; }
-  #s5-live .s5-ctl kbd, #s5-live .s5-keys kbd {
-    font: 600 12px var(--mono); color: var(--muted); border: 1px solid var(--hairline);
-    border-radius: 4px; padding: 0 4px; margin-left: 6px;
-  }
-  #s5-live .seg button[aria-pressed="true"] kbd { color: var(--surface); border-color: var(--surface); }
-  #s5-live .s5-pill { margin-left: auto; }
-  #s5-live .s5-pill.rec { border-color: var(--tn-yellow); color: var(--tn-yellow); }
-  #s5-live .s5-box {
-    border: 1px solid var(--hairline); border-radius: var(--r-md); background: var(--surface-alt);
-    padding: 10px 14px; font: 14px/1.5 var(--mono); color: var(--body);
-  }
-  #s5-live .s5-tok { word-break: break-all; min-height: 66px; }
-  #s5-live .s5-h { color: var(--tn-orange); }
-  #s5-live .s5-p { color: var(--tn-purple); }
-  #s5-live .s5-s { color: var(--tn-cyan); }
-  #s5-live .s5-dot { color: var(--muted); }
-  #s5-live .s5-edited { background: var(--accent-wash); border-radius: 3px; }
-  #s5-live .s5-legend { display: flex; gap: 16px; font: 13px var(--mono); color: var(--muted); margin-top: -8px; }
-  #s5-live .s5-legend b { font-weight: 600; }
-  #s5-live .s5-legend .s5-h, #s5-live .s5-legend .s5-p, #s5-live .s5-legend .s5-s { font-weight: 600; }
-  #s5-live .s5-lbl { font: 500 13.5px var(--mono); color: var(--muted); margin-bottom: -10px; display: flex; justify-content: space-between; }
-  #s5-live textarea {
-    width: 100%; box-sizing: border-box; height: 128px; resize: none; margin: 0;
-    font: 15px/1.5 var(--mono); color: var(--ink); background: var(--surface-alt);
-    border: 1px solid var(--hairline); border-radius: var(--r-md); padding: 10px 14px;
-  }
-  #s5-live textarea:focus { outline: 2px solid var(--accent-strong); outline-offset: 1px; }
-  #s5-live textarea.s5-bad { border-color: var(--reject); }
-  #s5-live .s5-status { display: flex; align-items: baseline; gap: 14px; }
-  #s5-live .s5-code { font: 700 56px/1 var(--numeral); color: var(--muted); font-variant-numeric: tabular-nums; }
-  #s5-live .s5-code.ok { color: var(--allow); }
-  #s5-live .s5-code.bad { color: var(--reject); }
-  #s5-live .s5-req { font: 13.5px var(--mono); color: var(--muted); word-break: break-all; }
-  #s5-live .s5-reason { font: 600 15px var(--mono); color: var(--ink); }
-  #s5-live .s5-body { white-space: pre-wrap; word-break: break-all; min-height: 120px; max-height: 190px; overflow: hidden; color: var(--ink); }
-  #s5-live .s5-keys { font-size: 15px; color: var(--muted); line-height: 1.5; }
-  /* 5.1 seed users + endpoints */
-  #s5-setup .tbl.dense td { padding: 6px 14px; }
-  #s5-setup .tbl.dense td.name { width: 34%; }
-  /* 5.3 answers */
-  #s5-guess .s5-ans { font-family: var(--mono); font-weight: 700; color: var(--reject); white-space: nowrap; }
-  #s5-guess .s5-ans span { display: block; font-weight: 500; font-size: 14px; color: var(--muted); margin-top: 3px; }
-  /* 5.2 status legend */
-  .s5-codes { display: flex; gap: 22px; font-size: 18px; color: var(--body); }
-  /* 5.5 signature compare */
-  #s5-why .s5-mis { color: var(--reject); font-weight: 700; }
-  #s5-why .s5-okc { color: var(--allow); font-weight: 700; }
-
 /* ---------- your turn (question slide) ----------
    <section class="slide ask">: eyebrow "Your turn" + time chip, the question as a big h2, 2–3
    lettered option cards, and a data-step="1" answer line. Revealing the answer (deck.js adds

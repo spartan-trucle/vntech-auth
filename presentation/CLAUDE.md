@@ -145,7 +145,6 @@ Headless check without a browser window:
 
 - **2.3 JWT decoder** (`02-sessions-jwt.html`): splits a sample token into three colored parts and decodes header + payload with `atob` in the browser.
 - **3.3 Authorization Code flow** (`03-login-with-google.html`, `Charts.scene()` + `steps()`): user → app → Google → back with `code` → token exchange → API call.
-- **5.4 live demo** (`05-demo.html`): calls the login server in `../demo/` on `localhost:4000`; edit the payload on the slide and resend. Falls back to a recording when the server doesn't answer (e.g. on GitHub Pages).
 
 ## Known issues
 

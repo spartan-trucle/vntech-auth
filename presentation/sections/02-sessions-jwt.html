@@ -4,7 +4,7 @@
   <div class="section-tag"><i></i>SECTION 2</div>
   <h2>Staying logged in</h2>
   <p class="lead">HTTP forgets you after every request. Session cookies and JWTs are two ways to carry a ticket.</p>
-  <div class="foot"><span>17 / 53</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>17 / 47</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- Section 2 styles. Selectors are scoped to this section's slides; colors use theme tokens only. -->
@@ -21,7 +21,7 @@
     </div>
     <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>A ticket from login</strong>, sent on every request: a session cookie or a JWT.</span></p>
   </div>
-  <div class="foot"><span>18 / 53</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>18 / 47</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.1 -->
@@ -50,7 +50,7 @@ GET /orders
       <li data-step="2">Two kinds of ticket: <span class="chip hot">session cookie</span> the server remembers you · <span class="chip hot">JWT</span> the ticket remembers you.</li>
     </ul>
   </div>
-  <div class="foot"><span>19 / 53</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>19 / 47</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.2 -->
@@ -88,11 +88,11 @@ GET /orders
       </ul>
     </div>
   </div>
-  <div class="foot"><span>20 / 53</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>20 / 47</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.3 -->
-<!-- Sample token: HS256, signed with the demo secret "dev-only-secret-change-me" (same as demo/ server).
+<!-- Sample token: HS256, signed with the sample secret "dev-only-secret-change-me".
      Payload: {"sub":"viewer@demo.vn","role":"viewer","iat":1791943200,"exp":1791944100}  (iat = 2026-10-14 02:00 UTC, exp = +15 min) -->
 <section class="slide" data-section="jwt-decoder">
   <div class="eyebrow"><svg class="ic"><use href="#ic-token"/></svg>2.3 · JWT</div>
@@ -122,7 +122,7 @@ GET /orders
       </div>
     </div>
   </div>
-  <div class="foot"><span>21 / 53</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>21 / 47</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- your turn · before 2.4 -->
@@ -132,7 +132,7 @@ GET /orders
     <h2 class="ask-q">Can you read a JWT&#39;s payload without the secret? How?</h2>
     <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>Yes.</strong> <code>atob()</code> the middle part, or paste it into jwt.io. The secret only protects against changes.</span></p>
   </div>
-  <div class="foot"><span>22 / 53</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>22 / 47</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.4 -->
@@ -155,7 +155,7 @@ atob("<span class="s2-p" id="s2-b64-in"></span>")
       <li data-step="2">The signature (next slide) stops people from <b>changing</b> the token. It does nothing to stop them <b>reading</b> it.</li>
     </ul>
   </div>
-  <div class="foot"><span>23 / 53</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>23 / 47</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.5 -->
@@ -190,7 +190,7 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
       </div>
     </div>
   </div>
-  <div class="foot"><span>24 / 53</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>24 / 47</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.6 -->
@@ -213,7 +213,7 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
       <li data-step="2">The usual fix: keep <code>exp</code> short. Next slide.</li>
     </ul>
   </div>
-  <div class="foot"><span>25 / 53</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>25 / 47</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.7 -->
@@ -235,7 +235,7 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
     </div>
     <div class="chart meter"><svg id="s2-tl" role="img" aria-label="Timeline: an access token renewed every 15 minutes by a long-lived refresh token, and what happens after logout"></svg></div>
   </div>
-  <div class="foot"><span>26 / 53</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>26 / 47</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- your turn · before 2.8 -->
@@ -250,7 +250,7 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
     </div>
     <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>An <code>HttpOnly</code> cookie</strong> by default: any script on the page can read <code>localStorage</code>.</span></p>
   </div>
-  <div class="foot"><span>27 / 53</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>27 / 47</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.8 -->
@@ -280,7 +280,7 @@ document.cookie   <span class="c">// "" (JS cannot see it)</span></pre>
       <li data-step="2"><span class="chip">trade-off</span> The browser sends cookies by itself, which opens the door to CSRF. <code>SameSite</code> closes most of it. Both attacks: XSS (4.5) and CSRF (4.6).</li>
     </ul>
   </div>
-  <div class="foot"><span>28 / 53</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>28 / 47</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.9 -->
@@ -315,7 +315,7 @@ document.cookie   <span class="c">// "" (JS cannot see it)</span></pre>
       <div class="dd-cell dd-yes"><div class="dd-code">process.env.JWT_SECRET</div><div class="dd-why">long, random, per env</div></div>
     </div>
   </div>
-  <div class="foot"><span>29 / 53</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>29 / 47</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <script>

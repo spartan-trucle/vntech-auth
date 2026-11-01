@@ -1,6 +1,6 @@
 # Authentication & Authorization — slide deck
 
-HTML slides for an intern-level talk: who you are vs what you can do, storing passwords, session cookies vs JWT, "Login with Google" (OAuth 2.0 + OpenID Connect + MFA), permissions and the four bugs interns ship most often, and a live JWT-forging demo.
+HTML slides for an intern-level talk: who you are vs what you can do, storing passwords, session cookies vs JWT, "Login with Google" (OAuth 2.0 + OpenID Connect + MFA), permissions and the four bugs interns ship most often.
 
 Presenter: **Truc Le**.
 
@@ -48,4 +48,3 @@ Every slide prints at its last step.
 
 - **2.3 · JWT decoder** — a real token split into header, payload and signature, decoded in the browser.
 - **3.3 · Authorization Code flow** — step through "Login with Google" with `→`.
-- **5.4 · Live** — talks to the login server in [`demo/`](../demo/) (`pnpm start` in `demo/` first). Edit the JWT payload on the slide and resend. Without the server it replays a recording.
