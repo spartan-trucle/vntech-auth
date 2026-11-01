@@ -1,40 +1,47 @@
 <!-- ============ 03 · LOGIN WITH GOOGLE ============ -->
 
+
 <section class="slide divider" data-section="divider-03">
   <div class="divider-num">03</div>
   <div class="section-tag"><i></i>SECTION 3</div>
   <h2>Login with Google</h2>
-  <p class="lead">Let another app act for a user without ever seeing their password. OAuth 2.0, OpenID Connect, MFA.</p>
-  <div class="foot"><span>30 / 48</span><span>section 3 · login with google</span></div>
+  <p class="lead">OAuth lets an app act for you; OIDC adds who you are on top.</p>
+  <div class="foot"><span>27 / 55</span><span>section 3 · login with google</span></div>
 </section>
 
 <!-- 3.1 -->
 <section class="slide" data-section="oauth-problem">
   <div class="eyebrow"><svg class="ic"><use href="#ic-lock"/></svg>3.1 · Why not just ask for the password?</div>
-  <h2>An app that has your Google password has all of Google, until you change it</h2>
+  <h2>Claude never asks for your Google password. An app that has it has all of Google, until you change it.</h2>
   <div class="split even">
-    <div class="card s3-mock" aria-label="A calendar app asking for a Google email and password">
-      <div class="s3-mock-bar"><i></i><i></i><i></i><code>calapp.vn/connect</code></div>
-      <div class="t">CalApp</div>
-      <p>Connect your Google Calendar to see your week.</p>
-      <label>Google email<div class="s3-field">you@gmail.com</div></label>
-      <label>Google password<div class="s3-field s3-bad">●●●●●●●●●●</div></label>
-      <div class="s3-btn">Connect</div>
+    <div class="stack" id="s3-mocks">
+      <div class="card s3-mock" aria-label="A chat box asking for your Gmail password, which Claude never does">
+        <div class="s3-mock-bar"><i></i><i></i><i></i><code>chat</code><span class="chip risk s3-mock-tag">never happens</span></div>
+        <div class="s3-bubble">To read your calendar, type your Gmail password here.</div>
+        <div class="s3-field s3-bad">●●●●●●●●●●</div>
+      </div>
+      <div class="card s3-mock" data-step="3" aria-label="The Google Calendar connector in Claude, with a Connect button">
+        <div class="s3-mock-bar"><i></i><i></i><i></i><code>claude.ai · connectors</code><span class="chip ok s3-mock-tag">the real one</span></div>
+        <div class="s3-conn">
+          <div><div class="t">Google Calendar</div><p>Opens accounts.google.com. You log in there.</p></div>
+          <div class="s3-btn">Connect</div>
+        </div>
+      </div>
     </div>
-    <ul class="points tight">
-      <li><span class="chip risk">everything</span> With the password CalApp can read Gmail, delete Drive files and change your recovery phone. Not just the calendar.</li>
-      <li data-step="1"><span class="chip risk">no undo</span> You cannot take access back from CalApp alone. Changing the password logs out every app and device you own.</li>
-      <li data-step="2"><span class="chip risk">one more leak</span> CalApp now stores your Google password. Its database leak becomes your Gmail leak.</li>
+    <ul class="points tight s3-pts">
+      <li><span class="chip risk">everything</span> With your password an app can read Gmail, delete Drive files and change your recovery phone. Not just the calendar.</li>
+      <li data-step="1"><span class="chip risk">no undo</span> You cannot take access back from one app. Changing the password logs out every app and device you own.</li>
+      <li data-step="2"><span class="chip risk">one more leak</span> The app now stores your Google password. Its database leak becomes your Gmail leak.</li>
       <li data-step="3"><span class="chip hot">what we want</span> Read the calendar only · take it back per app · the password <b>never leaves Google</b>.</li>
     </ul>
   </div>
-  <div class="foot"><span>31 / 48</span><span>section 3 · login with google</span></div>
+  <div class="foot"><span>28 / 55</span><span>section 3 · login with google</span></div>
 </section>
 
 <!-- 3.2 -->
 <section class="slide" data-section="oauth-roles">
   <div class="eyebrow"><svg class="ic"><use href="#ic-key"/></svg>3.2 · OAuth 2.0 · four roles</div>
-  <h2>OAuth 2.0 hands the app a key that opens one thing, instead of your password</h2>
+  <h2>OAuth 2.0 hands Claude a key that opens one thing, instead of your password</h2>
   <div class="body">
     <div class="quad s3-roles">
       <div class="card">
@@ -46,20 +53,20 @@
       <div class="card">
         <svg class="ic"><use href="#ic-client"/></svg>
         <div class="k">client</div>
-        <div class="t">CalApp</div>
+        <div class="t">Claude</div>
         <p>Wants to act for you. Registered with Google, so it has a <code>client_id</code> and a <code>client_secret</code>.</p>
       </div>
       <div class="card">
         <svg class="ic"><use href="#ic-shield"/></svg>
         <div class="k">authorization server</div>
         <div class="t">accounts.google.com</div>
-        <p>Checks your password, asks "allow CalApp?", hands out tokens.</p>
+        <p>Checks your password, asks "allow Claude?", hands out tokens.</p>
       </div>
       <div class="card">
         <svg class="ic"><use href="#ic-server"/></svg>
         <div class="k">resource server</div>
-        <div class="t">Calendar API</div>
-        <p>Holds the data. Answers only a valid token with the right <code>scope</code>.</p>
+        <div class="t">Gmail / Calendar / Drive APIs</div>
+        <p>Hold the data. Answer only a valid token with the right <code>scope</code>.</p>
       </div>
     </div>
     <div class="two s3-valet" data-step="1" style="gap:22px;">
@@ -73,13 +80,13 @@
       </div>
     </div>
   </div>
-  <div class="foot"><span>32 / 48</span><span>section 3 · login with google</span></div>
+  <div class="foot"><span>29 / 55</span><span>section 3 · login with google</span></div>
 </section>
 
 <!-- 3.3 -->
 <section class="slide" data-section="oauth-code-flow">
-  <div class="eyebrow"><svg class="ic"><use href="#ic-redirect"/></svg>3.3 · Authorization Code flow</div>
-  <h2>The password goes only to Google. The app gets a one-time code and trades it for a token.</h2>
+  <div class="eyebrow"><svg class="ic"><use href="#ic-redirect"/></svg>3.3 · Authorization Code flow · &ldquo;Connect&rdquo;</div>
+  <h2>Your password goes only to Google. Claude gets a one-time code and trades it for a token.</h2>
   <div class="s3-stepper">
     <span class="chip hot">1 · redirect to Google</span>
     <span class="chip hot" data-step="1">2 · log in + Allow</span>
@@ -87,55 +94,104 @@
     <span class="chip hot" data-step="3">4 · code → token</span>
     <span class="chip hot" data-step="4">5 · call the API</span>
   </div>
-  <div class="chart meter"><svg id="s3-flow-flow" role="img" aria-label="Authorization Code flow between the browser, the CalApp backend, accounts.google.com and the Calendar API"></svg></div>
+  <div class="chart meter"><svg id="s3-flow-flow" role="img" aria-label="Authorization Code flow between your browser, Claude's backend, accounts.google.com and the Google Calendar API"></svg></div>
   <div class="flow-ctl"><div class="seg"><button id="s3-flow-replay" class="icon" aria-label="Replay" title="Replay"><svg class="ic"><use href="#ic-replay"/></svg></button></div><p class="readout" id="s3-flow-readout"></p></div>
-  <p class="s3-note">SPA or mobile app? It cannot hide a <code>client_secret</code>, so it adds <b>PKCE</b>: a random one-time proof sent in place of the secret.</p>
-  <div class="foot"><span>33 / 48</span><span>section 3 · login with google</span></div>
+  <p class="s3-note">SPA, mobile app or MCP client? It cannot hide a <code>client_secret</code>, so it adds <b>PKCE</b>: a random one-time proof sent in place of the secret. Every MCP client must use it.</p>
+  <div class="foot"><span>30 / 55</span><span>section 3 · login with google</span></div>
 </section>
 
 <!-- 3.4 -->
-<section class="slide" data-section="oidc-id-token">
-  <div class="eyebrow"><svg class="ic"><use href="#ic-token"/></svg>3.4 · OAuth is not login · OpenID Connect</div>
-  <h2>An access token says what the app may do, not who you are. OIDC adds an <code>id_token</code> for that.</h2>
-  <div class="split even s3-tok">
+<section class="slide" data-section="oauth-connectors">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-plug"/></svg>3.4 · Same flow, every connector</div>
+  <h2>Notion, Slack, GitHub, Atlassian: every Claude connector runs the same OAuth flow</h2>
+  <div class="split even s3-mcp">
     <div class="stack">
-      <div class="card">
-        <div class="k">OAuth 2.0 · scope=calendar.readonly</div>
-        <div><code>access_token: ya29.a0AfH6SMB…</code></div>
-        <p>Means "whoever holds this may read a calendar". It does not say whose, and your app is not meant to open it.</p>
+      <div class="s3-tiles">
+        <div>Google Workspace</div><div>Notion</div><div>Slack</div>
+        <div>GitHub</div><div>Atlassian</div><div class="s3-any">any remote MCP server</div>
       </div>
-      <div class="card lift">
-        <div class="k">OpenID Connect · scope=openid email profile</div>
-        <div><code>access_token</code> <b>+ id_token</b></div>
-        <p>A JWT about the user, made for your app. This is what "Login with Google" really is: OAuth plus one extra token.</p>
-      </div>
-      <ul class="points tight" data-step="2">
-        <li><span class="chip risk">don't</span> Log users in with an <code>access_token</code>. A token some other app got for that user would work on yours too.</li>
-      </ul>
+      <p class="s3-note">Same five steps as 3.3: redirect · log in + Allow · code · token · call the API. Each one gets its own token.</p>
+      <div class="code-label">what Claude sends to a connector's login page (MCP)</div>
+<pre class="code"><span class="c"># Claude → Notion's authorization server</span>
+GET /authorize?response_type=code
+  &amp;client_id=…
+  &amp;redirect_uri=https://claude.ai/…/callback
+  &amp;state=x7Kq9
+  &amp;code_challenge=E9Melhoa…     <span class="c"># PKCE</span>
+  <span class="hl">&amp;resource=https://mcp.notion.com/mcp</span></pre>
     </div>
-    <div class="stack">
+    <ul class="points tight">
+      <li><span class="chip hot">OAuth 2.1</span> MCP, the protocol behind connectors, uses OAuth 2.1: the same code flow, with the risky old grants removed.</li>
+      <li data-step="1"><span class="chip hot">PKCE required</span> Every MCP client must send a one-time proof (<code>code_challenge</code>), so a stolen code is useless.</li>
+      <li data-step="2"><span class="chip hot">one server</span> The token is asked for one server: <code>resource=https://mcp.notion.com/mcp</code>.</li>
+      <li data-step="2"><span class="chip risk">reject others</span> That server must reject tokens made for anyone else. Remember <code>aud</code>: it comes back in section 4.</li>
+      <li data-step="3"><span class="chip ok">revoke per app</span> Google Account → third-party connections · Notion → Settings → Connections · or Disconnect in Claude.</li>
+    </ul>
+  </div>
+  <p class="s3-src">source: <a href="https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization" target="_blank" rel="noopener">modelcontextprotocol.io · MCP authorization spec (2025-06-18)</a></p>
+  <div class="foot"><span>31 / 55</span><span>section 3 · login with google</span></div>
+</section>
+
+<!-- 3.5 -->
+<section class="slide" data-section="oauth-grant-types">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-list"/></svg>3.5 · OAuth grant types</div>
+  <h2>OAuth has a few grant types: pick by who is asking</h2>
+  <table class="tbl s3-grants">
+    <thead><tr><th>Grant</th><th>What it is</th><th>You've seen it</th></tr></thead>
+    <tbody>
+      <tr><td class="name">Authorization Code</td><td>The user logs in at the provider. The app gets a one-time code and trades it for tokens on its backend.</td><td>Claude's Google connector (3.3)</td></tr>
+      <tr><td class="name">Authorization Code + PKCE</td><td>Same, plus a one-time proof instead of a secret, for apps that can't keep one.</td><td>SPAs, mobile apps, every MCP client (3.4)</td></tr>
+      <tr><td class="name">Client Credentials</td><td>A service logs in as itself. No user involved.</td><td>Orders → Payments (section 4)</td></tr>
+      <tr><td class="name">Device Authorization</td><td>A device with no keyboard shows a code. You approve on your phone.</td><td>YouTube on a smart TV, <code>gh auth login</code></td></tr>
+      <tr><td class="name">Refresh Token</td><td>Trade a refresh token for a new access token. No login again.</td><td>Staying logged in for weeks</td></tr>
+      <tr class="s3-legacy" data-step="1"><td class="name">Implicit<br>Resource Owner Password<span>legacy, avoid</span></td><td><b>Implicit:</b> the token comes back in the URL; deprecated.<br><b>Password:</b> the app collects your password itself (the 3.1 anti-pattern); dropped in OAuth 2.1.</td><td><span class="chip risk">avoid</span></td></tr>
+    </tbody>
+  </table>
+  <p class="s3-src" style="margin-top:auto;">definitions: <a href="https://auth0.com/intro-to-iam/what-is-oauth-2" target="_blank" rel="noopener">auth0.com/intro-to-iam/what-is-oauth-2</a></p>
+  <div class="foot"><span>32 / 55</span><span>section 3 · login with google</span></div>
+</section>
+
+<!-- 3.6 -->
+<section class="slide" data-section="oidc-id-token">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-token"/></svg>3.6 · &ldquo;Login with Google&rdquo; = OIDC + OAuth</div>
+  <h2>Same Claude, two buttons. An access token says what Claude may do. An <code>id_token</code> says who you are.</h2>
+  <div class="s3-cols">
+    <div class="card">
+      <div class="k">connector · OAuth only</div>
+      <div class="t">&ldquo;Connect Google Calendar&rdquo; inside Claude</div>
+      <div><code>scope=calendar.readonly</code> → <code>access_token: ya29.a0Af…</code></div>
+      <p>Claude may read your calendar. It says nothing about who you are.</p>
+    </div>
+    <div class="card lift" data-step="1">
+      <div class="k">sign-in · OIDC on top of OAuth</div>
+      <div class="t">&ldquo;Continue with Google&rdquo; on claude.ai</div>
+      <div><code>scope=openid email profile</code> → <code>access_token</code> <b>+ id_token</b></div>
+      <p>Same code flow. The <code>id_token</code> is a JWT about you, made for Claude. It is what logs you in.</p>
+    </div>
+    <ul class="points tight" data-step="2">
+      <li><span class="chip risk">don't</span> Log users in with an <code>access_token</code>. A token some other app got for that user would work on yours too.</li>
+      <li><span class="chip hot">verify</span> Signature with Google's public key, <code>iss</code> is Google, <code>aud</code> is <b>your</b> <code>client_id</code>, <code>exp</code> not passed. A library does all four.</li>
+      <li><span class="chip ok">store</span> Key the user by <code>sub</code>, not <code>email</code>. A Google email can change; <code>sub</code> never does.</li>
+    </ul>
+    <div class="stack" data-step="1" style="gap:14px;">
       <div class="code-label">id_token · decoded · the same JWT as section 2</div>
 <pre class="code"><span class="s3-jwt">eyJhbGciOiJSUzI1NiIsImtpZCI6IjFm…</span>
 {
   "iss":   "https://accounts.google.com",
   "sub":   "110248495921238986420",
   "email": "you@gmail.com",
-  "name":  "An Nguyen",
-  "aud":   "1234-calapp.apps.googleusercontent.com",
+  "aud":   "1234…apps.googleusercontent.com",
   "exp":   1791947700
-}</pre>
-      <ul class="points tight" data-step="1">
-        <li><span class="chip hot">verify</span> Signature with Google's public key, <code>iss</code> is Google, <code>aud</code> is <b>your</b> <code>client_id</code>, <code>exp</code> not passed. A library does all four.</li>
-        <li><span class="chip ok">store</span> Key the user by <code>sub</code>, not <code>email</code>. A Google email can change; <code>sub</code> never does.</li>
-      </ul>
+}                <span class="c">↑ aud = Claude's client_id</span></pre>
     </div>
   </div>
-  <div class="foot"><span>34 / 48</span><span>section 3 · login with google</span></div>
+  <p class="s3-note" data-step="2">OIDC also works without a human: GitHub proves who a workflow is to AWS, in section 4.</p>
+  <div class="foot"><span>33 / 55</span><span>section 3 · login with google</span></div>
 </section>
 
-<!-- 3.5 -->
+<!-- 3.7 -->
 <section class="slide" data-section="mfa">
-  <div class="eyebrow"><svg class="ic"><use href="#ic-fingerprint"/></svg>3.5 · MFA · multi-factor authentication</div>
+  <div class="eyebrow"><svg class="ic"><use href="#ic-fingerprint"/></svg>3.7 · MFA · multi-factor authentication</div>
   <h2>A stolen password is not enough when login also needs a second factor of a different kind</h2>
   <div class="body s3-mfa" style="gap:14px;">
     <div class="trio s3-factors">
@@ -153,22 +209,22 @@
       </tbody>
     </table>
     <ul class="points tight" data-step="2">
-      <li><span class="chip hot">MFA is AuthN</span> It happens at login. With "Login with Google", <b>Google</b> asks for the second factor. Your app never sees it; it just receives the <code>id_token</code>.</li>
+      <li><span class="chip hot">MFA is AuthN</span> It happens at login. With "Continue with Google" on claude.ai, <b>Google</b> asks for the second factor. Claude never sees it; it just receives the <code>id_token</code>.</li>
     </ul>
   </div>
-  <div class="foot"><span>35 / 48</span><span>section 3 · login with google</span></div>
+  <div class="foot"><span>34 / 55</span><span>section 3 · login with google</span></div>
 </section>
 
-<!-- 3.6 -->
+<!-- 3.8 -->
 <section class="slide" data-section="google-do-dont">
-  <div class="eyebrow"><svg class="ic"><use href="#ic-shield"/></svg>3.6 · Do / Don't</div>
+  <div class="eyebrow"><svg class="ic"><use href="#ic-shield"/></svg>3.8 · Do / Don't</div>
   <h2>Rent login from a provider, and keep the secret on the server</h2>
   <div class="dd-grid">
     <div class="dd-row dd-head"><span></span><span class="dd-no">✗ don't</span><span class="dd-yes">✓ do</span></div>
     <div class="dd-row">
       <div class="dd-topic">provider</div>
       <div class="dd-cell dd-no"><div class="dd-code"><em>ask for the Google password</em> <i>·</i> <em>build your own OAuth server</em></div><div class="dd-why">one leak = all of Google</div></div>
-      <div class="dd-cell dd-yes"><div class="dd-code"><em>redirect to Google + its SDK</em></div><div class="dd-why">Google / Auth0 / Keycloak / Cognito</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code"><em>redirect to Google + its SDK, like Claude does</em></div><div class="dd-why">Google / Auth0 / Keycloak / Cognito</div></div>
     </div>
     <div class="dd-row">
       <div class="dd-topic">secret</div>
@@ -191,14 +247,14 @@
       <div class="dd-cell dd-yes"><div class="dd-code"><em>verify</em> id_token<em>, key users by</em> sub</div><div class="dd-why">sub never changes</div></div>
     </div>
   </div>
-  <div class="foot"><span>36 / 48</span><span>section 3 · login with google</span></div>
+  <div class="foot"><span>35 / 55</span><span>section 3 · login with google</span></div>
 </section>
 
 <script>
 (() => {
   const { el, $, scene, steps, glyph } = window.Charts;
 
-  // ---------- 3.3 Authorization Code flow ----------
+  // ---------- 3.3 Authorization Code flow (Claude's Google Calendar connector) ----------
   const W = 1100, H = 300;
   const txt = (p, x, y, cls, t, anchor) =>
     el('text', anchor ? { x, y, class: cls, 'text-anchor': anchor } : { x, y, class: cls }, p, t);
@@ -227,13 +283,13 @@
       AG: line(wires, 'M494 35 H826', 'sv-line-soft'),
       AR: line(wires, 'M494 50 C640 60 680 222 826 222', 'sv-line-soft'),
     };
-    // the browser: where the user is, and the only thing that ever sees the password
+    // the browser: where you are, and the only thing that ever sees the password
     const B = glyph(svg, { icon: 'gl-client', x: 10, y: 96, size: 64, state: 'hot' });
     txt(svg, 0, 186, 'sv-lbl', 'your browser');
     const bSt = txt(svg, 0, 208, 'sv-lbl-sm', '');
-    // the app's backend, centred at the top, name underneath so the wire to Google stays clear
+    // Claude's backend, centred at the top, name underneath so the wire to Google stays clear
     const A = glyph(svg, { icon: 'gl-server', x: 440, y: 10, size: 50 });
-    txt(svg, 465, 84, 'sv-lbl', 'CalApp backend', 'middle');
+    txt(svg, 465, 84, 'sv-lbl', 'Claude backend', 'middle');
     txt(svg, 465, 104, 'sv-lbl-sm', 'keeps client_secret', 'middle');
     const aSt = txt(svg, 465, 126, 'sv-hot', '', 'middle');
     const G = glyph(svg, { icon: 'gl-server', x: 830, y: 10, size: 50 });
@@ -280,16 +336,16 @@
   // (status lines) when replayed as background for a later step.
   async function redirect(w, animate) {
     if (animate) {
-      await hop(w, ['click: Connect Google Calendar'], P.B, P.A, { wire: 'BA' });
+      await hop(w, ['click: Connect · Google Calendar'], P.B, P.A, { wire: 'BA' });
       w.A.set('hot');
       const url = await hop(w, [
         '302 → accounts.google.com/auth',
-        '  ?client_id=1234-calapp',
-        '  &redirect_uri=calapp.vn/callback',
+        '  ?client_id=1234…googleusercontent.com',
+        '  &redirect_uri=claude.ai/…/callback',
         '  &scope=calendar.readonly',
         '  &state=x7Kq9',
       ], P.A, P.park, { cls: 'sv-box-hot', wire: 'BA', keep: true });
-      w.say('CalApp answers with a <strong>redirect</strong>: who is asking, where to come back, what it wants, and a random <code>state</code>.');
+      w.say('Claude answers with a <strong>redirect</strong>: who is asking, where to come back, what it wants (read the calendar), and a random <code>state</code>.');
       await w.sleep(1200);
       lit(w, 'BG', true);
       move(w, url, ...P.mid);
@@ -297,7 +353,7 @@
       lit(w, 'BG', false);
       w.A.set('');
       w.G.set('hot');
-      w.say('The browser follows it to Google. CalApp remembers <code>state=x7Kq9</code> for later.');
+      w.say('The browser follows it to Google. Claude remembers <code>state=x7Kq9</code> for later.');
     }
     status(w, 'B', 'on the Google page');
     status(w, 'A', 'remembers state=x7Kq9');
@@ -310,14 +366,14 @@
       w.say('You type the password <strong>on Google\'s page</strong>. It goes from the browser to Google, nowhere else.');
       await w.sleep(900);
       const ask = card(w.layer, [
-        'CalApp wants to:',
+        'Claude wants to:',
         '  · See your calendar',
         '',
         '  [ Cancel ]   [ Allow ]',
       ], 'sv-box');
       put(ask, ...P.mid);
       await w.sleep(900);
-      w.say('Google asks for <strong>consent</strong> for exactly <code>calendar.readonly</code>. You click Allow.');
+      w.say('Google\'s <strong>consent screen</strong> lists what Claude asks for: <code>calendar.readonly</code>. You click Allow.');
     }
     status(w, 'G', 'password ✓ · Allow ✓');
     status(w, 'A', 'never saw the password', 'sv-ok');
@@ -326,16 +382,16 @@
   async function callback(w, animate) {
     if (animate) {
       w.G.set('hot');
-      await hop(w, ['302 → calapp.vn/callback', '  ?code=4/0AXy9…&state=x7Kq9'], P.G, P.park, { cls: 'sv-box-hot', wire: 'BG' });
+      await hop(w, ['302 → claude.ai/…/callback', '  ?code=4/0AXy9…&state=x7Kq9'], P.G, P.park, { cls: 'sv-box-hot', wire: 'BG' });
       await hop(w, ['GET /callback?code=4/0AXy9…', '    &state=x7Kq9'], P.B, P.A, { cls: 'sv-box-hot', wire: 'BA' });
       w.G.set('');
       w.A.set('hot');
       status(w, 'A', 'state matches ✓', 'sv-ok');
-      w.say('Google sends the browser back with a <strong>code</strong>. CalApp checks <code>state</code> is the one it sent.');
+      w.say('Google sends the browser back to claude.ai with a <strong>code</strong>. Claude checks <code>state</code> is the one it sent.');
       await w.sleep(1100);
       w.say('The code is not a token yet: it works <strong>once</strong>, for a few minutes, and only with the secret.');
     }
-    status(w, 'B', 'back on calapp.vn');
+    status(w, 'B', 'back on claude.ai');
     status(w, 'A', 'has a one-time code', 'sv-hot');
   }
 
@@ -344,7 +400,7 @@
     if (animate) {
       w.A.set('hot'); w.G.set('hot');
       await hop(w, ['POST /token', '  code + client_secret'], [500, 70], [760, 80], { cls: 'sv-box-hot', wire: 'AG' });
-      w.say('The <strong>backend</strong> calls Google directly with the code and its <code>client_secret</code>.');
+      w.say('Claude\'s <strong>backend</strong> calls Google directly with the code and its <code>client_secret</code>.');
       await w.sleep(700);
       await hop(w, ['access_token: ya29.a0Af…', 'expires_in: 3600'], [760, 80], [560, 80], { cls: 'sv-box-hot', wire: 'AG' });
       w.G.set('');
@@ -356,15 +412,15 @@
   async function api(w, animate) {
     if (animate) {
       w.A.set('hot'); w.R.set('hot');
-      await hop(w, ['GET /calendar/v3/events', 'Authorization: Bearer ya29…'], [540, 90], [700, 222], { cls: 'sv-box-hot', wire: 'AR' });
+      await hop(w, ['GET /calendar/v3/…/events', 'Authorization: Bearer ya29…'], [540, 90], [700, 222], { cls: 'sv-box-hot', wire: 'AR' });
       status(w, 'R', 'token ✓ · scope ✓');
-      w.say('CalApp calls the Calendar API with <code>Authorization: Bearer …</code>. The API checks the token and its scope.');
+      w.say('Claude calls the Calendar API with <code>Authorization: Bearer …</code>. The API checks the token and its scope.');
       await w.sleep(800);
       await hop(w, ['200 OK · 12 events'], [720, 222], [560, 100], { cls: 'sv-box-hot', wire: 'AR' });
-      await hop(w, ['your week, rendered'], P.A, [250, 64], { wire: 'BA', keep: true });
-      w.say('Calendar read. CalApp never saw the password, and you can <strong>revoke this one app</strong> any time.');
+      await hop(w, ['your week, in the chat'], P.A, [250, 64], { wire: 'BA', keep: true });
+      w.say('Claude only sees what <strong>your Google account</strong> can see, and only what you allowed. Revoke it any time.');
     }
-    status(w, 'B', 'shows your week');
+    status(w, 'B', 'Claude answers with your week');
   }
 
   const story = [redirect, consent, callback, exchange, api];

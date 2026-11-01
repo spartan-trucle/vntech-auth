@@ -4,7 +4,7 @@
   <div class="section-tag"><i></i>SECTION 2</div>
   <h2>Staying logged in</h2>
   <p class="lead">HTTP forgets you after every request. Session cookies and JWTs are two ways to carry a ticket.</p>
-  <div class="foot"><span>17 / 48</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>17 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- Section 2 styles. Selectors are scoped to this section's slides; colors use theme tokens only. -->
@@ -21,41 +21,12 @@
     </div>
     <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>A ticket from login</strong>, sent on every request: a session cookie or a JWT.</span></p>
   </div>
-  <div class="foot"><span>18 / 48</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>18 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.1 -->
-<section class="slide" data-section="http-forgets">
-  <div class="eyebrow"><svg class="ic"><use href="#ic-user"/></svg>2.1 · HTTP forgets you</div>
-  <h2>You log in on request 1. On request 2 the server has no idea who you are.</h2>
-  <div class="split even">
-    <div class="stack">
-      <div class="code-label">without a ticket</div>
-      <pre class="code">POST /login
-{ "email": "an@demo.vn", "password": "••••••" }
-<span class="c">← 200 OK   "Welcome, An"</span>
-
-GET /orders
-<span class="c">← 401 Unauthorized   "Who are you?"</span></pre>
-      <div class="code-label" data-step="1">with a ticket</div>
-      <pre class="code" data-step="1">GET /orders
-<span class="hl">Cookie: sid=9f8c2e71b4d04a6e</span>   <span class="c">or</span>
-<span class="hl">Authorization: Bearer eyJhbGci…</span>
-<span class="c">← 200 OK   [ order #1024, order #1031 ]</span></pre>
-    </div>
-    <ul class="points tight">
-      <li>HTTP is <b>stateless</b>: every request arrives alone. The server does not remember the one before.</li>
-      <li>Sending the password with every request is a bad idea: the browser would have to keep it, and checking it (bcrypt, ~250 ms) on every call is slow.</li>
-      <li data-step="1">So after login the server hands out a <b>ticket</b>. The browser attaches it to every request.</li>
-      <li data-step="2">Two kinds of ticket: <span class="chip hot">session cookie</span> the server remembers you · <span class="chip hot">JWT</span> the ticket remembers you.</li>
-    </ul>
-  </div>
-  <div class="foot"><span>19 / 48</span><span>section 2 · sessions &amp; jwt</span></div>
-</section>
-
-<!-- 2.2 -->
 <section class="slide" data-section="session-cookie">
-  <div class="eyebrow"><svg class="ic"><use href="#ic-cookie"/></svg>2.2 · Session cookie</div>
+  <div class="eyebrow"><svg class="ic"><use href="#ic-cookie"/></svg>2.1 · Session cookie</div>
   <h2>The cookie is only a random ID. Who you are lives in a table on the server.</h2>
   <div class="split code-left">
     <div class="stack">
@@ -88,14 +59,14 @@ GET /orders
       </ul>
     </div>
   </div>
-  <div class="foot"><span>20 / 48</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>19 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
-<!-- 2.3 -->
+<!-- 2.2 -->
 <!-- Sample token: HS256, signed with the sample secret "dev-only-secret-change-me".
      Payload: {"sub":"viewer@demo.vn","role":"viewer","iat":1791943200,"exp":1791944100}  (iat = 2026-10-14 02:00 UTC, exp = +15 min) -->
 <section class="slide" data-section="jwt-decoder">
-  <div class="eyebrow"><svg class="ic"><use href="#ic-token"/></svg>2.3 · JWT</div>
+  <div class="eyebrow"><svg class="ic"><use href="#ic-token"/></svg>2.2 · JWT</div>
   <h2>A JWT carries who you are inside the token, plus a signature only the server can make.</h2>
   <div class="body" style="gap:12px;">
     <div id="s2-jwt-token" aria-label="Sample JWT split into header, payload and signature"></div>
@@ -121,46 +92,24 @@ GET /orders
         <p id="s2-jwt-sig-note"></p>
       </div>
     </div>
+    <ul class="points tight"><li><span class="chip risk">never inside</span>passwords, card numbers, national ID, API keys. Anyone holding the token can read it.</li></ul>
   </div>
-  <div class="foot"><span>21 / 48</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>20 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
-<!-- your turn · before 2.4 -->
+<!-- your turn · before 2.3 -->
 <section class="slide ask" data-section="ask-jwt-readable">
   <div class="eyebrow"><svg class="ic"><use href="#ic-question"/></svg>Your turn<span class="chip hot ask-time">30 s · ask your neighbour</span></div>
   <div class="ask-body">
     <h2 class="ask-q">Can you read a JWT&#39;s payload without the secret? How?</h2>
     <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>Yes.</strong> <code>atob()</code> the middle part, or paste it into jwt.io. The secret only protects against changes.</span></p>
   </div>
-  <div class="foot"><span>22 / 48</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>21 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
-<!-- 2.4 -->
-<section class="slide" data-section="jwt-readable">
-  <div class="eyebrow"><svg class="ic"><use href="#ic-lock"/></svg>2.4 · Base64 is not encryption</div>
-  <h2>Anyone who holds the token can read the payload. No secret needed.</h2>
-  <div class="split even">
-    <div class="stack">
-      <div class="code-label">any browser console</div>
-      <pre class="code"><span class="c">// the middle part of the token</span>
-atob("<span class="s2-p" id="s2-b64-in"></span>")
-<span class="c">// →</span>
-<span id="s2-b64-out"></span></pre>
-      <div class="code-label">same thing: paste the token into jwt.io</div>
-    </div>
-    <ul class="points tight">
-      <li><b>Base64</b> just rewrites bytes with 64 safe characters so they fit in a header or URL. It is reversible by anyone, like a different alphabet.</li>
-      <li data-step="1"><span class="chip risk">never inside</span> passwords or hashes, card numbers, national ID, API keys, anything you would not print on a receipt.</li>
-      <li data-step="2"><span class="chip ok">fine inside</span> user id, role, expiry. Things the user is allowed to know about themselves.</li>
-      <li data-step="2">The signature (next slide) stops people from <b>changing</b> the token. It does nothing to stop them <b>reading</b> it.</li>
-    </ul>
-  </div>
-  <div class="foot"><span>23 / 48</span><span>section 2 · sessions &amp; jwt</span></div>
-</section>
-
-<!-- 2.5 -->
+<!-- 2.3 -->
 <section class="slide" data-section="jwt-tamper">
-  <div class="eyebrow"><svg class="ic"><use href="#ic-shield"/></svg>2.5 · What if I edit the payload?</div>
+  <div class="eyebrow"><svg class="ic"><use href="#ic-shield"/></svg>2.3 · What if I edit the payload?</div>
   <h2>Change "viewer" to "admin" and the signature stops matching. The server answers 401.</h2>
   <div class="split even">
     <div class="stack">
@@ -178,7 +127,7 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
     </div>
     <div class="stack">
       <ul class="points tight">
-        <li>Editing the payload takes five seconds. Base64 is not a lock (2.4).</li>
+        <li>Editing the payload takes five seconds. Anyone can decode it (2.2).</li>
         <li data-step="1">The signature was made from the <b>old</b> payload with the server's secret. Without the secret, nobody can make a matching new one.</li>
         <li data-step="2">So the signature protects against <b>changes</b>. That is all it does.</li>
       </ul>
@@ -190,12 +139,12 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
       </div>
     </div>
   </div>
-  <div class="foot"><span>24 / 48</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>22 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
-<!-- 2.6 -->
+<!-- 2.4 -->
 <section class="slide" data-section="session-vs-jwt">
-  <div class="eyebrow"><svg class="ic"><use href="#ic-key"/></svg>2.6 · Session or JWT?</div>
+  <div class="eyebrow"><svg class="ic"><use href="#ic-key"/></svg>2.4 · Session or JWT?</div>
   <h2>Sessions are easy to cancel. JWTs are easy to check without a database. Pick the one you need.</h2>
   <div class="body" style="gap:16px;">
     <table class="tbl" id="s2-vs">
@@ -210,35 +159,13 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
     </table>
     <ul class="points tight">
       <li data-step="1"><span class="chip risk">big JWT downside</span> You cannot take it back before <code>exp</code>. A stolen token keeps working. Adding a "revoked" list means a lookup per request again.</li>
-      <li data-step="2">The usual fix: keep <code>exp</code> short. Next slide.</li>
+      <li data-step="2">The usual fix: a short <code>exp</code> (15 min), renewed by a refresh token the server can delete.</li>
     </ul>
   </div>
-  <div class="foot"><span>25 / 48</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>23 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
-<!-- 2.7 -->
-<section class="slide" data-section="access-refresh">
-  <div class="eyebrow"><svg class="ic"><use href="#ic-clock"/></svg>2.7 · Access token + refresh token</div>
-  <h2>A short access token limits the damage. A long refresh token saves the user from logging in again.</h2>
-  <div class="body" style="gap:16px;">
-    <div class="two" style="gap:22px;">
-      <div class="card" style="padding:16px 20px; gap:8px;">
-        <div class="k">access token · JWT · 15 min</div>
-        <p>Sent on every API call: <code>Authorization: Bearer eyJ…</code></p>
-        <p>Stolen? It works for at most 15 minutes.</p>
-      </div>
-      <div class="card" style="padding:16px 20px; gap:8px;">
-        <div class="k">refresh token · 7 – 30 days</div>
-        <p>Sent only to <code>POST /auth/refresh</code> to get a new access token.</p>
-        <p>Stored on the server, so it can be deleted. Logout = delete it.</p>
-      </div>
-    </div>
-    <div class="chart meter"><svg id="s2-tl" role="img" aria-label="Timeline: an access token renewed every 15 minutes by a long-lived refresh token, and what happens after logout"></svg></div>
-  </div>
-  <div class="foot"><span>26 / 48</span><span>section 2 · sessions &amp; jwt</span></div>
-</section>
-
-<!-- your turn · before 2.8 -->
+<!-- your turn · before 2.5 -->
 <section class="slide ask" data-section="ask-token-storage">
   <div class="eyebrow"><svg class="ic"><use href="#ic-question"/></svg>Your turn<span class="chip hot ask-time">30 s · ask your neighbour</span></div>
   <div class="ask-body">
@@ -250,12 +177,12 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
     </div>
     <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>An <code>HttpOnly</code> cookie</strong> by default: any script on the page can read <code>localStorage</code>.</span></p>
   </div>
-  <div class="foot"><span>27 / 48</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>24 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
-<!-- 2.8 -->
+<!-- 2.5 -->
 <section class="slide" data-section="token-storage">
-  <div class="eyebrow"><svg class="ic"><use href="#ic-lock"/></svg>2.8 · Where the browser keeps it</div>
+  <div class="eyebrow"><svg class="ic"><use href="#ic-lock"/></svg>2.5 · Where the browser keeps it</div>
   <h2>Any script on the page can read localStorage. No script can read an HttpOnly cookie.</h2>
   <div class="body" style="gap:16px;" id="s2-store">
     <div class="two" style="gap:22px;">
@@ -277,15 +204,15 @@ document.cookie   <span class="c">// "" (JS cannot see it)</span></pre>
     </div>
     <ul class="points tight">
       <li data-step="1"><span class="chip ok">default</span> Put tokens in a cookie with <code>HttpOnly; Secure; SameSite=Lax</code>.</li>
-      <li data-step="2"><span class="chip">trade-off</span> The browser sends cookies by itself, which opens the door to CSRF. <code>SameSite</code> closes most of it. Both attacks: XSS (4.5) and CSRF (4.6).</li>
+      <li data-step="2"><span class="chip">trade-off</span> The browser sends cookies by itself, which opens the door to CSRF. <code>SameSite</code> closes most of it. Both attacks: XSS and CSRF (5.4).</li>
     </ul>
   </div>
-  <div class="foot"><span>28 / 48</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>25 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
-<!-- 2.9 -->
+<!-- 2.6 -->
 <section class="slide" data-section="sessions-do-dont">
-  <div class="eyebrow"><svg class="ic"><use href="#ic-shield"/></svg>2.9 · Do / Don't</div>
+  <div class="eyebrow"><svg class="ic"><use href="#ic-shield"/></svg>2.6 · Do / Don't</div>
   <h2>Use a library, keep tokens short-lived, and keep them out of JavaScript's reach.</h2>
   <div class="dd-grid">
     <div class="dd-row dd-head"><span></span><span class="dd-no">✗ don't</span><span class="dd-yes">✓ do</span></div>
@@ -315,14 +242,14 @@ document.cookie   <span class="c">// "" (JS cannot see it)</span></pre>
       <div class="dd-cell dd-yes"><div class="dd-code">process.env.JWT_SECRET</div><div class="dd-why">long, random, per env</div></div>
     </div>
   </div>
-  <div class="foot"><span>29 / 48</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>26 / 55</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <script>
 (() => {
-  const { el, scale, $ } = window.Charts;
+  const { $ } = window.Charts;
 
-  // ---------- 2.3 JWT decoder (runs in the browser, atob on base64url) ----------
+  // ---------- 2.2 JWT decoder (runs in the browser, atob on base64url) ----------
   const SAMPLE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9'
     + '.eyJzdWIiOiJ2aWV3ZXJAZGVtby52biIsInJvbGUiOiJ2aWV3ZXIiLCJpYXQiOjE3OTE5NDMyMDAsImV4cCI6MTc5MTk0NDEwMH0'
     + '.XxLJzh34muY1zOIZMLNazIYvwkwo5siq6a9zXJai-uE';
@@ -387,60 +314,5 @@ document.cookie   <span class="c">// "" (JS cannot see it)</span></pre>
   input.addEventListener('keydown', (e) => { if (e.key === 'Escape') input.blur(); });
   $('s2-jwt-sample').addEventListener('click', () => { input.value = SAMPLE; decode(SAMPLE); });
   decode(SAMPLE);
-
-  // ---------- 2.4 the same payload, decoded live ----------
-  const mid = SAMPLE.split('.')[1];
-  $('s2-b64-in').textContent = mid.slice(0, 26) + '…';
-  const json = b64urlText(mid);
-  $('s2-b64-out').textContent = "'" + json.replace(/,"iat"/, ',\n "iat"') + "'";
-
-  // ---------- 2.7 access / refresh timeline ----------
-  function timeline(svg) {
-    const W = 1160, H = 222, L = 150, R = 120;
-    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-    const x = scale(0, 120, L, W - R);          // minutes
-    const yA = 22, yR = 82, bh = 30, yAxis = 140;
-    const LOGOUT = 70;
-    const slot = x(15) - x(0);
-
-    el('text', { x: 0, y: yA + 21, class: 'sv-lbl' }, svg, 'access token');
-    el('text', { x: 0, y: yR + 21, class: 'sv-lbl' }, svg, 'refresh token');
-
-    // refresh token bars first, so the refresh dots paint on top of them
-    const live = el('g', { 'data-hide-at': '1' }, svg);
-    el('rect', { x: x(0) + 2, y: yR, width: x(120) - x(0) + 20, height: bh, rx: 6, class: 'sv-box' }, live);
-    el('text', { x: x(120) + 30, y: yR + 21, class: 'sv-lbl-sm' }, live, '→ 7–30 days');
-    const outBars = el('g', { 'data-step': '1' }, svg);
-    el('rect', { x: x(0) + 2, y: yR, width: x(LOGOUT) - x(0) - 2, height: bh, rx: 6, class: 'sv-box' }, outBars);
-    el('rect', { x: x(LOGOUT), y: yR, width: x(120) - x(LOGOUT) + 20, height: bh, rx: 6, class: 'sv-box-risk' }, outBars);
-    el('text', { x: x(LOGOUT) + 14, y: yR + 21, class: 'sv-risk' }, outBars, 'logout: refresh token deleted');
-
-    const before = el('g', {}, svg);                       // access tokens issued before logout
-    const after = el('g', { 'data-hide-at': '1' }, svg);   // the ones logout prevents
-    for (let t = 0; t < 120; t += 15) {
-      const g = t < 75 ? before : after;
-      el('rect', { x: x(t) + 2, y: yA, width: slot - 4, height: bh, rx: 6, class: 'sv-box-hot' }, g);
-      el('text', { x: x(t + 7.5), y: yA + 20, 'text-anchor': 'middle', class: 'sv-lbl-sm' }, g, '15 min');
-      if (t > 0) {
-        el('path', { d: `M${x(t)} ${yR - 2} V${yA + bh + 3}`, class: 'sv-dash' }, g);
-        el('circle', { cx: x(t), cy: yR + bh / 2, r: 6, class: 'sv-mark' }, g);
-      }
-    }
-
-    for (let t = 0; t <= 120; t += 30) {
-      el('text', { x: x(t), y: yAxis + 20, 'text-anchor': 'middle', class: 'sv-tick' }, svg, t === 0 ? 'login' : `${Math.floor(t / 60)}h${String(t % 60).padStart(2, '0')}`);
-    }
-    el('line', { x1: x(0), x2: x(120), y1: yAxis, y2: yAxis, class: 'sv-axis' }, svg);
-    el('circle', { cx: x(0) + 6, cy: yAxis + 46, r: 6, class: 'sv-mark' }, svg);
-    el('text', { x: x(0) + 20, y: yAxis + 51, class: 'sv-lbl-sm' }, svg, 'POST /auth/refresh: the refresh token buys a new 15-min access token');
-
-    // step 1: logout at 1h10. The current access token still works until its exp (1h15), then nothing.
-    const outMarks = el('g', { 'data-step': '1' }, svg);
-    el('path', { d: `M${x(LOGOUT)} ${yR - 6} V${yAxis}`, class: 'sv-limit' }, outMarks);
-    el('rect', { x: x(75) + 2, y: yA, width: x(120) - x(75) - 4, height: bh, rx: 6, class: 'sv-wait' }, outMarks);
-    el('text', { x: x(97.5), y: yA + 21, 'text-anchor': 'middle', class: 'sv-risk' }, outMarks, '401 · no new access token');
-    el('text', { x: x(0), y: yAxis + 78, class: 'sv-risk' }, outMarks, 'logout at 1h10: the access token already issued still works until 1h15, then 401.');
-  }
-  timeline($('s2-tl'));
 })();
 </script>

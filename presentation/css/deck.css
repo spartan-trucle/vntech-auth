@@ -313,15 +313,12 @@ svg text { font-family: var(--sans); }
 .sv-mark { fill: var(--accent); }
 .sv-ink { fill: var(--ink); }
 .sv-old { fill: var(--muted-soft); }
-.sv-wait { fill: var(--surface); stroke: var(--hairline); }
 .sv-band { fill: var(--surface); }
 .sv-band-hot { fill: var(--accent-wash); }
-.sv-limit { stroke: var(--reject); stroke-width: 1.5; stroke-dasharray: 6 5; }
 .sv-box { fill: var(--surface); stroke: var(--muted-soft); stroke-width: 1.5; }
 .sv-box-hot { fill: color-mix(in srgb, var(--accent) 34%, var(--surface)); stroke: var(--accent-strong); stroke-width: 2; }
 .sv-box-risk { fill: var(--reject-wash); stroke: var(--reject); stroke-width: 1.5; }
 .sv-risk { fill: var(--reject); font-family: var(--mono); font-size: 17px; font-weight: 700; }
-.sv-dash { fill: none; stroke: var(--muted-soft); stroke-dasharray: 6 5; }
 .sv-line { stroke: var(--ink); stroke-width: 1.5; fill: none; }
 .sv-line-soft { stroke: var(--muted); stroke-width: 2; fill: none; }
 .sv-bar { fill: var(--accent); transition: y 0.45s ease, height 0.45s ease; }
@@ -785,10 +782,10 @@ body.overview .backdrop { display: none; }
 
 /* ---------- section 02 · sessions & jwt ---------- */
   :is([data-section="session-cookie"], [data-section="jwt-tamper"], [data-section="token-storage"]) .code { font-size: 15px; line-height: 1.55; padding: 12px 16px; }
-  :is([data-section="jwt-decoder"], [data-section="jwt-readable"], [data-section="jwt-tamper"]) .s2-h { color: var(--reject); }
-  :is([data-section="jwt-decoder"], [data-section="jwt-readable"], [data-section="jwt-tamper"]) .s2-p { color: var(--tn-purple); }
-  :is([data-section="jwt-decoder"], [data-section="jwt-readable"], [data-section="jwt-tamper"]) .s2-s { color: var(--tn-cyan); }
-  :is([data-section="jwt-decoder"], [data-section="jwt-readable"], [data-section="jwt-tamper"]) .s2-dot { color: var(--muted); font-weight: 700; }
+  :is([data-section="jwt-decoder"], [data-section="jwt-tamper"]) .s2-h { color: var(--reject); }
+  :is([data-section="jwt-decoder"], [data-section="jwt-tamper"]) .s2-p { color: var(--tn-purple); }
+  :is([data-section="jwt-decoder"], [data-section="jwt-tamper"]) .s2-s { color: var(--tn-cyan); }
+  :is([data-section="jwt-decoder"], [data-section="jwt-tamper"]) .s2-dot { color: var(--muted); font-weight: 700; }
   :is([data-section="jwt-decoder"], [data-section="jwt-tamper"]) .s2-bad { color: var(--reject); font-weight: 700; }
   :is([data-section="jwt-decoder"], [data-section="jwt-tamper"]) .s2-good { color: var(--allow); font-weight: 700; }
 
@@ -860,31 +857,31 @@ body.overview .backdrop { display: none; }
   .s3-factors .card p { font-size: 15.5px; }
   .s3-mfa .tbl td { padding: 7px 14px; font-size: 16px; }
 
-/* ---------- section 04 · permissions & attacks ---------- */
-/* section 4 only: every selector is prefixed .s4- */
-.s4-col { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
-.s4-col .code { font-size: 15px; line-height: 1.5; padding: 12px 16px; }
-.s4-col .code-label { margin-bottom: -6px; }
-.s4-two { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: start; }
-.s4-two.wide-left { grid-template-columns: 7fr 5fr; }
-.s4-chain { display: flex; align-items: center; gap: 10px; font-size: 18px; color: var(--muted); }
-.s4-tbl td { text-align: center; font-family: var(--mono); font-size: 20px; }
-.s4-tbl th { text-align: center; }
-.s4-tbl td:first-child, .s4-tbl th:first-child { text-align: left; }
-.s4-tbl .s4-yes { color: var(--allow); font-weight: 700; }
-.s4-tbl .s4-no { color: var(--muted-soft); }
-.code .s4-bad { background: var(--reject-wash); color: var(--reject); border-radius: 4px; padding: 1px 2px; }
-.code .s4-ok { color: var(--allow); font-weight: 600; }
-.s4-ui { display: flex; flex-direction: column; gap: 10px; padding: 14px 18px; border: 1px solid var(--panel-border); border-radius: var(--r-md); background: var(--surface-alt); }
-.s4-ui-row { display: flex; align-items: center; gap: 10px; font-size: 18px; color: var(--ink); }
-.s4-ui-row .s4-grow { flex: 1; font-family: var(--mono); font-size: 16px; }
-.s4-btn { font-family: var(--sans); font-size: 15px; font-weight: 600; padding: 6px 14px; border-radius: var(--r-sm); border: 1px solid var(--hairline); background: var(--surface); color: var(--body); }
-.s4-btn.s4-ghost { border-style: dashed; color: var(--muted-soft); background: transparent; text-decoration: line-through; }
-.s4-ui-cap { font-family: var(--mono); font-size: 13.5px; color: var(--muted); }
-.s4-checklist { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; align-content: start; }
-.s4-checklist .points li { font-size: 18px; padding: 10px 0; }
-.s4-checklist .points li:first-child { border-top: 0; padding-top: 0; }
-.s4-checklist .chip { min-width: 74px; justify-content: center; }
+/* ---------- section 05 · permissions & attacks ---------- */
+/* section 4 only: every selector is prefixed .s5- */
+.s5-col { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.s5-col .code { font-size: 15px; line-height: 1.5; padding: 12px 16px; }
+.s5-col .code-label { margin-bottom: -6px; }
+.s5-two { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: start; }
+.s5-two.wide-left { grid-template-columns: 7fr 5fr; }
+.s5-chain { display: flex; align-items: center; gap: 10px; font-size: 18px; color: var(--muted); }
+.s5-tbl td { text-align: center; font-family: var(--mono); font-size: 20px; }
+.s5-tbl th { text-align: center; }
+.s5-tbl td:first-child, .s5-tbl th:first-child { text-align: left; }
+.s5-tbl .s5-yes { color: var(--allow); font-weight: 700; }
+.s5-tbl .s5-no { color: var(--muted-soft); }
+.code .s5-bad { background: var(--reject-wash); color: var(--reject); border-radius: 4px; padding: 1px 2px; }
+.code .s5-ok { color: var(--allow); font-weight: 600; }
+.s5-ui { display: flex; flex-direction: column; gap: 10px; padding: 14px 18px; border: 1px solid var(--panel-border); border-radius: var(--r-md); background: var(--surface-alt); }
+.s5-ui-row { display: flex; align-items: center; gap: 10px; font-size: 18px; color: var(--ink); }
+.s5-ui-row .s5-grow { flex: 1; font-family: var(--mono); font-size: 16px; }
+.s5-btn { font-family: var(--sans); font-size: 15px; font-weight: 600; padding: 6px 14px; border-radius: var(--r-sm); border: 1px solid var(--hairline); background: var(--surface); color: var(--body); }
+.s5-btn.s5-ghost { border-style: dashed; color: var(--muted-soft); background: transparent; text-decoration: line-through; }
+.s5-ui-cap { font-family: var(--mono); font-size: 13.5px; color: var(--muted); }
+.s5-checklist { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; align-content: start; }
+.s5-checklist .points li { font-size: 18px; padding: 10px 0; }
+.s5-checklist .points li:first-child { border-top: 0; padding-top: 0; }
+.s5-checklist .chip { min-width: 74px; justify-content: center; }
 
 /* ---------- your turn (question slide) ----------
    <section class="slide ask">: eyebrow "Your turn" + time chip, the question as a big h2, 2–3
@@ -942,3 +939,122 @@ body.overview .ask .ask-opt:not(.is-right) { opacity: 0.38; }
   .ask .ask-opt:not(.is-right) { opacity: 0.38; }
   .ask-opt, .ask-letter { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* ---------- section 03 · login with google (claude examples) ---------- */
+  /* 3.1 · the two mock-ups: a chat that asks for the password (never happens) vs the real Connect button */
+  #s3-mocks { gap: 14px; align-items: center; }
+  #s3-mocks .s3-mock { padding: 14px 18px; gap: 8px; }
+  .s3-mock-tag { margin-left: auto; }
+  .s3-bubble {
+    align-self: flex-start; max-width: 92%; font-size: 16.5px; line-height: 1.4; color: var(--ink);
+    padding: 9px 14px; border-radius: var(--r-md) var(--r-md) var(--r-md) 4px; background: var(--surface-alt);
+  }
+  .s3-conn { display: flex; align-items: center; gap: 14px; }
+  .s3-conn > div { flex: 1; min-width: 0; }
+  .s3-conn .t { font-size: 20px; }
+  .s3-conn p { font-size: 15px; color: var(--muted); }
+  .s3-conn .s3-btn { margin-top: 0; flex: none; }
+  .s3-pts li { font-size: 17.5px; }
+
+  /* 3.4 · connector tiles + the MCP authorize request */
+  .s3-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .s3-tiles div {
+    padding: 10px 12px; border: 1px solid var(--panel-border); border-radius: var(--r-md);
+    background: var(--surface-alt); font-weight: 700; font-size: 17px; color: var(--ink); text-align: center;
+  }
+  .s3-tiles div.s3-any { border-style: dashed; font-weight: 600; color: var(--body); }
+  .s3-mcp .code { font-size: 14.5px; padding: 12px 16px; line-height: 1.5; }
+  .s3-mcp .points.tight li { font-size: 17px; padding: 8px 0; }
+  .s3-src { margin: 0; font-size: 14px; color: var(--muted); font-family: var(--mono); }
+  .s3-src a { color: var(--accent-strong); text-decoration: none; font-weight: 600; }
+  .s3-src a:hover { text-decoration: underline; }
+
+  /* 3.5 · grant types */
+  .s3-grants td { padding: 11px 14px; font-size: 18px; }
+  .s3-grants td.name { width: 24%; }
+  .s3-grants td:last-child { width: 30%; color: var(--muted); }
+  .s3-grants tr.s3-legacy td { opacity: 0.6; border-bottom: 0; }
+  .s3-grants tr.s3-legacy td.name { color: var(--muted); }
+
+  /* 3.6 · connector vs sign-in, two columns */
+  .s3-cols { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 32px; align-content: start; }
+  .s3-cols .card { padding: 12px 18px; gap: 6px; }
+  .s3-cols .card .t { font-size: 20px; }
+  .s3-cols .card p { font-size: 16px; }
+  .s3-cols .code { font-size: 14.5px; padding: 10px 16px; line-height: 1.5; }
+  .s3-cols .points.tight li { font-size: 16.5px; padding: 7px 0; }
+
+/* ---------- section 04 · service-to-service ---------- */
+/* ---------- section 04 · service-to-service ----------
+   Section-local styles; every selector is prefixed .s4- / #s4-. Names avoid the .s4-* classes
+   deck.css still holds for permissions & attacks (s4-col, s4-two, s4-tbl, s4-ok, s4-bad, …). */
+/* 4.1 · cluster picture + why-not-cookies list */
+.s4-cluster { align-items: center; }
+.s4-cluster .points li { font-size: 18px; padding: 9px 0; }
+/* 4.2 · API key vs Client Credentials */
+.s4-cmp th { font-size: 14px; }
+.s4-cmp td { padding: 11px 14px; font-size: 18px; }
+.s4-cmp td.name { width: 17%; font-family: var(--mono); font-size: 14.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.s4-cmp td.s4-key { color: var(--body); }
+.s4-cmp td.s4-cc { color: var(--ink); background: color-mix(in srgb, var(--allow) 8%, var(--surface)); }
+.s4-cmp th.s4-cc { color: var(--allow); }
+.s4-cmp th.s4-key { color: var(--reject); }
+.s4-cmp .s4-x { color: var(--reject); font-weight: 600; }
+/* 4.3 / 4.6 · stepped flow on the left, the real request / config on the right */
+.s4-stepper { display: flex; gap: 10px; flex-wrap: wrap; }
+.s4-flowgrid { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: start; }
+.s4-left { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.s4-left .meter { padding: 10px 14px 6px; }
+.s4-left .readout { font-size: 16.5px; line-height: 1.4; }
+.s4-left .flow-ctl { align-items: flex-start; }
+.s4-codes { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.s4-codes > div { display: flex; flex-direction: column; gap: 10px; }
+.s4-codes .code { font-size: 13.5px; line-height: 1.45; padding: 10px 14px; }
+.s4-codes .code-label { margin-bottom: -4px; }
+.code .s4-dim { color: var(--muted); }
+.code .s4-red { color: var(--reject); font-weight: 600; }
+.code .s4-grn { color: var(--allow); font-weight: 600; }
+.code .s4-acc { color: var(--accent-strong); font-weight: 600; }
+.s4-csm { fill: var(--ink); font-family: var(--mono); font-size: 13px; }
+.s4-note { margin: 0; font-size: 16px; line-height: 1.4; color: var(--muted); }
+.s4-note a, .s4-src a { color: var(--accent2); font-family: var(--mono); font-size: 14px; text-decoration: none; white-space: nowrap; }
+.s4-note a:hover, .s4-src a:hover { text-decoration: underline; }
+.s4-src { margin: 0; display: flex; align-items: baseline; gap: 12px; font-size: 17px; color: var(--body); }
+.s4-src .chip { flex: none; }
+/* 4.4 · decoded token + what each claim answers */
+.s4-claims .code { font-size: 17px; line-height: 1.55; }
+.s4-claims .points li { font-size: 17.5px; padding: 8px 0; }
+.s4-claims .points code { white-space: nowrap; }
+/* 4.5 · validate, then authorize */
+.s4-gates { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: stretch; }
+.s4-gates .card { gap: 10px; padding: 18px 22px; }
+.s4-gates .card .t { font-size: 23px; }
+.s4-gates .points li { font-size: 19px; padding: 11px 0; }
+.s4-gates .code { font-size: 14.5px; padding: 10px 14px; margin-top: auto; }
+.s4-gates .s4-fail { display: flex; align-items: center; gap: 10px; font-size: 16px; color: var(--muted); }
+/* 4.7 · alternatives */
+.s4-alt { flex: 1; min-height: 0; }
+.s4-alt .card { gap: 10px; padding: 18px 20px; }
+.s4-alt .card .t { font-size: 22px; }
+.s4-alt .card p { font-size: 17.5px; }
+.s4-alt .s4-fit { margin-top: auto; padding-top: 8px; border-top: 1px solid var(--hairline-soft); font-size: 15.5px; color: var(--muted); }
+.s4-model { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; font-size: 18px; color: var(--body); padding: 12px 16px; border: 1px solid var(--panel-border); border-radius: var(--r-md); background: var(--surface-alt); }
+.s4-model i { font-style: normal; color: var(--muted-soft); }
+/* 4.8 · six rows instead of five: a notch tighter than the shared do / don't grid */
+.s4-dd .dd-row { padding: 4px 0; }
+.s4-dd .dd-cell { padding: 4px 16px; }
+.s4-dd .dd-code { font-size: 16px; }
+.s4-dd .dd-why { font-size: 14.5px; }
+
+/* ---------- section 05 · attack cards ---------- */
+/* 5.4 · attack cards */
+.s5-cards { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 16px 22px; }
+.s5-card { padding: 14px 18px; gap: 7px; }
+.s5-card p { font-size: 17px; line-height: 1.4; }
+.s5-card p .chip { margin-right: 8px; vertical-align: 1px; }
+.s5-card code { font-size: 14.5px; }
+.s5-links { margin-top: auto; display: flex; flex-wrap: wrap; gap: 6px 20px; }
+.s5-links a, .s5-more a { font-family: var(--mono); font-size: 13.5px; font-weight: 600; color: var(--accent-strong); text-decoration: none; }
+.s5-links a::after { content: " ↗"; color: var(--muted); }
+.s5-links a:hover, .s5-more a:hover { text-decoration: underline; }
+.s5-more { margin: 0; font-size: 15px; color: var(--muted); }

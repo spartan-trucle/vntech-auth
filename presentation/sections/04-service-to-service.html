@@ -1,8 +1,513 @@
+
 <!-- ============ 04 · SERVICE-TO-SERVICE ============ -->
 <section class="slide divider" data-section="divider-04">
   <div class="divider-num">04</div>
   <div class="section-tag"><i></i>SECTION 4</div>
   <h2>Service-to-service</h2>
   <p class="lead">No user, no browser, no login form. Services still have to prove who they are.</p>
-  <div class="foot"><span>37 / 48</span><span>section 4 · service-to-service</span></div>
+  <div class="foot"><span>36 / 55</span><span>section 4 · service-to-service</span></div>
 </section>
+
+<!-- 4.1 The problem -->
+<section class="slide" data-section="s2s-problem">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-pod"/></svg>4.1 · Who is calling?</div>
+  <h2>Inside the cluster, any pod can call Payments</h2>
+  <div class="split s4-cluster">
+    <div class="chart meter">
+      <svg id="s4-cluster" viewBox="0 0 640 360" role="img" aria-label="The frontend calls Orders; Orders calls Inventory and Payments. A compromised pod in the same cluster also calls Payments, and nothing checks who it is.">
+        <rect x="196" y="2" width="440" height="354" rx="14" class="gl-shell"/>
+        <text x="214" y="28" class="sv-lbl-sm">cluster · internal network</text>
+        <path d="M88 76 H226" class="sv-line-soft"/>
+        <path d="M286 64 C370 40 420 30 470 30" class="sv-line-soft"/>
+        <path d="M286 88 C370 120 420 168 470 168" class="sv-line-soft"/>
+        <use href="#gl-client" x="22" y="44" width="64" height="64" class="gl"/>
+        <text x="54" y="132" text-anchor="middle" class="sv-lbl">frontend</text>
+        <text x="54" y="152" text-anchor="middle" class="sv-lbl-sm">user is here</text>
+        <use href="#gl-server" x="230" y="50" width="54" height="54" class="gl"/>
+        <text x="257" y="128" text-anchor="middle" class="sv-lbl">orders</text>
+        <use href="#gl-server" x="474" y="6" width="48" height="48" class="gl"/>
+        <text x="532" y="28" class="sv-lbl">inventory</text>
+        <use href="#gl-server" x="474" y="144" width="48" height="48" class="gl gl-hot"/>
+        <text x="532" y="164" class="sv-lbl">payments</text>
+        <text x="532" y="184" class="sv-lbl-sm">charges cards</text>
+        <g data-step="1">
+          <path d="M290 290 C380 286 440 240 486 196" class="sv-limit" fill="none"/>
+          <use href="#gl-pod" x="230" y="254" width="58" height="58" class="gl gl-risk"/>
+          <text x="259" y="336" text-anchor="middle" class="sv-lbl">compromised pod</text>
+          <text x="398" y="300" class="sv-risk">no identity check</text>
+          <text x="398" y="322" class="sv-lbl-sm">POST /charges → 201</text>
+        </g>
+      </svg>
+    </div>
+    <ul class="points tight">
+      <li>No browser, so <b>no cookie</b> to send.</li>
+      <li>No person, so <b>no password</b> typed. Orders runs at 3 a.m. on its own.</li>
+      <li>Nobody to click <b>Allow</b> on a consent screen.</li>
+      <li data-step="1"><span class="chip risk">today</span>Payments trusts anything that reaches it on the internal network. One hacked pod can charge any card.</li>
+      <li data-step="2"><span class="chip hot">what we want</span>Every service has its own identity, and Payments checks it on every call.</li>
+    </ul>
+  </div>
+  <div class="foot"><span>37 / 55</span><span>section 4 · service-to-service</span></div>
+</section>
+
+<!-- your turn · before 4.2 -->
+<section class="slide ask" data-section="ask-s2s-identity">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-question"/></svg>Your turn<span class="chip hot ask-time">30 s · ask your neighbour</span></div>
+  <div class="ask-body">
+    <h2 class="ask-q">Orders calls Payments, no user involved. How does Payments know the caller is really Orders?</h2>
+    <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>Give Orders its own identity</strong>, and let it trade that for a short-lived token that Payments can check.</span></p>
+  </div>
+  <div class="foot"><span>38 / 55</span><span>section 4 · service-to-service</span></div>
+</section>
+
+<!-- 4.2 API key vs Client Credentials -->
+<section class="slide" data-section="s2s-api-key">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-key"/></svg>4.2 · API key vs Client Credentials</div>
+  <h2>A shared API key works until it leaks</h2>
+  <table class="tbl s4-cmp">
+    <thead><tr><th></th><th class="s4-key" style="width:41%">static API key</th><th class="s4-cc" data-step="1">Client Credentials</th></tr></thead>
+    <tbody>
+      <tr><td class="name">Orders sends</td><td class="s4-key"><code>X-Api-Key: sk_live_8f2a…</code></td><td class="s4-cc" data-step="1"><code>Authorization: Bearer eyJ…</code> (a JWT)</td></tr>
+      <tr><td class="name">expires</td><td class="s4-key"><span class="s4-x">never</span>, until someone rotates it by hand</td><td class="s4-cc" data-step="1">after <b>5 minutes</b> (<code>expires_in: 300</code>)</td></tr>
+      <tr><td class="name">who is calling</td><td class="s4-key"><span class="s4-x">can't tell</span>: the same key is pasted into every service</td><td class="s4-cc" data-step="1">written in the token: <code>sub: orders-service</code></td></tr>
+      <tr><td class="name">what it may do</td><td class="s4-key"><span class="s4-x">everything</span> the key opens</td><td class="s4-cc" data-step="1">only what it asked for: <code>scope: payments.charge</code></td></tr>
+      <tr><td class="name">if it leaks</td><td class="s4-key"><span class="s4-x">works forever</span>, from anywhere</td><td class="s4-cc" data-step="1">useless in 5 min; the secret itself never left Orders</td></tr>
+    </tbody>
+  </table>
+  <p class="caption" data-step="2" style="margin:0; font-size:17px;"><span class="chip ok" style="margin-right:8px;">idea</span>Orders keeps a <code>client_id</code> + <code>client_secret</code>, shows them only to an <b>auth server</b>, and gets back a short-lived, scoped token. Next slide: the exchange.</p>
+  <div class="foot"><span>39 / 55</span><span>section 4 · service-to-service</span></div>
+</section>
+
+<!-- 4.3 Client Credentials flow -->
+<section class="slide" data-section="s2s-client-credentials">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-token"/></svg>4.3 · Client Credentials flow</div>
+  <h2>Orders logs in as itself and gets a 5-minute token</h2>
+  <div class="s4-stepper">
+    <span class="chip hot">0 · registered once</span>
+    <span class="chip hot" data-step="1">1 · ask for a token</span>
+    <span class="chip hot" data-step="2">2 · 5-minute JWT back</span>
+    <span class="chip hot" data-step="3">3 · call Payments</span>
+  </div>
+  <div class="s4-flowgrid">
+    <div class="s4-left">
+      <div class="chart meter"><svg id="s4-cc-flow" role="img" aria-label="Orders sends its client id and secret to the auth server, gets a 5-minute token, and calls Payments with it"></svg></div>
+      <div class="flow-ctl"><div class="seg"><button id="s4-cc-replay" class="icon" aria-label="Replay" title="Replay"><svg class="ic"><use href="#ic-replay"/></svg></button></div><p class="readout" id="s4-cc-readout"></p></div>
+      <p class="s4-note">Same OAuth as section 3, minus the user. This is the <b>Client Credentials</b> grant from grant types, slide 3.5.</p>
+    </div>
+    <div class="s4-codes">
+      <div data-step="1">
+        <div class="code-label">1 · orders → auth server</div>
+<pre class="code">POST /oauth/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=<span class="s4-acc">client_credentials</span>
+&amp;client_id=orders-service
+&amp;client_secret=<span class="s4-dim">•••• from the secret manager</span>
+&amp;scope=payments.charge</pre>
+      </div>
+      <div data-step="2">
+        <div class="code-label">2 · auth server → orders</div>
+<pre class="code">HTTP/1.1 <span class="s4-grn">200 OK</span>
+{ "access_token": "eyJhbGciOiJSUzI1NiIs…",
+  "token_type":   "Bearer",
+  "expires_in":   <span class="s4-acc">300</span> }</pre>
+      </div>
+      <div data-step="3">
+        <div class="code-label">3 · orders → payments · reuse the token until it expires</div>
+<pre class="code">POST /charges
+Authorization: Bearer eyJhbGciOiJSUzI1NiIs…</pre>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>40 / 55</span><span>section 4 · service-to-service</span></div>
+</section>
+
+<!-- 4.4 M2M token claims -->
+<section class="slide" data-section="s2s-claims">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-search"/></svg>4.4 · What is inside the token</div>
+  <h2>The token says who is calling, for whom, and what it may do</h2>
+  <div class="split even s4-claims">
+    <div class="stack">
+      <div class="code-label">access_token · decoded payload</div>
+<pre class="code"><span class="s4-dim">eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3Mi…</span>
+{
+  "iss":   "https://auth.shop.internal",
+  "sub":   "<span class="hl">orders-service</span>",
+  "aud":   "<span class="hl">payments-service</span>",
+  "scope": "<span class="hl">payments.charge</span>",
+  "iat":   1791943200,
+  "exp":   1791943500
+}</pre>
+    </div>
+    <ul class="points tight">
+      <li><code>iss</code> <b>who made it.</b> Payments only trusts its own auth server.</li>
+      <li><code>sub</code> <b>who is calling.</b> A service name, not a user.</li>
+      <li><code>aud</code> <b>who it is for.</b> Payments rejects tokens made for anyone else.</li>
+      <li><code>scope</code> <b>what it may do.</b> Charge cards, nothing more.</li>
+      <li><code>exp</code> <b>when it dies.</b> 300 s after <code>iat</code>. A stolen token is dead in 5 minutes.</li>
+      <li data-step="1"><span class="chip hot">same JWT as section 2</span>Header, payload, signature. Anyone can read it, so no secrets inside.</li>
+    </ul>
+  </div>
+  <div class="foot"><span>41 / 55</span><span>section 4 · service-to-service</span></div>
+</section>
+
+<!-- your turn · before 4.5 -->
+<section class="slide ask" data-section="ask-s2s-aud">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-question"/></svg>Your turn<span class="chip hot ask-time">30 s · ask your neighbour</span></div>
+  <div class="ask-body">
+    <h2 class="ask-q">Payments gets a correctly signed token, but <code>aud</code> is <code>inventory-service</code>. Accept it?</h2>
+    <div class="ask-opts">
+      <div class="ask-opt"><span class="ask-letter">A</span><span class="ask-txt">yes, the signature is valid</span></div>
+      <div class="ask-opt is-right"><span class="ask-letter">B</span><span class="ask-txt">no, it was made for someone else</span><span class="ask-mark" aria-hidden="true">✓</span></div>
+    </div>
+    <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>No.</strong> A token stolen from Inventory must not work on Payments. Check <code>aud</code> on every request.</span></p>
+  </div>
+  <div class="foot"><span>42 / 55</span><span>section 4 · service-to-service</span></div>
+</section>
+
+<!-- 4.5 Validate, then authorize -->
+<section class="slide" data-section="s2s-validate">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-gate"/></svg>4.5 · Validate, then authorize</div>
+  <h2>Payments checks the token, then the scope</h2>
+  <div class="s4-gates">
+    <div class="card">
+      <div class="k">step 1 · validate</div>
+      <div class="t">Is this token real, and meant for me?</div>
+      <ul class="points tight">
+        <li><b>Signature</b> matches the auth server's public key</li>
+        <li><code>iss</code> is <code>https://auth.shop.internal</code></li>
+        <li><code>aud</code> is <code>payments-service</code></li>
+        <li><code>exp</code> is still in the future</li>
+      </ul>
+<pre class="code">verify(token, { issuer, audience: "payments-service" })
+<span class="c">// any check fails →</span> <span class="s4-red">401 Unauthorized</span></pre>
+    </div>
+    <div class="card" data-step="1">
+      <div class="k">step 2 · authorize</div>
+      <div class="t">May this caller do this?</div>
+      <ul class="points tight">
+        <li><code>payments.charge</code> → <code>POST /charges</code></li>
+        <li><code>payments.read</code> → <code>GET /charges/*</code></li>
+        <li>Orders has <code>payments.charge</code> only, so it cannot list charges.</li>
+      </ul>
+<pre class="code">if (!claims.scope.split(" ").includes("payments.charge"))
+  <span class="c">// valid token, wrong scope →</span> <span class="s4-red">403 Forbidden</span></pre>
+    </div>
+  </div>
+  <p class="caption" data-step="2" style="margin:0; font-size:17px;"><span class="chip hot" style="margin-right:8px;">slide 0.3</span>Same split as for users: <code>401</code> = we don't know who you are, <code>403</code> = we know, and the answer is no.</p>
+  <div class="foot"><span>43 / 55</span><span>section 4 · service-to-service</span></div>
+</section>
+
+<!-- your turn · before 4.6 -->
+<section class="slide ask" data-section="ask-s2s-ci-keys">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-question"/></svg>Your turn<span class="chip hot ask-time">30 s · ask your neighbour</span></div>
+  <div class="ask-body">
+    <h2 class="ask-q">Your GitHub Action deploys to AWS. Where do you keep the AWS keys?</h2>
+    <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>Nowhere.</strong> GitHub proves which repo and branch is running with an OIDC token; AWS trades it for credentials that expire in about 1 hour.</span></p>
+  </div>
+  <div class="foot"><span>44 / 55</span><span>section 4 · service-to-service</span></div>
+</section>
+
+<!-- 4.6 GitHub Actions → AWS with OIDC -->
+<section class="slide" data-section="s2s-github-aws">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-route"/></svg>4.6 · GitHub Actions → AWS with OIDC</div>
+  <h2>GitHub deploys to AWS without a stored key</h2>
+  <div class="s4-stepper">
+    <span class="chip hot">0 · push to main</span>
+    <span class="chip hot" data-step="1">1 · OIDC token from GitHub</span>
+    <span class="chip hot" data-step="2">2 · send it to AWS STS</span>
+    <span class="chip hot" data-step="3">3 · trust policy ✓ → 1 h creds</span>
+    <span class="chip hot" data-step="4">4 · deploy</span>
+  </div>
+  <div class="s4-flowgrid">
+    <div class="s4-left">
+      <div class="chart meter"><svg id="s4-gh-flow" role="img" aria-label="A GitHub Actions runner gets an OIDC token from GitHub, sends it to AWS STS, receives 1-hour credentials and deploys to S3"></svg></div>
+      <div class="flow-ctl"><div class="seg"><button id="s4-gh-replay" class="icon" aria-label="Replay" title="Replay"><svg class="ic"><use href="#ic-replay"/></svg></button></div><p class="readout" id="s4-gh-readout"></p></div>
+    </div>
+    <div class="s4-codes">
+      <div>
+        <div class="code-label">.github/workflows/deploy.yml</div>
+<pre class="code">permissions:
+  <span class="hl">id-token: write</span>   <span class="c"># may ask GitHub for an OIDC token</span>
+steps:
+  - uses: aws-actions/configure-aws-credentials@v6
+    with:
+      <span class="hl">role-to-assume</span>: arn:aws:iam::123456789012:role/deploy
+      aws-region: ap-southeast-1
+  - run: aws s3 sync ./dist s3://shop-web</pre>
+      </div>
+      <div data-step="3">
+        <div class="code-label">AWS role "deploy" · trust policy · only this repo, only main</div>
+<pre class="code">"Condition": { "StringEquals": {
+  "token.actions.githubusercontent.com:aud":
+      "<span class="s4-acc">sts.amazonaws.com</span>",
+  "token.actions.githubusercontent.com:sub":
+      "<span class="s4-acc">repo:spartan/shop:ref:refs/heads/main</span>" } }</pre>
+      </div>
+    </div>
+  </div>
+  <p class="s4-src" data-step="4"><span class="chip ok">result</span><span>No <code>AWS_ACCESS_KEY_ID</code> in GitHub secrets: nothing to leak, nothing to rotate.</span><a href="https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services" target="_blank" rel="noopener">GitHub docs · OIDC in AWS ↗</a></p>
+  <div class="foot"><span>45 / 55</span><span>section 4 · service-to-service</span></div>
+</section>
+
+<!-- 4.7 Alternatives -->
+<section class="slide" data-section="s2s-alternatives">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-shield"/></svg>4.7 · Other options</div>
+  <h2>Other ways services prove who they are</h2>
+  <div class="trio s4-alt">
+    <div class="card">
+      <svg class="ic"><use href="#ic-lock"/></svg>
+      <div class="k">mTLS · mutual TLS</div>
+      <div class="t">Both sides show a certificate</div>
+      <p>Normal HTTPS: only the server proves who it is. With mTLS the caller shows a certificate too.</p>
+      <p>Identity is checked when the connection opens, before any request is sent.</p>
+      <div class="s4-fit">Cost: someone has to issue and renew a certificate for every service.</div>
+    </div>
+    <div class="card" data-step="1">
+      <svg class="ic"><use href="#ic-ring"/></svg>
+      <div class="k">service mesh · Istio, Linkerd</div>
+      <div class="t">mTLS, done for you</div>
+      <p>A small proxy (a "sidecar") runs next to every service and handles the certificates.</p>
+      <p>Your code keeps making plain HTTP calls.</p>
+      <div class="s4-fit">Fits many services and a platform team. One more system to run.</div>
+    </div>
+    <div class="card" data-step="2">
+      <svg class="ic"><use href="#ic-key"/></svg>
+      <div class="k">API keys</div>
+      <div class="t">Fine for simple third-party APIs</div>
+      <p>Stripe, SendGrid, Google Maps hand you a key. Keep it in a secret manager, one per environment.</p>
+      <p>Not for your own services: no expiry, no scope, no identity.</p>
+      <div class="s4-fit">Rotate it when it leaks or someone leaves.</div>
+    </div>
+  </div>
+  <div class="s4-model" data-step="3">
+    <span><b>OAuth</b> = how you get the token</span><i>·</i>
+    <span><b>JWT</b> = what it looks like</span><i>·</i>
+    <span><b>Payments' policy</b> = what you may do</span>
+  </div>
+  <div class="foot"><span>46 / 55</span><span>section 4 · service-to-service</span></div>
+</section>
+
+<!-- 4.8 Do / Don't -->
+<section class="slide" data-section="s2s-do-dont">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-list"/></svg>4.8 · Do / Don't</div>
+  <h2>One identity per service, and tokens that are short, narrow and addressed to one receiver</h2>
+  <div class="dd-grid s4-dd">
+    <div class="dd-row dd-head"><span></span><span class="dd-no">✗ don't</span><span class="dd-yes">✓ do</span></div>
+    <div class="dd-row">
+      <div class="dd-topic">secret</div>
+      <div class="dd-cell dd-no"><div class="dd-code">client_secret = &quot;s3cr3t&quot; <em>in code or git</em></div><div class="dd-why">everyone with the repo has it</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code"><em>secret manager,</em> rotate</div><div class="dd-why">AWS Secrets Manager / Vault, no redeploy</div></div>
+    </div>
+    <div class="dd-row">
+      <div class="dd-topic">lifetime</div>
+      <div class="dd-cell dd-no"><div class="dd-code">X-Api-Key <em>that never expires</em></div><div class="dd-why">a leak works forever</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code">expires_in: 300 <i>·</i> <em>cache until expiry</em></div><div class="dd-why">a leak dies in minutes</div></div>
+    </div>
+    <div class="dd-row">
+      <div class="dd-topic">audience</div>
+      <div class="dd-cell dd-no"><div class="dd-code"><em>accept any validly signed token</em></div><div class="dd-why">Inventory's token works on Payments</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code">aud === &quot;payments-service&quot;</div><div class="dd-why">made for me, or 401</div></div>
+    </div>
+    <div class="dd-row">
+      <div class="dd-topic">scope</div>
+      <div class="dd-cell dd-no"><div class="dd-code">scope: admin</div><div class="dd-why">one token can do everything</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code">payments.charge <i>·</i> payments.read</div><div class="dd-why">smallest that works, else 403</div></div>
+    </div>
+    <div class="dd-row">
+      <div class="dd-topic">identity</div>
+      <div class="dd-cell dd-no"><div class="dd-code"><em>every service shares one client</em></div><div class="dd-why">logs can't say who charged the card</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code"><em>one</em> client_id <em>per service, log</em> sub</div><div class="dd-why">every call has a name</div></div>
+    </div>
+    <div class="dd-row">
+      <div class="dd-topic">keys in CI</div>
+      <div class="dd-cell dd-no"><div class="dd-code">AWS_ACCESS_KEY_ID <em>in repo secrets</em></div><div class="dd-why">a key that lives for years</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code"><em>OIDC role per repo + branch</em></div><div class="dd-why">1-hour credentials, nothing stored</div></div>
+    </div>
+  </div>
+  <div class="foot"><span>47 / 55</span><span>section 4 · service-to-service</span></div>
+</section>
+
+<script>
+(() => {
+  const { el, $, scene, steps, glyph } = window.Charts;
+
+  // ---------- shared bits for the two stepped flows (4.3, 4.6) ----------
+  const txt = (p, x, y, cls, t, anchor) =>
+    el('text', anchor ? { x, y, class: cls, 'text-anchor': anchor } : { x, y, class: cls }, p, t);
+  const line = (p, d) => el('path', { d, class: 'sv-line-soft' }, p);
+  // a message card: lines of small mono text, moved with style.transform
+  const card = (p, lines, cls = 'sv-box') => {
+    const g = el('g', { class: 'pkt-fly' }, p);
+    const lh = 17, h = lines.length * lh + 12;
+    const w = Math.max(...lines.map((l) => l.length)) * 7.9 + 22;
+    el('rect', { x: -w / 2, y: -h / 2, width: w, height: h, rx: 6, class: cls }, g);
+    lines.forEach((t, i) => txt(g, -w / 2 + 11, -h / 2 + 6 + lh * (i + 0.75), 's4-csm', t));
+    return g;
+  };
+  const put = (g, x, y) => { g.style.transform = `translate(${x}px, ${y}px)`; };
+  const move = (w, g, x, y) => { if (!w.virtual()) void g.getBoundingClientRect(); put(g, x, y); };
+  const fade = (w, g) => { g.classList.add('pkt-gone'); w.later(() => g.remove(), 400); };
+  const lit = (w, key, on) => w.L[key].setAttribute('class', on ? 'sv-hot-line' : 'sv-line-soft');
+  const status = (w, who, text, cls = 'sv-hot') => { const t = w.st[who]; t.textContent = text; t.setAttribute('class', cls); };
+  async function hop(w, lines, from, to, { cls = 'sv-box-hot', wire, keep = false } = {}) {
+    const c = card(w.layer, lines, cls);
+    put(c, ...from);
+    if (wire) lit(w, wire, true);
+    move(w, c, ...to);
+    await w.sleep(620);
+    if (wire) lit(w, wire, false);
+    if (!keep) fade(w, c);
+    return c;
+  }
+  // phase k replays steps 0..k-1 silently (end state only), then animates step k
+  const play = (story) => story.map((fn, k) => async (w) => {
+    for (let i = 0; i < k; i++) await story[i](w, false);
+    await fn(w, true);
+  });
+  // fixed actors share one reset: blank status lines, quiet wires, plain glyphs
+  const clearer = (st, L, actors) => () => {
+    Object.values(st).forEach((t) => { t.textContent = ''; t.setAttribute('class', 'sv-hot'); });
+    Object.values(L).forEach((l) => l.setAttribute('class', 'sv-line-soft'));
+    actors.forEach((g) => g.set(''));
+  };
+
+  // ---------- 4.3 Client Credentials ----------
+  const cc = scene($('s4-cc-flow'), '0 0 580 322', (svg) => {
+    const wires = el('g', {}, svg);
+    const L = {
+      OA: line(wires, 'M78 118 C190 70 320 34 434 32'),
+      OP: line(wires, 'M78 154 C190 205 320 226 434 226'),
+    };
+    const O = glyph(svg, { icon: 'gl-server', x: 14, y: 104, size: 58 });
+    txt(svg, 0, 190, 'sv-lbl', 'orders-service');
+    txt(svg, 0, 210, 'sv-lbl-sm', 'client_id + client_secret');
+    const A = glyph(svg, { icon: 'gl-server', x: 440, y: 6, size: 50 });
+    txt(svg, 465, 76, 'sv-lbl', 'auth server', 'middle');
+    txt(svg, 465, 96, 'sv-lbl-sm', 'issues tokens', 'middle');
+    const P = glyph(svg, { icon: 'gl-server', x: 440, y: 200, size: 50 });
+    txt(svg, 465, 270, 'sv-lbl', 'payments-service', 'middle');
+    txt(svg, 465, 290, 'sv-lbl-sm', 'checks every token', 'middle');
+    const st = {
+      O: txt(svg, 0, 234, 'sv-hot', ''),
+      A: txt(svg, 465, 118, 'sv-hot', '', 'middle'),
+      P: txt(svg, 465, 314, 'sv-hot', '', 'middle'),
+    };
+    return { L, O, A, P, st, clear: clearer(st, L, [O, A, P]) };
+  });
+
+  async function ccSetup(w, animate) {
+    if (animate) {
+      w.O.set('hot');
+      w.say('Orders was registered once with the auth server. Its <code>client_id</code> + <code>client_secret</code> are a username and password for a service.');
+    }
+    status(w, 'O', 'no token yet', 'sv-lbl-sm');
+  }
+  async function ccAsk(w, animate) {
+    if (animate) {
+      w.O.set('hot'); w.A.set('hot');
+      await hop(w, ['POST /oauth/token', 'client_credentials', 'scope=payments.charge'], [150, 112], [300, 64], { wire: 'OA', keep: true });
+      status(w, 'A', 'secret ✓ scope ✓', 'sv-ok');
+      w.say('Orders logs in <strong>as itself</strong>: <code>grant_type=client_credentials</code>, its id + secret, and the one scope it needs.');
+    }
+    status(w, 'A', 'secret ✓ scope ✓', 'sv-ok');
+  }
+  async function ccToken(w, animate) {
+    if (animate) {
+      w.A.set('hot');
+      await hop(w, ['access_token: eyJhbGci…', 'expires_in: 300'], [310, 66], [176, 74], { wire: 'OA', keep: true });
+      w.A.set('');
+      w.O.set('hot');
+      w.say('The auth server returns a signed JWT that dies in <b>300</b> s. Orders caches it and reuses it until then.');
+    }
+    status(w, 'O', 'token · 5 min');
+  }
+  async function ccCall(w, animate) {
+    if (animate) {
+      w.O.set('hot'); w.P.set('hot');
+      await hop(w, ['POST /charges', 'Authorization: Bearer eyJ…'], [170, 176], [318, 214], { wire: 'OP', keep: true });
+      status(w, 'P', 'sig ✓ aud ✓ scope ✓', 'sv-ok');
+      w.say('Payments checks the token <strong>itself</strong>, no call to the auth server. The secret never left Orders.');
+    }
+    status(w, 'P', 'sig ✓ aud ✓ scope ✓', 'sv-ok');
+  }
+  steps('s4-cc', cc, play([ccSetup, ccAsk, ccToken, ccCall]));
+
+  // ---------- 4.6 GitHub Actions → AWS ----------
+  const gh = scene($('s4-gh-flow'), '0 0 580 336', (svg) => {
+    const wires = el('g', {}, svg);
+    const L = {
+      RG: line(wires, 'M76 126 C140 70 200 34 252 30'),
+      RS: line(wires, 'M78 146 H486'),
+      RD: line(wires, 'M78 160 C200 165 245 200 262 262'),
+    };
+    const R = glyph(svg, { icon: 'gl-pod', x: 12, y: 114, size: 62 });
+    txt(svg, 0, 198, 'sv-lbl', 'GitHub Actions runner');
+    txt(svg, 0, 218, 'sv-lbl-sm', 'spartan/shop · main');
+    const G = glyph(svg, { icon: 'gl-internet', x: 256, y: 0, size: 56 });
+    txt(svg, 330, 26, 'sv-lbl', 'GitHub OIDC');
+    txt(svg, 330, 46, 'sv-lbl-sm', 'token.actions.');
+    txt(svg, 330, 64, 'sv-lbl-sm', 'githubusercontent.com');
+    const S = glyph(svg, { icon: 'gl-server', x: 490, y: 120, size: 52 });
+    txt(svg, 576, 196, 'sv-lbl', 'AWS STS', 'end');
+    txt(svg, 576, 216, 'sv-lbl-sm', 'reads the trust policy', 'end');
+    const D = glyph(svg, { icon: 'gl-server', x: 256, y: 266, size: 48 });
+    txt(svg, 316, 286, 'sv-lbl', 'S3 · shop-web');
+    txt(svg, 316, 306, 'sv-lbl-sm', 'deploy target');
+    const st = {
+      R: txt(svg, 0, 240, 'sv-hot', ''),
+      G: txt(svg, 330, 88, 'sv-hot', ''),
+      S: txt(svg, 576, 240, 'sv-hot', '', 'end'),
+      D: txt(svg, 316, 328, 'sv-hot', ''),
+    };
+    return { L, R, G, S, D, st, clear: clearer(st, L, [R, G, S, D]) };
+  });
+
+  async function ghStart(w, animate) {
+    if (animate) {
+      w.R.set('hot');
+      w.say('A push to <code>main</code> starts the workflow. The repo has <strong>no AWS keys</strong> in its secrets.');
+    }
+    status(w, 'R', 'no AWS keys stored', 'sv-lbl-sm');
+  }
+  async function ghToken(w, animate) {
+    if (animate) {
+      w.R.set('hot'); w.G.set('hot');
+      await hop(w, ['id-token: write → token?'], [140, 112], [220, 70], { wire: 'RG', cls: 'sv-box' });
+      await hop(w, ['OIDC token · signed by GitHub', 'aud: sts.amazonaws.com', 'sub: repo:spartan/shop:ref:refs/heads/main'],
+        [260, 80], [290, 98], { wire: 'RG', keep: true });
+      w.G.set('');
+      w.say('GitHub signs a JWT that says <strong>which repo and branch</strong> is running, addressed to AWS.');
+    }
+    status(w, 'R', 'has GitHub OIDC token');
+  }
+  async function ghSts(w, animate) {
+    if (animate) {
+      w.R.set('hot'); w.S.set('hot');
+      await hop(w, ['AssumeRoleWithWebIdentity', 'role: …:role/deploy', '+ the OIDC token'], [150, 146], [370, 146], { wire: 'RS', keep: true });
+      w.say('<code>configure-aws-credentials</code> sends the token to AWS STS and asks to become the <code>deploy</code> role.');
+    }
+  }
+  async function ghCheck(w, animate) {
+    if (animate) {
+      w.S.set('hot');
+      await w.sleep(300);
+      status(w, 'S', 'iss ✓ aud ✓ sub ✓', 'sv-ok');
+      await w.sleep(500);
+      await hop(w, ['temporary credentials', 'expire in ~1 h'], [400, 186], [170, 186], { wire: 'RS', keep: true });
+      w.say('STS checks issuer, <code>aud</code> and <code>sub</code> against the trust policy. A fork or another branch gets a different <code>sub</code>: denied.');
+    }
+    status(w, 'S', 'iss ✓ aud ✓ sub ✓', 'sv-ok');
+    status(w, 'R', 'creds · 1 h');
+  }
+  async function ghDeploy(w, animate) {
+    if (animate) {
+      w.R.set('hot'); w.D.set('hot');
+      await hop(w, ['aws s3 sync ./dist'], [120, 180], [168, 298], { wire: 'RD', keep: true });
+      w.say('Deployed. Nothing was stored in GitHub, and the credentials expire on their own.');
+    }
+    status(w, 'D', 'deployed ✓', 'sv-ok');
+  }
+  steps('s4-gh', gh, play([ghStart, ghToken, ghSts, ghCheck, ghDeploy]));
+})();
+</script>
