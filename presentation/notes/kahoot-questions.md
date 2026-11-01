@@ -1,6 +1,6 @@
 # Kahoot — Authentication & Authorization (Intern)
 
-12 câu, mức easy → medium, bám theo `presentation/auth-outline.md` (section 0–5). Không có câu nào hỏi về các chủ đề đã cắt (OAuth 1.0, PKCE chi tiết, refresh token rotation, JWKS, mTLS, ABAC, SAML…).
+12 câu, mức easy → medium, bám theo `presentation/auth-outline.md` (section 0–5). Không có câu nào hỏi về các chủ đề đã cắt (OAuth 1.0, PKCE chi tiết, refresh token rotation, JWKS, mTLS/mesh chi tiết, ABAC, SAML…), và không hỏi SQLi / XSS / CSRF vì 5.4 để chúng làm phần tự học.
 
 ## Cách đưa vào Kahoot
 
@@ -64,17 +64,6 @@ Giới hạn Kahoot đã kiểm: câu hỏi ≤ 120 ký tự, mỗi đáp án �
 
 ### Q5 · 20 s
 
-**You paste an eyJ… JWT into jwt.io without knowing the secret. What can you see?**
-
-- A. Nothing, the token is encrypted
-- B. Only the signature
-- C. The payload: sub, role, exp ✅
-- D. Only the header, the payload needs the secret
-
-> **Giải thích:** JWT chỉ là base64url, không phải mã hoá: ai cũng đọc được payload. Vì vậy không bao giờ để password hay dữ liệu nhạy cảm trong JWT.
-
-### Q6 · 20 s
-
 **Set-Cookie: sid=abc; ___ ; Secure; SameSite=Lax. Which flag stops JavaScript from reading the cookie?**
 
 - A. HttpOnly ✅
@@ -82,20 +71,31 @@ Giới hạn Kahoot đã kiểm: câu hỏi ≤ 120 ký tự, mỗi đáp án �
 - C. Max-Age=3600
 - D. Domain=example.com
 
-> **Giải thích:** HttpOnly làm cho JavaScript (kể cả script XSS) không đọc được cookie. Đây là lý do mặc định lưu token trong cookie HttpOnly thay vì localStorage.
+> **Giải thích:** HttpOnly làm cho JavaScript (kể cả script XSS) không đọc được cookie. Đây là lý do mặc định lưu token trong cookie HttpOnly thay vì localStorage (2.5).
+
+### Q6 · 30 s
+
+**You edit the JWT payload "role":"viewer" to "admin" and keep the old signature. Server replies?**
+
+- A. 200 OK, you're admin now
+- B. 401, the signature no longer matches ✅
+- C. 403, viewers can't edit tokens
+- D. 500, the token can't be parsed
+
+> **Giải thích:** Server tính lại HMAC từ header + payload mới bằng secret → khác chữ ký cũ → 401 (2.3). Muốn giả được phải có secret, nên secret lộ = mọi thứ lộ.
 
 ## 3. Login with Google
 
 ### Q7 · 20 s
 
-**A calendar app wants to read your Google Calendar. What's the right way to give it access?**
+**Claude wants to read your Google Calendar. What's the right way to give it access?**
 
-- A. Type your Google password into the calendar app
-- B. Email the app an export of your calendar
-- C. Share your Google session cookie with the app
+- A. Type your Google password into the Claude chat
+- B. Email Claude an export of your calendar
+- C. Share your Google session cookie with Claude
 - D. Get redirected to Google, log in there, click Allow ✅
 
-> **Giải thích:** Đó là OAuth 2.0: password chỉ đi tới Google, app chỉ nhận quyền một phần (scope=calendar.readonly) và bạn thu hồi riêng được, như chìa khoá valet.
+> **Giải thích:** Đó là OAuth 2.0, nút "Connect" của connector (3.1–3.3): password chỉ đi tới Google, Claude chỉ nhận quyền một phần (scope=calendar.readonly) và bạn thu hồi riêng được, như chìa khoá valet.
 
 ### Q8 · 20 s
 
@@ -106,11 +106,46 @@ Giới hạn Kahoot đã kiểm: câu hỏi ≤ 120 ký tự, mỗi đáp án �
 - C. client_secret
 - D. The authorization code
 
-> **Giải thích:** OAuth là authorization: access_token chỉ nói "app được đọc lịch". OIDC thêm id_token, một JWT có sub, email, name → đó mới là login.
+> **Giải thích:** OAuth là authorization: access_token chỉ nói "app được đọc lịch". OIDC thêm id_token, một JWT có sub, email, aud → đó mới là login (3.6).
 
-## 4. Phân quyền & lỗi
+## 4. Service-to-service
 
 ### Q9 · 20 s
+
+**Orders calls Payments at 3 a.m. No user, no browser. Which OAuth grant type fits?**
+
+- A. Client Credentials ✅
+- B. Authorization Code + PKCE
+- C. Device Authorization
+- D. Implicit
+
+> **Giải thích:** Không có user thì service tự login bằng client_id + client_secret và nhận token ngắn hạn: Client Credentials (3.5, 4.3). Authorization Code / Device cần một người bấm Allow; Implicit là legacy.
+
+### Q10 · 20 s
+
+**Payments gets a validly signed token, but its aud is inventory-service. What should Payments do?**
+
+- A. Accept it, the signature is valid
+- B. Accept it if the scope is payments.charge
+- C. Reject it with 401, it was made for another service ✅
+- D. Forward it to Inventory
+
+> **Giải thích:** Signature đúng chỉ nói "auth server làm ra nó", không nói "nó dành cho mình". aud phải là payments-service, nếu không → 401; token đánh cắp từ Inventory không được chạy trên Payments (4.4–4.5).
+
+### Q11 · 20 s
+
+**Your GitHub Action deploys to AWS. Where should the AWS access keys be stored?**
+
+- A. In the repo's GitHub secrets
+- B. Hardcoded in the workflow YAML
+- C. In a .env file committed to the repo
+- D. Nowhere: GitHub's OIDC token is traded for 1-hour AWS credentials ✅
+
+> **Giải thích:** GitHub ký một OIDC token nói repo + branch nào đang chạy; AWS STS kiểm trust policy rồi trả credentials ~1 giờ. Không có AWS_ACCESS_KEY_ID nào để lộ hay rotate (4.6).
+
+## 5. Phân quyền
+
+### Q12 · 20 s
 
 **GET /orders/1024 shows your order. Changing it to /orders/1025 shows a stranger's order. What's the fix?**
 
@@ -119,42 +154,7 @@ Giới hạn Kahoot đã kiểm: câu hỏi ≤ 120 ký tự, mỗi đáp án �
 - C. Query WHERE id = ? AND user_id = ? ✅
 - D. Return 500 when the ID is wrong
 
-> **Giải thích:** Đây là Broken Access Control (IDOR), OWASP #1. Đã login chưa đủ: phải kiểm quyền sở hữu ngay trong query, ở backend.
-
-### Q10 · 30 s
-
-**Login query: "...WHERE email = '" + email + "'". Input ' OR '1'='1 gets in with no password. Best fix?**
-
-- A. Block the ' character in the frontend form
-- B. Use a parameterized query or an ORM ✅
-- C. Wrap the query in try/catch
-- D. Return 403 instead of 401 on failure
-
-> **Giải thích:** SQL Injection xảy ra vì nối chuỗi. Parameterized query/ORM tách dữ liệu khỏi câu SQL. Chặn ở frontend vô ích vì attacker gọi thẳng API bằng curl/Postman.
-
-### Q11 · 30 s
-
-**You render a user's comment in React. Which line is the safe default against XSS?**
-
-- A. `<p dangerouslySetInnerHTML={{ __html: comment }} />`
-- B. `el.innerHTML = comment`
-- C. `<p>{comment}</p>` ✅
-- D. `document.write(comment)`
-
-> **Giải thích:** React {} tự escape nên <script> trong comment chỉ hiện ra dạng chữ. dangerouslySetInnerHTML / innerHTML chạy luôn script → đánh cắp token trong localStorage.
-
-## 2b. JWT — sửa payload
-
-### Q12 · 30 s
-
-**You edit the JWT payload "role":"viewer" to "admin" and keep the old signature. Server replies?**
-
-- A. 200 OK, you're admin now
-- B. 401, the signature no longer matches ✅
-- C. 403, viewers can't edit tokens
-- D. 500, the token can't be parsed
-
-> **Giải thích:** Server tính lại HMAC từ header + payload mới bằng secret → khác chữ ký cũ → 401. Muốn giả được phải có secret, nên secret lộ = mọi thứ lộ.
+> **Giải thích:** Đây là Broken Access Control (IDOR), OWASP #1 (5.3). Đã login chưa đủ: phải kiểm quyền sở hữu ngay trong query, ở backend.
 
 ---
 
@@ -166,12 +166,12 @@ Hotel: the front desk checks your ID card. Your key card opens only room 702. Th
 You're logged in as a viewer and call DELETE /users/42. Viewers can't delete users. Right status code?,401 Unauthorized,400 Bad Request,403 Forbidden,200 OK,20,3
 Your users table has a column password = 'hunter2'. How should passwords be stored instead?,"Encrypted with AES, key kept on the same server",Hashed with bcrypt or Argon2,"Hashed with SHA-256, it's one-way",Base64-encoded,20,2
 "Two users both pick the password 123456. With bcrypt, their stored hashes are…","Identical, same password gives same hash","Different, each user gets a random salt","Identical, unless the cost factor differs","Empty, bcrypt doesn't store anything",20,2
-You paste an eyJ… JWT into jwt.io without knowing the secret. What can you see?,"Nothing, the token is encrypted",Only the signature,"The payload: sub, role, exp","Only the header, the payload needs the secret",20,3
 Set-Cookie: sid=abc; ___ ; Secure; SameSite=Lax. Which flag stops JavaScript from reading the cookie?,HttpOnly,Path=/,Max-Age=3600,Domain=example.com,20,1
-A calendar app wants to read your Google Calendar. What's the right way to give it access?,Type your Google password into the calendar app,Email the app an export of your calendar,Share your Google session cookie with the app,"Get redirected to Google, log in there, click Allow",20,4
-"In ""Login with Google"" (OIDC), which token tells your app WHO the user is?",access_token,id_token,client_secret,The authorization code,20,2
-GET /orders/1024 shows your order. Changing it to /orders/1025 shows a stranger's order. What's the fix?,Hide the order ID in the frontend,Check that the user is logged in,Query WHERE id = ? AND user_id = ?,Return 500 when the ID is wrong,20,3
-"Login query: ""...WHERE email = '"" + email + ""'"". Input ' OR '1'='1 gets in with no password. Best fix?",Block the ' character in the frontend form,Use a parameterized query or an ORM,Wrap the query in try/catch,Return 403 instead of 401 on failure,30,2
-You render a user's comment in React. Which line is the safe default against XSS?,<p dangerouslySetInnerHTML={{ __html: comment }} />,el.innerHTML = comment,<p>{comment}</p>,document.write(comment),30,3
 "You edit the JWT payload ""role"":""viewer"" to ""admin"" and keep the old signature. Server replies?","200 OK, you're admin now","401, the signature no longer matches","403, viewers can't edit tokens","500, the token can't be parsed",30,2
+Claude wants to read your Google Calendar. What's the right way to give it access?,Type your Google password into the Claude chat,Email Claude an export of your calendar,Share your Google session cookie with Claude,"Get redirected to Google, log in there, click Allow",20,4
+"In ""Login with Google"" (OIDC), which token tells your app WHO the user is?",access_token,id_token,client_secret,The authorization code,20,2
+"Orders calls Payments at 3 a.m. No user, no browser. Which OAuth grant type fits?",Client Credentials,Authorization Code + PKCE,Device Authorization,Implicit,20,1
+"Payments gets a validly signed token, but its aud is inventory-service. What should Payments do?","Accept it, the signature is valid",Accept it if the scope is payments.charge,"Reject it with 401, it was made for another service",Forward it to Inventory,20,3
+Your GitHub Action deploys to AWS. Where should the AWS access keys be stored?,In the repo's GitHub secrets,Hardcoded in the workflow YAML,In a .env file committed to the repo,Nowhere: GitHub's OIDC token is traded for 1-hour AWS credentials,20,4
+GET /orders/1024 shows your order. Changing it to /orders/1025 shows a stranger's order. What's the fix?,Hide the order ID in the frontend,Check that the user is logged in,Query WHERE id = ? AND user_id = ?,Return 500 when the ID is wrong,20,3
 ```

@@ -1,6 +1,6 @@
 # Authentication & Authorization — slide deck
 
-HTML slides for an intern-level talk: who you are vs what you can do, storing passwords, session cookies vs JWT, "Login with Google" (OAuth 2.0 + OpenID Connect + MFA), permissions and the four bugs interns ship most often.
+HTML slides for an intern-level talk: who you are vs what you can do, storing passwords, session cookies vs JWT, "Login with Google" (OAuth 2.0 + OpenID Connect + MFA, with Claude's connectors as the real example), service-to-service auth (Client Credentials, GitHub Actions → AWS with OIDC), permissions, and four classic attacks to study on your own.
 
 Presenter: **Truc Le**.
 
@@ -46,5 +46,7 @@ Every slide prints at its last step.
 
 ## Interactive slides
 
-- **2.3 · JWT decoder** — a real token split into header, payload and signature, decoded in the browser.
-- **3.3 · Authorization Code flow** — step through "Login with Google" with `→`.
+- **2.2 · JWT decoder** — a real token split into header, payload and signature, decoded in the browser.
+- **3.3 · "Connect" with Google** — step through Claude's Google connector (Authorization Code flow) with `→`.
+- **4.3 · Client Credentials** — step through Orders getting a 5-minute token and calling Payments.
+- **4.6 · GitHub Actions → AWS** — step through a deploy that uses an OIDC token instead of stored AWS keys.

@@ -52,7 +52,7 @@ Consequences:
 
 ## Writing slide copy
 
-The audience is **interns** (backend + frontend): they know HTTP, REST and how to write a CRUD endpoint, but have never built login themselves. `auth-outline.md` (Vietnamese) is the source of truth for content and order; slides are its English version, not a free rewrite. It also lists what was deliberately **cut** (OAuth 1.0, PKCE internals, refresh-token reuse detection, key rotation, mTLS, ABAC, SAML) — don't bring those back.
+The audience is **interns** (backend + frontend): they know HTTP, REST and how to write a CRUD endpoint, but have never built login themselves. `auth-outline.md` (Vietnamese) is the source of truth for content and order; slides are its English version, not a free rewrite. It also lists what was deliberately **cut** (OAuth 1.0, PKCE internals, grant-type flows beyond one-line definitions, refresh-token reuse detection, key rotation / JWKS, mTLS handshakes and mesh config — 4.7 keeps mTLS / mesh as concept cards only, ABAC, SAML, per-attack deep dives — 5.4 keeps SQLi / XSS / CSRF / brute force as self-study cards with links) — don't bring those back.
 
 - **Start from something they will see in week one.** A `401` in the network tab, a cookie in DevTools, an `eyJ…` string in an `Authorization` header, a "Login with Google" button.
 - **Problem before definition.** Show what breaks without the thing, then name it.
@@ -143,8 +143,12 @@ Headless check without a browser window:
 
 ## Interactive slides
 
-- **2.3 JWT decoder** (`02-sessions-jwt.html`): splits a sample token into three colored parts and decodes header + payload with `atob` in the browser.
-- **3.3 Authorization Code flow** (`03-login-with-google.html`, `Charts.scene()` + `steps()`): user → app → Google → back with `code` → token exchange → API call.
+Sections: 00 Introduction · 01 Passwords · 02 Staying logged in · 03 Login with Google (Claude as the running example) · 04 Service-to-service (Orders → Payments, GitHub Actions → AWS) · 05 Permissions & attacks · 99 Thanks + Kahoot.
+
+- **2.2 JWT decoder** (`02-sessions-jwt.html`): splits a sample token into three colored parts and decodes header + payload with `atob` in the browser; a paste box accepts any JWT.
+- **3.3 Authorization Code flow · "Connect"** (`03-login-with-google.html`, `Charts.scene()` + `steps()`, ids `s3-flow-*`): you → Claude → accounts.google.com (log in + consent) → back with `code` → Claude's backend trades it for a token → Calendar API. 5 phases, 4 `data-step`s.
+- **4.3 Client Credentials flow** (`04-service-to-service.html`, `steps()`, ids `s4-cc-*`): orders-service → auth server `POST /oauth/token` → 5-minute JWT → `POST /charges` on payments-service. 4 phases, 3 `data-step`s, with the request / response code blocks revealed in step.
+- **4.6 GitHub Actions → AWS with OIDC** (`04-service-to-service.html`, `steps()`, ids `s4-gh-*`): push to main → GitHub OIDC token → AWS STS → trust policy check → 1-hour credentials → deploy. 5 phases, 4 `data-step`s.
 
 ## Known issues
 

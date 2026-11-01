@@ -241,7 +241,7 @@ code { font-family: var(--mono); font-size: 0.86em; background: var(--surface-al
 .tbl.dense td.name { width: 17%; font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--muted); }
 
 /* ---------- do / don't table ----------
-   The recap slide at the end of each section (1.6, 2.9, 3.6): one row per topic,
+   The recap slide at the end of each section (1.6, 2.6, 3.8, 4.8): one row per topic,
    topic | ✗ don't | ✓ do. Line 1 of a cell is the code an intern would type, line 2 the short why.
    <em> inside .dd-code is prose set in the body font; <i> is a muted separator. */
 .dd-grid { flex: 1; min-height: 0; display: flex; flex-direction: column; }
