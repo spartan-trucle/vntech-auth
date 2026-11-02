@@ -4,7 +4,7 @@
   <div class="section-tag"><i></i>SECTION 2</div>
   <h2>Staying logged in</h2>
   <p class="lead">HTTP forgets you after every request. Session cookies and JWTs are two ways to carry a ticket.</p>
-  <div class="foot"><span>18 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>18 / 61</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- Section 2 styles. Selectors are scoped to this section's slides; colors use theme tokens only. -->
@@ -21,7 +21,7 @@
     </div>
     <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>A ticket from login</strong>, sent on every request: a session cookie or a JWT.</span></p>
   </div>
-  <div class="foot"><span>19 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>19 / 61</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.1 -->
@@ -59,7 +59,7 @@
       </ul>
     </div>
   </div>
-  <div class="foot"><span>20 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>20 / 61</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.2 -->
@@ -94,7 +94,7 @@
     </div>
     <ul class="points tight"><li><span class="chip risk">never inside</span>passwords, card numbers, national ID, API keys. Anyone holding the token can read it.</li></ul>
   </div>
-  <div class="foot"><span>21 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>21 / 61</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- your turn · before 2.3 -->
@@ -104,7 +104,7 @@
     <h2 class="ask-q">Can you read a JWT&#39;s payload without the secret? How?</h2>
     <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>Yes.</strong> <code>atob()</code> the middle part, or paste it into jwt.io. The secret only protects against changes.</span></p>
   </div>
-  <div class="foot"><span>22 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>22 / 61</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.3 -->
@@ -139,7 +139,7 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
       </div>
     </div>
   </div>
-  <div class="foot"><span>23 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>23 / 61</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.4 -->
@@ -162,10 +162,150 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
       <li data-step="2">The usual fix: a short <code>exp</code> (15 min), renewed by a refresh token the server can delete.</li>
     </ul>
   </div>
-  <div class="foot"><span>24 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>24 / 61</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
-<!-- your turn · before 2.5 -->
+<!-- 2.5 -->
+<section class="slide" data-section="access-refresh">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-clock"/></svg>2.5 · Access token + refresh token</div>
+  <h2>The server stores nothing for the access token. It stores only the refresh token, so it can delete it.</h2>
+  <div class="body" id="s2-ar">
+    <div class="s2-ar-top">
+      <div class="card">
+        <div class="k">access token · JWT · 5–15 min</div>
+        <p>Sent on every API call: <code>Authorization: Bearer eyJ…</code></p>
+        <p>The server checks the signature and <code>exp</code>, and is done. <b>It stores nothing.</b> That is what "stateless" means.</p>
+      </div>
+      <div class="card">
+        <div class="k">refresh token · random · 7–30 days</div>
+        <p>Sent only to <code>POST /auth/refresh</code>. Not a JWT, just random bytes.</p>
+        <pre class="code">refresh_tokens(user_id, token_hash,
+               expires_at, revoked_at)</pre>
+        <p>Stored as a hash. A row exists, so the server can delete it.</p>
+      </div>
+      <table class="tbl" id="s2-life">
+        <thead><tr><th></th><th>typical</th><th>on the server</th></tr></thead>
+        <tbody>
+          <tr><td class="name">access token</td><td class="num">5–15 min</td><td>not stored</td></tr>
+          <tr><td class="name">refresh, idle</td><td class="num">~7–14 days</td><td>unused that long → log in again</td></tr>
+          <tr><td class="name">refresh, max</td><td class="num">~30–90 days</td><td>then log in again, always</td></tr>
+          <tr><td class="name">rotation</td><td class="num">every refresh</td><td>new refresh token, old row marked used</td></tr>
+          <tr><td class="name">logout</td><td class="num">now</td><td>delete the refresh row</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="chart meter"><svg id="s2-tl" role="img" aria-label="Timeline: an access token renewed every 15 minutes by a long-lived refresh token, and what happens after logout"></svg></div>
+  </div>
+  <div class="foot"><span>25 / 61</span><span>section 2 · sessions &amp; jwt</span></div>
+</section>
+
+<!-- 2.6 -->
+<section class="slide" data-section="revocation">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-shield"/></svg>2.6 · The revocation problem</div>
+  <h2>You banned the user, but their access token still works until exp. Pick how long you can wait.</h2>
+  <div class="s2-stepper">
+    <span class="chip risk">0 · the problem</span>
+    <span class="chip hot" data-step="1">A · wait</span>
+    <span class="chip hot" data-step="2">B · token version</span>
+    <span class="chip hot" data-step="3">C · denylist</span>
+    <span class="chip" data-step="4">trade-off</span>
+  </div>
+  <div class="s2-flowgrid">
+    <div class="s2-left">
+      <div class="chart meter"><svg id="s2-rv-flow" role="img" aria-label="A banned user's access token reaches the API. Without a check it still works; with a token version or a denylist lookup the API answers 401."></svg></div>
+      <div class="flow-ctl"><div class="seg"><button id="s2-rv-replay" class="icon" aria-label="Replay" title="Replay"><svg class="ic"><use href="#ic-replay"/></svg></button></div><p class="readout" id="s2-rv-readout"></p></div>
+    </div>
+    <ul class="points tight s2-rv-pts">
+      <li><span class="chip risk">problem</span>Ban, or "log out of all devices": the refresh rows are deleted. The access JWT in hand <b>still works until <code>exp</code></b>, up to 15 more min. The server stores nothing about it, so there is nothing to delete.</li>
+      <li data-step="1"><span class="chip hot">A · wait</span>Keep <code>exp</code> short and accept the gap. Enough for most apps.</li>
+      <li data-step="2"><span class="chip hot">B · token version</span>Each token carries <code>"tv": 3</code>. Log out everywhere, password change or role change: <code>users.token_version</code> becomes 4. <code>tv</code> ≠ current → <code>401</code>.</li>
+      <li data-step="3"><span class="chip hot">C · denylist</span>Each token has a <code>jti</code> (a unique token ID). Keep revoked <code>jti</code>s in Redis until their <code>exp</code>. Kills one token, not all.</li>
+      <li data-step="4"><span class="chip">trade-off</span>B and C add a lookup on every request, so the JWT is no longer fully stateless. Cache it: Redis, or in memory with a short TTL.</li>
+    </ul>
+  </div>
+  <div class="foot"><span>26 / 61</span><span>section 2 · sessions &amp; jwt</span></div>
+</section>
+
+<!-- your turn · before 2.7 -->
+<section class="slide ask" data-section="ask-refresh-typing">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-question"/></svg>Your turn<span class="chip hot ask-time">30 s · ask your neighbour</span></div>
+  <div class="ask-body">
+    <h2 class="ask-q">Your access token expires while you are typing a long message. What must the app do so that you do not lose it?</h2>
+    <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>Refresh without asking.</strong> Get a new access token in the background, or on <code>401</code> refresh and retry the request. The draft stays on the page.</span></p>
+  </div>
+  <div class="foot"><span>27 / 61</span><span>section 2 · sessions &amp; jwt</span></div>
+</section>
+
+<!-- 2.7 -->
+<section class="slide" data-section="refresh-two-ways">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-replay"/></svg>2.7 · Two ways to refresh</div>
+  <h2>Refresh a minute before exp, and also when a call comes back 401. Most apps do both.</h2>
+  <div class="s2-lanes">
+    <div class="card s2-lane">
+      <div class="s2-lane-head"><span class="chip hot">proactive</span><span class="s2-lane-t">Silent refresh</span></div>
+      <ol class="s2-seq">
+        <li><span class="s2-at">10:00</span><span>login → access token, <code>exp</code> 10:15</span></li>
+        <li data-step="1"><span class="s2-at">10:14</span><span>a timer fires, 1 min before <code>exp</code></span></li>
+        <li data-step="1"><span class="s2-at"></span><span><code>POST /auth/refresh</code> in the background → new token, <code>exp</code> 10:29</span></li>
+        <li data-step="1"><span class="s2-at s2-ok">✓</span><span>the user sees nothing</span></li>
+      </ol>
+      <pre class="code" data-step="1">setTimeout(refresh, (exp - now - 60) * 1000)</pre>
+    </div>
+    <div class="card s2-lane">
+      <div class="s2-lane-head"><span class="chip hot">reactive</span><span class="s2-lane-t">Refresh on 401</span></div>
+      <ol class="s2-seq">
+        <li><span class="s2-at s2-bad">401</span><span><code>GET /orders</code>: the token expired</span></li>
+        <li data-step="2"><span class="s2-at"></span><span><code>POST /auth/refresh</code> → new access token</span></li>
+        <li data-step="2"><span class="s2-at s2-ok">200</span><span>retry <code>GET /orders</code> <b>once</b></span></li>
+        <li data-step="3"><span class="s2-at s2-bad">✗</span><span>refresh fails too → go to the login page</span></li>
+      </ol>
+    </div>
+  </div>
+  <ul class="points tight">
+    <li data-step="4"><span class="chip ok">both</span>The timer covers the normal case. The 401 handler covers a laptop that slept or a tab left in the background, when the timer did not run.</li>
+  </ul>
+  <div class="foot"><span>28 / 61</span><span>section 2 · sessions &amp; jwt</span></div>
+</section>
+
+<!-- 2.8 -->
+<section class="slide" data-section="refresh-single-flight">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-bug"/></svg>2.8 · The trap: five requests, one refresh</div>
+  <h2>The page loads five things at once. All five get 401. Only one of them may call refresh.</h2>
+  <div class="s2-stepper">
+    <span class="chip risk">0 · five 401s</span>
+    <span class="chip risk" data-step="1">1 · five refreshes</span>
+    <span class="chip ok" data-step="2">2 · one shared refresh</span>
+  </div>
+  <div class="s2-flowgrid">
+    <div class="s2-left">
+      <div class="chart meter"><svg id="s2-sf-flow" role="img" aria-label="Five API calls get 401 at once. Naively each one calls refresh and the reused refresh token logs the user out. With one shared refresh, all five retry and succeed."></svg></div>
+      <div class="flow-ctl"><div class="seg"><button id="s2-sf-replay" class="icon" aria-label="Replay" title="Replay"><svg class="ic"><use href="#ic-replay"/></svg></button></div><p class="readout" id="s2-sf-readout"></p></div>
+    </div>
+    <div class="s2-sf-right">
+      <ul class="points tight">
+        <li data-hide-at="2"><span class="chip risk">naive</span>Each call refreshes on its own. With rotation, call 1 gets a new refresh token and the old one is marked used.</li>
+        <li data-step="1" data-hide-at="2">Calls 2–5 send that used token. The server sees a reused refresh token, assumes theft, and <b>logs the user out</b>.</li>
+      </ul>
+      <div class="s2-sf-code" data-step="2">
+        <div class="code-label">fix: single-flight, one promise shared by every 401</div>
+<pre class="code">let refreshing = null;
+
+async function api(url, opts) {
+  const res = await fetch(url, opts);
+  if (res.status !== 401) return res;
+  refreshing ??= fetch("/auth/refresh", { method: "POST" })
+    .finally(() => { refreshing = null; });
+  const r = await refreshing;          <span class="c">// all 5 wait here</span>
+  if (!r.ok) { location.href = "/login"; return res; }
+  return fetch(url, opts);             <span class="c">// retry once</span>
+}</pre>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>29 / 61</span><span>section 2 · sessions &amp; jwt</span></div>
+</section>
+
+<!-- your turn · before 2.9 -->
 <section class="slide ask" data-section="ask-token-storage">
   <div class="eyebrow"><svg class="ic"><use href="#ic-question"/></svg>Your turn<span class="chip hot ask-time">30 s · ask your neighbour</span></div>
   <div class="ask-body">
@@ -177,12 +317,12 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
     </div>
     <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>An <code>HttpOnly</code> cookie</strong> by default: any script on the page can read <code>localStorage</code>.</span></p>
   </div>
-  <div class="foot"><span>25 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>30 / 61</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
-<!-- 2.5 -->
+<!-- 2.9 -->
 <section class="slide" data-section="token-storage">
-  <div class="eyebrow"><svg class="ic"><use href="#ic-lock"/></svg>2.5 · Where the browser keeps it</div>
+  <div class="eyebrow"><svg class="ic"><use href="#ic-lock"/></svg>2.9 · Where the browser keeps it</div>
   <h2>Any script on the page can read localStorage. No script can read an HttpOnly cookie.</h2>
   <div class="body" style="gap:16px;" id="s2-store">
     <div class="two" style="gap:22px;">
@@ -205,14 +345,15 @@ document.cookie   <span class="c">// "" (JS cannot see it)</span></pre>
     <ul class="points tight">
       <li data-step="1"><span class="chip ok">default</span> Put tokens in a cookie with <code>HttpOnly; Secure; SameSite=Lax</code>.</li>
       <li data-step="2"><span class="chip">trade-off</span> The browser sends cookies by itself, which opens the door to CSRF. <code>SameSite</code> closes most of it. Both attacks: XSS and CSRF (5.4).</li>
+      <li data-step="3"><span class="chip hot">two tokens</span>Access token: in memory or an <code>HttpOnly</code> cookie. Refresh token: a <code>HttpOnly; Secure; SameSite=Strict; Path=/auth/refresh</code> cookie, so it goes only to the refresh endpoint.</li>
     </ul>
   </div>
-  <div class="foot"><span>26 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>31 / 61</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
-<!-- 2.6 -->
+<!-- 2.10 -->
 <section class="slide" data-section="sessions-do-dont">
-  <div class="eyebrow"><svg class="ic"><use href="#ic-shield"/></svg>2.6 · Do / Don't</div>
+  <div class="eyebrow"><svg class="ic"><use href="#ic-shield"/></svg>2.10 · Do / Don't</div>
   <h2>Use a library, keep tokens short-lived, and keep them out of JavaScript's reach.</h2>
   <div class="dd-grid">
     <div class="dd-row dd-head"><span></span><span class="dd-no">✗ don't</span><span class="dd-yes">✓ do</span></div>
@@ -234,7 +375,17 @@ document.cookie   <span class="c">// "" (JS cannot see it)</span></pre>
     <div class="dd-row">
       <div class="dd-topic">lifetime</div>
       <div class="dd-cell dd-no"><div class="dd-code">exp: 30 days</div><div class="dd-why">stolen = works for a month</div></div>
-      <div class="dd-cell dd-yes"><div class="dd-code">access 15 min <i>+</i> refresh <em>on the server</em></div><div class="dd-why">delete refresh on logout</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code">access 5–15 min <i>+</i> refresh <em>stored as a hash</em></div><div class="dd-why">delete the refresh row on logout</div></div>
+    </div>
+    <div class="dd-row">
+      <div class="dd-topic">refresh</div>
+      <div class="dd-cell dd-no"><div class="dd-code">on 401: refresh() <em>in every call, retry forever</em></div><div class="dd-why">5 refreshes at once, rotation logs you out</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code">refreshing ??= refresh() <em>shared, retry once</em></div><div class="dd-why">one refresh for every waiting call, then /login</div></div>
+    </div>
+    <div class="dd-row">
+      <div class="dd-topic">revoke</div>
+      <div class="dd-cell dd-no"><div class="dd-code"><em>store every access token in the DB</em></div><div class="dd-why">a lookup per call: sessions, the hard way</div></div>
+      <div class="dd-cell dd-yes"><div class="dd-code">short exp <i>+</i> users.token_version</div><div class="dd-why">log out everywhere = bump the version</div></div>
     </div>
     <div class="dd-row">
       <div class="dd-topic">secret</div>
@@ -242,12 +393,12 @@ document.cookie   <span class="c">// "" (JS cannot see it)</span></pre>
       <div class="dd-cell dd-yes"><div class="dd-code">process.env.JWT_SECRET</div><div class="dd-why">long, random, per env</div></div>
     </div>
   </div>
-  <div class="foot"><span>27 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>32 / 61</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <script>
 (() => {
-  const { $ } = window.Charts;
+  const { el, scale, $, scene, steps, glyph } = window.Charts;
 
   // ---------- 2.2 JWT decoder (runs in the browser, atob on base64url) ----------
   const SAMPLE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9'
@@ -314,5 +465,223 @@ document.cookie   <span class="c">// "" (JS cannot see it)</span></pre>
   input.addEventListener('keydown', (e) => { if (e.key === 'Escape') input.blur(); });
   $('s2-jwt-sample').addEventListener('click', () => { input.value = SAMPLE; decode(SAMPLE); });
   decode(SAMPLE);
+
+  // ---------- 2.5 access / refresh timeline (restored from the old 2.7) ----------
+  function timeline(svg) {
+    const W = 1160, H = 222, L = 150, R = 120;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const x = scale(0, 120, L, W - R);          // minutes
+    const yA = 22, yR = 82, bh = 30, yAxis = 140;
+    const LOGOUT = 70;
+    const slot = x(15) - x(0);
+
+    el('text', { x: 0, y: yA + 21, class: 'sv-lbl' }, svg, 'access token');
+    el('text', { x: 0, y: yR + 21, class: 'sv-lbl' }, svg, 'refresh token');
+
+    // refresh token bars first, so the refresh dots paint on top of them
+    const live = el('g', { 'data-hide-at': '1' }, svg);
+    el('rect', { x: x(0) + 2, y: yR, width: x(120) - x(0) + 20, height: bh, rx: 6, class: 'sv-box' }, live);
+    el('text', { x: x(120) + 30, y: yR + 21, class: 'sv-lbl-sm' }, live, '→ 7–30 days');
+    const outBars = el('g', { 'data-step': '1' }, svg);
+    el('rect', { x: x(0) + 2, y: yR, width: x(LOGOUT) - x(0) - 2, height: bh, rx: 6, class: 'sv-box' }, outBars);
+    el('rect', { x: x(LOGOUT), y: yR, width: x(120) - x(LOGOUT) + 20, height: bh, rx: 6, class: 'sv-box-risk' }, outBars);
+    el('text', { x: x(LOGOUT) + 14, y: yR + 21, class: 'sv-risk' }, outBars, 'logout: refresh row deleted');
+
+    const before = el('g', {}, svg);                       // access tokens issued before logout
+    const after = el('g', { 'data-hide-at': '1' }, svg);   // the ones logout prevents
+    for (let t = 0; t < 120; t += 15) {
+      const g = t < 75 ? before : after;
+      el('rect', { x: x(t) + 2, y: yA, width: slot - 4, height: bh, rx: 6, class: 'sv-box-hot' }, g);
+      el('text', { x: x(t + 7.5), y: yA + 20, 'text-anchor': 'middle', class: 'sv-lbl-sm' }, g, '15 min');
+      if (t > 0) {
+        el('path', { d: `M${x(t)} ${yR - 2} V${yA + bh + 3}`, class: 'sv-dash' }, g);
+        el('circle', { cx: x(t), cy: yR + bh / 2, r: 6, class: 'sv-mark' }, g);
+      }
+    }
+
+    for (let t = 0; t <= 120; t += 30) {
+      el('text', { x: x(t), y: yAxis + 20, 'text-anchor': 'middle', class: 'sv-tick' }, svg, t === 0 ? 'login' : `${Math.floor(t / 60)}h${String(t % 60).padStart(2, '0')}`);
+    }
+    el('line', { x1: x(0), x2: x(120), y1: yAxis, y2: yAxis, class: 'sv-axis' }, svg);
+    el('circle', { cx: x(0) + 6, cy: yAxis + 46, r: 6, class: 'sv-mark' }, svg);
+    el('text', { x: x(0) + 20, y: yAxis + 51, class: 'sv-lbl-sm' }, svg, 'POST /auth/refresh: the refresh token buys a new 15-min access token');
+
+    // step 1: logout at 1h10. The current access token still works until its exp (1h15), then nothing.
+    const outMarks = el('g', { 'data-step': '1' }, svg);
+    el('path', { d: `M${x(LOGOUT)} ${yR - 6} V${yAxis}`, class: 'sv-limit' }, outMarks);
+    el('rect', { x: x(75) + 2, y: yA, width: x(120) - x(75) - 4, height: bh, rx: 6, class: 'sv-wait' }, outMarks);
+    el('text', { x: x(97.5), y: yA + 21, 'text-anchor': 'middle', class: 'sv-risk' }, outMarks, '401 · no new access token');
+    el('text', { x: x(0), y: yAxis + 78, class: 'sv-risk' }, outMarks, 'logout at 1h10: the access token already issued still works until 1h15, then 401.');
+  }
+  timeline($('s2-tl'));
+
+  // ---------- shared bits for the two stepped scenes (2.6, 2.8) ----------
+  const txt = (p, x, y, cls, t, anchor) =>
+    el('text', anchor ? { x, y, class: cls, 'text-anchor': anchor } : { x, y, class: cls }, p, t);
+  const line = (p, d) => el('path', { d, class: 'sv-line-soft' }, p);
+  // a message card: lines of small mono text, moved with style.transform
+  const card = (p, lines, cls = 'sv-box-hot') => {
+    const g = el('g', { class: 'pkt-fly' }, p);
+    const lh = 17, h = lines.length * lh + 12;
+    const w = Math.max(...lines.map((l) => l.length)) * 7.9 + 22;
+    el('rect', { x: -w / 2, y: -h / 2, width: w, height: h, rx: 6, class: cls }, g);
+    lines.forEach((t, i) => txt(g, -w / 2 + 11, -h / 2 + 6 + lh * (i + 0.75), 's2-csm', t));
+    return g;
+  };
+  const put = (g, x, y) => { g.style.transform = `translate(${x}px, ${y}px)`; };
+  const move = (w, g, x, y) => { if (!w.virtual()) void g.getBoundingClientRect(); put(g, x, y); };
+  const fade = (w, g) => { g.classList.add('pkt-gone'); w.later(() => g.remove(), 400); };
+  const lit = (w, key, on) => w.L[key].setAttribute('class', on ? 'sv-hot-line' : 'sv-line-soft');
+  const status = (t, text, cls = 'sv-hot') => { t.textContent = text; t.setAttribute('class', cls); };
+  async function hop(w, lines, from, to, { cls, wire, keep = false } = {}) {
+    const c = card(w.layer, lines, cls);
+    put(c, ...from);
+    if (wire) lit(w, wire, true);
+    move(w, c, ...to);
+    await w.sleep(620);
+    if (wire) lit(w, wire, false);
+    if (!keep) fade(w, c);
+    return c;
+  }
+
+  // ---------- 2.6 the revocation problem ----------
+  const rv = scene($('s2-rv-flow'), '0 0 560 312', (svg) => {
+    const wires = el('g', {}, svg);
+    const L = {
+      BA: line(wires, 'M74 150 H236'),
+      AU: line(wires, 'M300 132 C360 90 400 64 454 60'),
+      AR: line(wires, 'M300 168 C360 210 400 236 454 240'),
+    };
+    const B = glyph(svg, { icon: 'gl-client', x: 12, y: 122, size: 56 });
+    txt(svg, 40, 204, 'sv-lbl', 'browser', 'middle');
+    txt(svg, 40, 224, 'sv-lbl-sm', 'exp 10:12', 'middle');
+    const A = glyph(svg, { icon: 'gl-server', x: 240, y: 122, size: 56 });
+    txt(svg, 268, 204, 'sv-lbl', 'API', 'middle');
+    const U = glyph(svg, { icon: 'gl-server', x: 460, y: 30, size: 46 });
+    txt(svg, 483, 100, 'sv-lbl', 'users', 'middle');
+    const uSub = txt(svg, 483, 120, 'sv-lbl-sm', 'token_version 3', 'middle');
+    const R = glyph(svg, { icon: 'gl-server', x: 460, y: 212, size: 46 });
+    txt(svg, 483, 282, 'sv-lbl', 'Redis', 'middle');
+    const rSub = txt(svg, 483, 300, 'sv-lbl-sm', 'denylist: empty', 'middle');
+    const st = {
+      top: txt(svg, 0, 22, 'sv-risk', ''),
+      A: txt(svg, 268, 246, 'sv-hot', '', 'middle'),
+    };
+    const clear = () => {
+      Object.values(st).forEach((t) => status(t, ''));
+      Object.values(L).forEach((l) => l.setAttribute('class', 'sv-line-soft'));
+      [B, A, U, R].forEach((g) => g.set(''));
+      uSub.textContent = 'token_version 3';
+      rSub.textContent = 'denylist: empty';
+    };
+    return { L, B, A, U, R, uSub, rSub, st, clear };
+  });
+  const call = (w, lines) => hop(w, lines, [118, 104], [190, 104], { wire: 'BA' });
+  const rvPhases = [
+    async (w) => {
+      status(w.st.top, '10:00 · user 42 banned, refresh rows deleted');
+      w.B.set('hot');
+      await call(w, ['10:03 · GET /orders', 'Bearer eyJ…']);
+      w.A.set('risk');
+      status(w.st.A, 'sig ✓ exp ✓ → 200', 'sv-risk');
+      w.say('<strong>Still 200.</strong> The API checks only the signature and <code>exp</code>. It has no row to delete.');
+    },
+    async (w) => {
+      status(w.st.top, 'option A · wait for exp', 'sv-hot');
+      w.B.set('hot');
+      await call(w, ['10:12 · GET /orders', 'exp passed']);
+      w.A.set('hot');
+      status(w.st.A, 'exp ✗ → 401', 'sv-ok');
+      w.say('The gap ends at <code>exp</code>: at most <b>15</b> min. Fine for most apps.');
+    },
+    async (w) => {
+      status(w.st.top, 'option B · token version', 'sv-hot');
+      w.uSub.textContent = 'token_version 4';
+      w.U.set('hot');
+      w.B.set('hot');
+      await call(w, ['GET /orders', '"tv": 3']);
+      lit(w, 'AU', true);
+      await w.sleep(300);
+      w.A.set('hot');
+      status(w.st.A, 'tv 3 ≠ 4 → 401', 'sv-ok');
+      w.say('Log out everywhere bumped the column to 4. Every token with <code>"tv": 3</code> is now dead.');
+    },
+    async (w) => {
+      status(w.st.top, 'option C · denylist', 'sv-hot');
+      w.rSub.textContent = 'jti a81f… until 10:12';
+      w.R.set('hot');
+      w.B.set('hot');
+      await call(w, ['GET /orders', '"jti": "a81f…"']);
+      lit(w, 'AR', true);
+      await w.sleep(300);
+      w.A.set('hot');
+      status(w.st.A, 'jti denied → 401', 'sv-ok');
+      w.say('Only this one token is dead. The user stays logged in on other devices.');
+    },
+    async (w) => {
+      status(w.st.top, 'trade-off', 'sv-hot');
+      w.uSub.textContent = 'token_version 4';
+      w.rSub.textContent = 'jti a81f… until 10:12';
+      w.A.set('hot');
+      lit(w, 'AU', true); lit(w, 'AR', true);
+      status(w.st.A, '+1 lookup per request', 'sv-hot');
+      w.say('B and C read a table on <strong>every</strong> call. Cache it: Redis, or memory with a short TTL.');
+    },
+  ];
+  steps('s2-rv', rv, rvPhases);
+
+  // ---------- 2.8 five 401s, one refresh ----------
+  const CALLS = ['GET /orders', 'GET /cart', 'GET /me', 'GET /alerts', 'GET /prices'];
+  const sf = scene($('s2-sf-flow'), '0 0 560 316', (svg) => {
+    const wires = el('g', {}, svg);
+    const ys = CALLS.map((_, i) => 34 + i * 58);
+    const L = {};
+    ys.forEach((y, i) => { L[i] = line(wires, `M112 ${y - 5} C280 ${y - 5} 330 150 452 150`); });
+    const calls = ys.map((y, i) => txt(svg, 0, y, 's2-call', CALLS[i]));
+    const st = ys.map((y) => txt(svg, 0, y + 20, 'sv-hot', ''));
+    const S = glyph(svg, { icon: 'gl-server', x: 458, y: 116, size: 56 });
+    txt(svg, 486, 196, 'sv-lbl', 'auth server', 'middle');
+    txt(svg, 486, 216, 'sv-lbl-sm', '/auth/refresh', 'middle');
+    const sSt = txt(svg, 486, 240, 'sv-hot', '', 'middle');
+    const sSt2 = txt(svg, 486, 260, 'sv-hot', '', 'middle');
+    const clear = () => {
+      [...st, sSt, sSt2].forEach((t) => status(t, ''));
+      Object.values(L).forEach((l) => l.setAttribute('class', 'sv-line-soft'));
+      S.set('');
+    };
+    return { L, ys, calls, st, S, sSt, sSt2, clear };
+  });
+  const all401 = (w) => w.st.forEach((t) => status(t, '401 · expired', 'sv-risk'));
+  const sfPhases = [
+    async (w) => {
+      for (let i = 0; i < CALLS.length; i++) { await w.sleep(140); status(w.st[i], '401 · expired', 'sv-risk'); }
+      w.say('One access token expired, so <b>5</b> calls get <code>401</code> at the same moment.');
+    },
+    async (w) => {
+      all401(w);
+      w.S.set('hot');
+      // all five fly at once: nothing tells the other calls that a refresh is already running
+      CALLS.forEach((_, i) => { hop(w, ['refresh R1'], [70, w.ys[i] + 26], [400, 150], { wire: i }); });
+      await w.sleep(700);
+      status(w.st[0], 'R1 ✓ → new R2', 'sv-ok');
+      for (let i = 1; i < CALLS.length; i++) status(w.st[i], 'R1 already used ✗', 'sv-risk');
+      w.S.set('risk');
+      status(w.sSt, 'R1 reused!', 'sv-risk');
+      status(w.sSt2, 'all sessions revoked', 'sv-risk');
+      w.say('<b>5</b> refresh calls. Calls 2–5 reuse a token, the server assumes theft and <strong>logs the user out</strong>.');
+    },
+    async (w) => {
+      all401(w);
+      CALLS.forEach((_, i) => { if (i) status(w.st[i], 'waits on the same promise', 'sv-lbl-sm'); });
+      status(w.st[0], 'starts the one refresh', 'sv-hot');
+      w.S.set('hot');
+      await hop(w, ['refresh R1'], [70, w.ys[0] + 26], [400, 150], { wire: 0 });
+      status(w.sSt, 'R1 ✓ → R2', 'sv-ok');
+      await w.sleep(300);
+      CALLS.forEach((_, i) => status(w.st[i], 'retry once → 200', 'sv-ok'));
+      w.say('<b>1</b> refresh, then all <b>5</b> calls retry once and get <code>200</code>.');
+    },
+  ];
+  steps('s2-sf', sf, sfPhases);
 })();
 </script>
