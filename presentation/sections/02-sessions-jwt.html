@@ -4,7 +4,7 @@
   <div class="section-tag"><i></i>SECTION 2</div>
   <h2>Staying logged in</h2>
   <p class="lead">HTTP forgets you after every request. Session cookies and JWTs are two ways to carry a ticket.</p>
-  <div class="foot"><span>18 / 63</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>18 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- Section 2 styles. Selectors are scoped to this section's slides; colors use theme tokens only. -->
@@ -21,7 +21,7 @@
     </div>
     <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>A ticket from login</strong>, sent on every request: a session cookie or a JWT.</span></p>
   </div>
-  <div class="foot"><span>19 / 63</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>19 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.1 -->
@@ -59,7 +59,7 @@
       </ul>
     </div>
   </div>
-  <div class="foot"><span>20 / 63</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>20 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.2 -->
@@ -94,7 +94,7 @@
     </div>
     <ul class="points tight"><li><span class="chip risk">never inside</span>passwords, card numbers, national ID, API keys. Anyone holding the token can read it.</li></ul>
   </div>
-  <div class="foot"><span>21 / 63</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>21 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- your turn · before 2.3 -->
@@ -104,7 +104,7 @@
     <h2 class="ask-q">Can you read a JWT&#39;s payload without the secret? How?</h2>
     <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>Yes.</strong> <code>atob()</code> the middle part, or paste it into jwt.io. The secret only protects against changes.</span></p>
   </div>
-  <div class="foot"><span>22 / 63</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>22 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.3 -->
@@ -139,7 +139,7 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
       </div>
     </div>
   </div>
-  <div class="foot"><span>23 / 63</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>23 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.4 -->
@@ -162,7 +162,7 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
       <li data-step="2">The usual fix: a short <code>exp</code> (15 min), renewed by a refresh token the server can delete.</li>
     </ul>
   </div>
-  <div class="foot"><span>24 / 63</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>24 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.5 -->
@@ -196,7 +196,7 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
     </div>
     <div class="chart meter"><svg id="s2-tl" role="img" aria-label="Timeline: an access token renewed every 15 minutes by a long-lived refresh token, and what happens after logout"></svg></div>
   </div>
-  <div class="foot"><span>25 / 63</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>25 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.6 -->
@@ -223,7 +223,7 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
       <li data-step="4"><span class="chip">trade-off</span>B and C add a lookup on every request, so the JWT is no longer fully stateless. Cache it: Redis, or in memory with a short TTL.</li>
     </ul>
   </div>
-  <div class="foot"><span>26 / 63</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>26 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- your turn · before 2.7 -->
@@ -233,7 +233,7 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
     <h2 class="ask-q">Your access token expires while you are typing a long message. What must the app do so that you do not lose it?</h2>
     <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>Refresh without asking.</strong> Get a new access token in the background, or on <code>401</code> refresh and retry the request. The draft stays on the page.</span></p>
   </div>
-  <div class="foot"><span>27 / 63</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>27 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.7 -->
@@ -264,7 +264,7 @@ in token = <span class="s2-s">XxLJzh34muY1zOIZ…</span>
   <ul class="points tight">
     <li data-step="4"><span class="chip ok">both</span>The timer covers the normal case. The 401 handler covers a laptop that slept or a tab left in the background, when the timer did not run.</li>
   </ul>
-  <div class="foot"><span>28 / 63</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>28 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.8 -->
@@ -302,7 +302,7 @@ async function api(url, opts) {
       </div>
     </div>
   </div>
-  <div class="foot"><span>29 / 63</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>29 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- your turn · before 2.9 -->
@@ -317,7 +317,7 @@ async function api(url, opts) {
     </div>
     <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>An <code>HttpOnly</code> cookie</strong> by default: any script on the page can read <code>localStorage</code>.</span></p>
   </div>
-  <div class="foot"><span>30 / 63</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>30 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.9 -->
@@ -344,11 +344,11 @@ document.cookie   <span class="c">// "" (JS cannot see it)</span></pre>
     </div>
     <ul class="points tight">
       <li data-step="1"><span class="chip ok">default</span> Put tokens in a cookie with <code>HttpOnly; Secure; SameSite=Lax</code>.</li>
-      <li data-step="2"><span class="chip">trade-off</span> The browser sends cookies by itself, which opens the door to CSRF. <code>SameSite</code> closes most of it. Both attacks: XSS and CSRF (5.4).</li>
+      <li data-step="2"><span class="chip">trade-off</span> The browser sends cookies by itself, which opens the door to CSRF. <code>SameSite</code> closes most of it. Read: <a href="https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html" target="_blank" rel="noopener">OWASP XSS ↗</a> <a href="https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html" target="_blank" rel="noopener">OWASP CSRF ↗</a></li>
       <li data-step="3"><span class="chip hot">two tokens</span>Access token: in memory or an <code>HttpOnly</code> cookie. Refresh token: a <code>HttpOnly; Secure; SameSite=Strict; Path=/auth/refresh</code> cookie, so it goes only to the refresh endpoint.</li>
     </ul>
   </div>
-  <div class="foot"><span>31 / 63</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>31 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <!-- 2.10 -->
@@ -393,7 +393,7 @@ document.cookie   <span class="c">// "" (JS cannot see it)</span></pre>
       <div class="dd-cell dd-yes"><div class="dd-code">process.env.JWT_SECRET</div><div class="dd-why">long, random, per env</div></div>
     </div>
   </div>
-  <div class="foot"><span>32 / 63</span><span>section 2 · sessions &amp; jwt</span></div>
+  <div class="foot"><span>32 / 56</span><span>section 2 · sessions &amp; jwt</span></div>
 </section>
 
 <script>
