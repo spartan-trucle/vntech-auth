@@ -241,7 +241,7 @@ code { font-family: var(--mono); font-size: 0.86em; background: var(--surface-al
 .tbl.dense td.name { width: 17%; font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--muted); }
 
 /* ---------- do / don't table ----------
-   The recap slide at the end of each section (1.6, 2.6, 3.8, 4.8): one row per topic,
+   The recap slide at the end of each section (1.6, 2.10, 3.10, 4.8): one row per topic,
    topic | ✗ don't | ✓ do. Line 1 of a cell is the code an intern would type, line 2 the short why.
    <em> inside .dd-code is prose set in the body font; <i> is a muted separator. */
 .dd-grid { flex: 1; min-height: 0; display: flex; flex-direction: column; }
@@ -898,12 +898,12 @@ body.overview .backdrop { display: none; }
   .s3-stepper { display: flex; gap: 10px; flex-wrap: wrap; }
   .s3-code-sm { fill: var(--ink); font-family: var(--mono); font-size: 14px; }
   .s3-note { margin: 0; font-size: 16px; color: var(--muted); }
-  /* 3.7 · access token vs id token */
+  /* 3.8 · access token vs id token */
   .s3-tok .card { padding: 14px 18px; gap: 6px; }
   .s3-tok .card p { font-size: 16.5px; }
   .s3-tok .code { font-size: 15px; padding: 12px 16px; }
   .s3-jwt { color: var(--muted); }
-  /* 3.8 · compact factor cards above the comparison table */
+  /* 3.9 · compact factor cards above the comparison table */
   .s3-factors { gap: 16px; }
   .s3-factors .card { flex-direction: row; align-items: center; gap: 14px; padding: 12px 16px; border-radius: var(--r-md); }
   .s3-factors .card .t { font-size: 19px; }
@@ -1029,13 +1029,30 @@ body.overview .ask .ask-opt:not(.is-right) { opacity: 0.38; }
   .s3-grants tr.s3-legacy td { opacity: 0.6; border-bottom: 0; }
   .s3-grants tr.s3-legacy td.name { color: var(--muted); }
 
-  /* 3.7 · connector vs sign-in, two columns */
+  /* 3.8 · connector vs sign-in, two columns */
   .s3-cols { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 32px; align-content: start; }
   .s3-cols .card { padding: 12px 18px; gap: 6px; }
   .s3-cols .card .t { font-size: 20px; }
   .s3-cols .card p { font-size: 16px; }
   .s3-cols .code { font-size: 14.5px; padding: 10px 16px; line-height: 1.5; }
   .s3-cols .points.tight li { font-size: 16.5px; padding: 7px 0; }
+  /* wrapper keeps the 3.8 caption out of the entrance stagger, so it waits for step 2 */
+  .s3-oidc-cap { min-height: 23px; }
+
+  /* 3.7 · what OIDC is: problem line, three cards revealed one per step, roles + hand-off line */
+  .s3-oidc { gap: 18px; }
+  .s3-oidc-problem { margin: 0; font-size: 18px; line-height: 1.45; color: var(--body); }
+  .s3-oidc-problem .chip { margin-right: 6px; padding-top: 2px; padding-bottom: 2px; }
+  .s3-oidc-head { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .s3-oidc-cards { gap: 18px; }
+  .s3-oidc-cards .card { padding: 18px 20px; gap: 10px; }
+  .s3-oidc-cards .card .t { font-size: 24px; }
+  .s3-oidc-cards .card .t code { font-size: 0.9em; }
+  .s3-oidc-cards .card p { font-size: 17.5px; line-height: 1.55; }
+  .s3-oidc-cards .card p code { overflow-wrap: anywhere; }
+  .s3-oidc-roles { margin: 0; font-size: 18px; color: var(--body); }
+  .s3-oidc-roles i { font-style: normal; color: var(--muted); margin: 0 8px; }
+  .s3-oidc-bottom { margin: 0; font-size: 21px; font-weight: 600; color: var(--ink); }
 
 /* ---------- section 03 · pkce ----------
    3.5 · problem line above the stepped flow; lane dividers and the bad app live in the SVG (#s3-pk-flow). */
