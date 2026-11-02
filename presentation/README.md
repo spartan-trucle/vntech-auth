@@ -1,6 +1,6 @@
 # Authentication & Authorization — slide deck
 
-HTML slides for an intern-level talk: who you are vs what you can do, storing passwords, session cookies vs JWT, "Login with Google" (OAuth 2.0 + OpenID Connect + MFA, with Claude's connectors as the real example), service-to-service auth (Client Credentials, GitHub Actions → AWS with OIDC), permissions, and four classic attacks to study on your own.
+HTML slides for an intern-level talk: who you are vs what you can do, storing passwords, session cookies vs JWT, "Login with Google" (OAuth 2.0 + OpenID Connect + MFA, with Claude's connectors as the real example), and service-to-service auth (Client Credentials, GitHub Actions → AWS with OIDC).
 
 Presenter: **Truc Le**.
 

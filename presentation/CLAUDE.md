@@ -52,7 +52,7 @@ Consequences:
 
 ## Writing slide copy
 
-The audience is **interns** (backend + frontend): they know HTTP, REST and how to write a CRUD endpoint, but have never built login themselves. `auth-outline.md` (Vietnamese) is the source of truth for content and order; slides are its English version, not a free rewrite. It also lists what was deliberately **cut** (OAuth 1.0, PKCE beyond the one stepped slide 3.5 — no simulator, no live hashing, grant-type flows beyond one-line definitions, refresh-token reuse detection, key rotation / JWKS, mTLS handshakes and mesh config — 4.7 keeps mTLS / mesh as concept cards only, ABAC, SAML, per-attack deep dives — 5.4 keeps SQLi / XSS / CSRF / brute force as self-study cards with links) — don't bring those back.
+The audience is **interns** (backend + frontend): they know HTTP, REST and how to write a CRUD endpoint, but have never built login themselves. `auth-outline.md` (Vietnamese) is the source of truth for content and order; slides are its English version, not a free rewrite. It also lists what was deliberately **cut** (OAuth 1.0, PKCE beyond the one stepped slide 3.5 — no simulator, no live hashing, grant-type flows beyond one-line definitions, refresh-token reuse detection, key rotation / JWKS, mTLS handshakes and mesh config — 4.7 keeps mTLS / mesh as concept cards only, ABAC, SAML, per-attack deep dives, and the whole former section 5 — RBAC, broken access control and the attack cards, cut for time on 2026-11-02; 2.9 keeps only OWASP cheat-sheet links for XSS and CSRF) — don't bring those back.
 
 - **Start from something they will see in week one.** A `401` in the network tab, a cookie in DevTools, an `eyJ…` string in an `Authorization` header, a "Login with Google" button.
 - **Problem before definition.** Show what breaks without the thing, then name it.
@@ -108,7 +108,7 @@ Several sections animate, so the machinery is shared:
 
 ## Styling
 
-- Theme is Tokyo Night (default, dark) with Tokyo Night Day behind `data-theme="light"`. Each part of the talk has its own hue: `sections/00-outline.html` tags slides with `data-part="00".."05"` and `deck.css` ("section colors") swaps `--accent` / `--accent2`; derived tokens are recomputed with `color-mix()`.
+- Theme is Tokyo Night (default, dark) with Tokyo Night Day behind `data-theme="light"`. Each part of the talk has its own hue: `sections/00-outline.html` tags slides with `data-part="00".."04"` and `deck.css` ("section colors") swaps `--accent` / `--accent2`; derived tokens are recomputed with `color-mix()`.
 - The "shell" block at the end of `deck.css` is purely visual (surface glow, top-rule packet, icon tiles, glows, progress colors). `deck.js` fires `deck:slide` with the active slide and sets `body[data-part]`; `js/backdrop.js` listens. Keep ambient motion to that network and the one rule sweep per slide.
 
 - All CSS is in `css/deck.css`, grouped by `/* ---------- name ---------- */` markers.
@@ -143,7 +143,7 @@ Headless check without a browser window:
 
 ## Interactive slides
 
-Sections: 00 Introduction · 01 Passwords · 02 Staying logged in · 03 Login with Google (Claude as the running example) · 04 Service-to-service (Orders → Payments, GitHub Actions → AWS) · 05 Permissions & attacks · 99 Thanks + Kahoot.
+Sections: 00 Introduction · 01 Passwords · 02 Staying logged in · 03 Login with Google (Claude as the running example) · 04 Service-to-service (Orders → Payments, GitHub Actions → AWS) · 99 Thanks + Kahoot.
 
 - **2.2 JWT decoder** (`02-sessions-jwt.html`): splits a sample token into three colored parts and decodes header + payload with `atob` in the browser; a paste box accepts any JWT.
 - **2.5 Access + refresh timeline** (`02-sessions-jwt.html`, `#s2-tl`): access tokens renewed every 15 min by the refresh token. `data-step` 1 shows logout deleting the refresh row.

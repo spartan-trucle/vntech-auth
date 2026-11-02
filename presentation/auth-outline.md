@@ -3,7 +3,7 @@
 
 > **Đối tượng:** Intern Backend + Frontend (đã biết HTTP, REST, viết được API CRUD; chưa từng tự làm login)
 > **Presenter:** Truc Le — toàn bộ
-> **Thời lượng:** ~61,5 phút + ~10 phút Q&A/Kahoot · 63 slide (gồm 11 slide câu hỏi "Your turn", mỗi slide ~1 phút)
+> **Thời lượng:** ~54,5 phút + ~10 phút Q&A/Kahoot · 56 slide (gồm 10 slide câu hỏi "Your turn", mỗi slide ~1 phút)
 
 File này là nguồn nội dung cho slide. Slide là bản tiếng Anh của outline này, không viết lại tự do.
 Nội dung rút gọn từ [spartan-khanhdo/auth-security-lecture](https://github.com/spartan-khanhdo/auth-security-lecture) cho mức Intern.
@@ -15,8 +15,7 @@ Nội dung rút gọn từ [spartan-khanhdo/auth-security-lecture](https://githu
 - Mỗi section kết thúc bằng **1 slide "Làm / Đừng làm"** — thứ intern mang về dùng được.
 - Trước vài khái niệm chính có **1 slide "Your turn"**: hỏi khán phòng, 30 s bàn với người bên cạnh, có câu 2–3 lựa chọn A/B/C, câu dễ thì để hỏi mở (không lựa chọn), bấm → mới lật đáp án. Không đánh số outline (để giữ nguyên 1.2, 2.4…).
 - **Service-to-service có section riêng (04)**: Client Credentials, nội dung token M2M, validate rồi authorize, GitHub → AWS bằng OIDC. mTLS và service mesh chỉ ở mức **khái niệm** (một card mỗi thứ), không demo handshake.
-- **Attack (SQLi, XSS, CSRF, brute force) là phần tự học**: một slide card, mỗi attack 1 dòng "là gì" + 1 dòng fix + link PortSwigger/OWASP có lab miễn phí. Không mổ từng attack trên sân khấu.
-- **Cắt khỏi bản gốc:** OAuth 1.0, PKCE chi tiết (chỉ đúng 1 slide, 3.5: không simulator, không hash live), các grant type ngoài định nghĩa 1 dòng, chi tiết refresh token reuse detection (chỉ nhắc hậu quả ở 2.8), key rotation / JWKS, mTLS handshake / cấu hình service mesh, ABAC, SAML, Micronaut config, timing attack chi tiết, slide riêng cho từng attack.
+- **Cắt khỏi bản gốc:** OAuth 1.0, PKCE chi tiết (chỉ đúng 1 slide, 3.5: không simulator, không hash live), các grant type ngoài định nghĩa 1 dòng, chi tiết refresh token reuse detection (chỉ nhắc hậu quả ở 2.8), key rotation / JWKS, mTLS handshake / cấu hình service mesh, ABAC, SAML, Micronaut config, timing attack chi tiết, slide riêng cho từng attack. RBAC, broken access control, attack: cắt vì thời lượng (2026-11-02); AuthZ chỉ còn ở 0.2, 0.3 (401 vs 403) và kiểm `scope` / `aud` ở section 4, XSS / CSRF chỉ còn link OWASP cheat sheet ở 2.9.
 
 ---
 
@@ -27,7 +26,6 @@ Nội dung rút gọn từ [spartan-khanhdo/auth-security-lecture](https://githu
 2. Giữ trạng thái đăng nhập — session cookie vs JWT, refresh token, thu hồi token, token để ở đâu
 3. "Login with Google" — OAuth 2.0 qua ví dụ Claude, connector/MCP, PKCE, grant types, OIDC, MFA
 4. Service-to-service — Client Credentials, token M2M, GitHub Actions → AWS bằng OIDC
-5. Phân quyền & attack — RBAC, ẩn nút ≠ phân quyền, IDOR, 4 attack để tự học
 99. Cảm ơn + Kahoot
 
 ---
@@ -38,7 +36,7 @@ Nội dung rút gọn từ [spartan-khanhdo/auth-security-lecture](https://githu
 - **Your turn (trước 0.2, hỏi mở):** "AuthN và AuthZ khác nhau chỗ nào? Cái nào chạy trước?" → AuthN = bạn là ai (password, OTP, Google); AuthZ = bạn được làm gì (viewer không được xoá user); AuthN luôn chạy trước.
 - **0.2 AuthN vs AuthZ:** AuthN = *bạn là ai?* (password, OTP, Google). AuthZ = *bạn được làm gì?* (viewer không được xoá user). Ví von thẻ khách sạn: lễ tân kiểm CCCD (AuthN), thẻ phòng chỉ mở phòng 702 (AuthZ). AuthN luôn chạy trước.
 - **0.3 401 vs 403:** `401 Unauthorized` = chưa biết bạn là ai (thực chất là "unauthenticated") → đi login. `403 Forbidden` = biết bạn là ai nhưng không cho → login lại cũng vô ích. Intern hay trả nhầm.
-- **0.4 Auth nằm ở đâu trong một request:** browser → (cookie / `Authorization: Bearer …`) → middleware xác thực → handler kiểm quyền → DB. Map của cả bài: section 1–3 là AuthN của người dùng, section 4 là AuthN giữa các service, section 5 là AuthZ + attack.
+- **0.4 Auth nằm ở đâu trong một request:** browser → (cookie / `Authorization: Bearer …`) → middleware xác thực → handler kiểm quyền → DB. Map của cả bài: section 1–3 là AuthN của người dùng, section 4 là AuthN giữa các service.
 
 ## 1. Mật khẩu
 
@@ -65,7 +63,7 @@ Nội dung rút gọn từ [spartan-khanhdo/auth-security-lecture](https://githu
 - **2.7 Hai cách refresh (2 làn song song, có step):** **Silent refresh** (chủ động): timer chạy ~1 phút trước `exp`, gọi `POST /auth/refresh` ngầm, user không thấy gì. **Refresh on 401** (bị động): API trả `401` → gọi `/auth/refresh` → gửi lại request gốc **một lần**; refresh cũng fail → về trang login. Chốt: đa số app làm cả hai — timer lo trường hợp bình thường, handler `401` lo laptop ngủ hay tab bị bỏ ở nền.
 - **2.8 Cái bẫy: 5 request, 1 lần refresh (có animation):** trang gọi 5 API cùng lúc, cả 5 nhận `401`. Làm ngây thơ: 5 lần refresh; có rotation thì call 2–5 gửi refresh token đã dùng → server tưởng bị đánh cắp → logout user. Fix: **single-flight** — `401` đầu tiên bắt đầu refresh, các request khác chờ cùng một promise rồi retry. Slide có wrapper `fetch` ~11 dòng.
 - **Your turn (trước 2.9):** "Token để ở đâu trên browser?" A `localStorage` · B cookie `HttpOnly` · C biến JavaScript → B, mặc định.
-- **2.9 Lưu token ở đâu trên browser:** `localStorage` → bất kỳ script nào (kể cả script XSS) đọc được. Cookie `HttpOnly` → JavaScript không đọc được. Mặc định: cookie `HttpOnly; Secure; SameSite=Lax`. Đánh đổi: cookie tự gửi → CSRF, `SameSite` đóng phần lớn. XSS và CSRF có link tự học ở 5.4. Thêm một dòng phía browser: access token trong memory hoặc cookie `HttpOnly`; refresh token trong cookie `HttpOnly; Secure; SameSite=Strict; Path=/auth/refresh` nên chỉ đi tới endpoint refresh. (Phía server đã nói ở 2.5, không lặp lại.)
+- **2.9 Lưu token ở đâu trên browser:** `localStorage` → bất kỳ script nào (kể cả script XSS) đọc được. Cookie `HttpOnly` → JavaScript không đọc được. Mặc định: cookie `HttpOnly; Secure; SameSite=Lax`. Đánh đổi: cookie tự gửi → CSRF, `SameSite` đóng phần lớn. Dòng đánh đổi có link OWASP cheat sheet cho XSS và CSRF. Thêm một dòng phía browser: access token trong memory hoặc cookie `HttpOnly`; refresh token trong cookie `HttpOnly; Secure; SameSite=Strict; Path=/auth/refresh` nên chỉ đi tới endpoint refresh. (Phía server đã nói ở 2.5, không lặp lại.)
 - **2.10 Làm / Đừng làm:** verify (`jwt.verify` + `algorithms`) · payload (chỉ `sub`, `role`, `exp`) · storage (cookie `HttpOnly`) · lifetime (access 5–15 phút + refresh lưu dạng hash trên server, logout xoá dòng) · refresh (đừng để mỗi request tự refresh và retry mãi → một lần refresh dùng chung, retry một lần, rồi về login) · revoke (đừng lưu mọi access token vào DB → `exp` ngắn + `token_version` cho log out everywhere) · secret (`process.env.JWT_SECRET`, không commit).
 
 ## 3. "Login with Google"
@@ -98,22 +96,6 @@ Ví dụ xuyên suốt: **Orders service gọi Payments service** — không có
 - **4.6 GitHub Actions → AWS bằng OIDC — deploy không cần key lưu sẵn (có animation):** 0 · push lên `main` → 1 · workflow xin GitHub một **OIDC token** (`permissions: id-token: write`; issuer `token.actions.githubusercontent.com`, `aud: sts.amazonaws.com`, `sub: repo:spartan/shop:ref:refs/heads/main`) → 2 · `aws-actions/configure-aws-credentials` gửi token tới AWS STS, xin role `deploy` (`role-to-assume`) → 3 · STS kiểm trust policy (issuer + `aud` + `sub` = đúng repo, đúng branch; fork hay branch khác → bị từ chối) → credentials tạm ~1 giờ → 4 · deploy (`aws s3 sync`). Slide có workflow YAML và 2 điều kiện của trust policy. Kết quả: không có `AWS_ACCESS_KEY_ID` trong GitHub secrets — không có gì để lộ, không có gì để rotate. Link: GitHub docs "Configuring OpenID Connect in Amazon Web Services".
 - **4.7 Các cách khác (chỉ khái niệm, 3 card):** **mTLS** (cả hai bên trình certificate; danh tính được kiểm lúc mở kết nối; giá: phải cấp và gia hạn cert cho mọi service) · **service mesh** — Istio, Linkerd (sidecar làm mTLS hộ, code vẫn gọi HTTP thường; hợp khi nhiều service + có platform team; thêm một hệ thống phải vận hành) · **API key** (ổn cho API bên thứ ba như Stripe, SendGrid, Google Maps; cất trong secret manager, mỗi env một key; không dùng cho service của mình). Câu mental model: OAuth = cách lấy token · JWT = token trông thế nào · policy của Payments = bạn được làm gì. Không demo handshake.
 - **4.8 Làm / Đừng làm:** secret (không hardcode `client_secret` → secret manager, rotate) · lifetime (API key vĩnh viễn → `expires_in: 300`, cache tới khi hết hạn) · audience (nhận mọi token ký đúng → `aud === "payments-service"`, không thì 401) · scope (`scope: admin` → `payments.charge`, `payments.read`, không thì 403) · identity (mọi service chung một client → mỗi service một `client_id`, log `sub`) · keys in CI (`AWS_ACCESS_KEY_ID` trong repo secrets → OIDC role theo repo + branch, credentials 1 giờ).
-
-## 5. Phân quyền & attack
-
-Divider: "Ai được làm gì, và bốn attack kinh điển để tự học."
-
-- **5.1 RBAC:** user → role → permission. `viewer: orders:read` · `editor: + orders:write` · `admin: + orders:delete`. Bảng nằm ở một chỗ (config hoặc bảng DB). Code kiểm *permission*, không kiểm tên role (`can(user, "orders:delete")`, không `if role == "admin"`) — thêm role `support` là sửa một dòng, không phải 40 câu `if`.
-- **Your turn (trước 5.2, hỏi mở):** "Nút Delete đã ẩn với viewer, API có an toàn không? Kiểm tra bằng cách nào?" → không: tự gửi `DELETE` bằng curl với cookie của viewer; curl không thấy UI.
-- **5.2 Ẩn nút ≠ phân quyền:** frontend ẩn nút Delete (`{user.role === "admin" && <DeleteButton />}`) nhưng API vẫn nhận → `curl -X DELETE …/orders/1024` với cookie viewer → `204`. Fix ở server: `requirePermission("orders:delete")` → `403`. Mọi kiểm tra quyền phải ở backend, mọi request.
-- **5.3 Broken Access Control (OWASP #1):** `GET /orders/1024` → đổi thành `/orders/1025` thấy đơn của người khác (IDOR). Fix: `WHERE id = ? AND user_id = ?` với `req.user.id`, không có dòng → `404`. Lấy user từ session, không từ body. UUID khó đoán hơn nhưng không phải fix.
-- **5.4 Bốn attack để tự học (2×2 card, không có step):** mỗi card 1 dòng "là gì" + 1 dòng fix + 2 link (PortSwigger Web Security Academy + OWASP Cheat Sheet):
-  - **SQL injection:** input nối vào SQL bằng `+` thành một phần của query (`' OR '1'='1` login vào bằng ai cũng được) → `db.query("… WHERE email = ?", [email])`.
-  - **XSS:** trang render text của user thành HTML → `<script>` của attacker chạy trên browser mọi người đọc → để framework escape (`{comment.text}`), không `innerHTML` với text của user.
-  - **CSRF:** site khác submit form tới API, browser tự gắn cookie → `SameSite=Lax` + CSRF token trong mọi form.
-  - **Brute force & credential stuffing:** bot thử hàng triệu password, hoặc cặp email + password lộ từ site khác → rate-limit login (vd. 5 lần / phút theo account và IP) + MFA.
-  - Dòng cuối: bắt đầu từ OWASP Top 10 · PortSwigger Web Security Academy (lab miễn phí).
-- **5.5 Checklist mang về:** 10 dòng gộp các slide "Làm / Đừng làm" — password ×2 · token ×3 · oauth · authz ×2 · attack ("SQLi, XSS, CSRF, brute force: làm theo link ở 5.4") · service ("mỗi service một `client_id`, kiểm `aud` và `scope` mọi call").
 
 ## 99. Cảm ơn + Kahoot
 

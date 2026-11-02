@@ -1,6 +1,6 @@
 # Kịch bản nói — Authentication & Authorization
 
-Mỗi slide một mục, theo đúng thứ tự deck (số slide = số ở footer, `12 / 63`). **Nói** là phần bạn
+Mỗi slide một mục, theo đúng thứ tự deck (số slide = số ở footer, `12 / 56`). **Nói** là phần bạn
 dẫn; các dòng **→ k** là những `data-step` (bấm mũi tên phải rồi nói dòng đó, kèm thứ vừa hiện
 ra trên màn hình); **Chốt** là câu để lại trong đầu mọi người trước khi qua slide tiếp theo.
 Thời gian ghi ở đầu mỗi slide là ước lượng, `⏱ tới m:ss` là đồng hồ tích luỹ khi rời slide đó.
@@ -15,7 +15,7 @@ làm login. Nói chậm, hỏi khán phòng nhiều, thuật ngữ kỹ thuật 
   bấm `F` để fullscreen.
 - Phím: `→` / `←` để step, `O` xem overview, `T` đổi theme sáng.
 - Chuẩn bị sẵn Kahoot (câu hỏi trong `presentation/notes/kahoot-questions.md`, 12 câu), mở game ở
-  một tab khác để lấy PIN cho slide 63.
+  một tab khác để lấy PIN cho slide 56.
 
 ## Thời lượng
 
@@ -26,13 +26,12 @@ làm login. Nói chậm, hỏi khán phòng nhiều, thuật ngữ kỹ thuật 
 | 02 Session, JWT & refresh token | 18–32 | 16 phút | 14:00 → 30:00 |
 | 03 Login with Google | 33–43 | 12,5 phút | 30:00 → 42:30 |
 | 04 Service-to-service | 44–55 | 12 phút | 42:30 → 54:30 |
-| 05 Phân quyền & attack | 56–62 | 7 phút | 54:30 → 61:30 |
-| Cảm ơn: Q&A + Kahoot | 63 | ~10 phút | 61:30 → ~71:30 |
+| Cảm ơn: Q&A + Kahoot | 56 | ~10 phút | 54:30 → ~64:30 |
 
-Có 11 slide **"Your turn"** (5, 11, 14, 19, 22, 27, 30, 46, 50, 52, 58), mỗi slide ~1 phút: đọc câu
+Có 10 slide **"Your turn"** (5, 11, 14, 19, 22, 27, 30, 46, 50, 52), mỗi slide ~1 phút: đọc câu
 hỏi, chờ ~30 s cho mọi người bàn với người bên cạnh, nghe 1–2 câu trả lời, rồi `→` lật đáp án. Nhờ
-vậy phần nói dài **~61,5 phút**, cộng ~10 phút Q&A + Kahoot. Khung 60 phút đã lố khoảng 1,5 phút (slide PKCE
-3.5 thêm ~1,5 phút, slide OIDC 3.7 thêm ~1 phút): đọc kỹ danh sách cắt bên dưới trước khi lên sân khấu.
+vậy phần nói dài **~54,5 phút**, cộng ~10 phút Q&A + Kahoot. Khung 60 phút còn dư khoảng 5,5 phút cho
+câu hỏi giữa chừng; danh sách cắt bên dưới chỉ dùng khi bị trễ.
 
 **Nếu bị trễ** (theo thứ tự, cắt cái trên trước):
 1. **2.8 Cái bẫy 5 request (slide 29):** bỏ hẳn slide, chỉ nói một câu ở 2.7: "nhiều request cùng `401`
@@ -44,9 +43,9 @@ vậy phần nói dài **~61,5 phút**, cộng ~10 phút Q&A + Kahoot. Khung 60 
 4. **4.2 API key vs Client Credentials (slide 47):** chỉ nói hàng "if it leaks" rồi qua 4.3 — slide
    4.8 nhắc lại cùng ý. Tiết kiệm ~1 phút.
 5. **Rút ngắn "Your turn":** thời gian chờ xuống ~15 s và chỉ nghe một câu trả lời, đừng bỏ hẳn: đó là
-   lúc cả phòng được nói. 11 slide × 30 s = ~5,5 phút.
-6. Các slide "Do / Don't" (17, 32, 43, 55): chỉ đọc tiêu đề và một hàng, vì slide 62 gom lại hết.
-7. 5.4 (slide 61) vốn là slide tự học: chỉ cần "chụp lại, tối về bấm link làm lab".
+   lúc cả phòng được nói. 10 slide × 30 s = ~5 phút.
+6. Các slide "Do / Don't" (17, 32, 43, 55): chỉ đọc tiêu đề và một hàng, rồi nhắc mọi người chụp
+   slide lại để đọc sau.
 
 ---
 
@@ -62,13 +61,12 @@ tới database, phải trả lời được: ai gửi request này, và người
 AuthZ thì không — viewer không được xoá user, nên trả `403 Forbidden`. Cuối buổi, cả phòng sẽ
 giải thích được vì sao là `403` chứ không phải `401`.
 
-### 2 · Outline — Who are you, what can you do, and how attackers skip both.
+### 2 · Outline — Prove who you are once, then on every request: as a user or as a service.
 _~20 s · ⏱ tới 0:50_
 
-**Nói:** Năm phần sau phần giới thiệu. Mật khẩu, rồi làm sao server nhớ mình đã login — session
+**Nói:** Bốn phần sau phần giới thiệu. Mật khẩu, rồi làm sao server nhớ mình đã login — session
 cookie với JWT. Sau đó là nút "Login with Google", với Claude làm ví dụ thật. Phần bốn bỏ người dùng
-đi: service gọi service thì chứng minh mình là ai thế nào. Phần năm là phân quyền, và bốn attack kinh
-điển để các bạn tự học.
+đi: service gọi service thì chứng minh mình là ai thế nào.
 **Chốt:** Có gì thắc mắc thì hỏi luôn nha, đừng để dồn tới cuối.
 
 ### 3 · Divider 00 — Introduction
@@ -135,8 +133,8 @@ _~30 s · ⏱ tới 5:00_
 Trạm hai là route handler: bạn có được làm không? Biết bạn rồi mà không được → `403`. Qua cả hai
 mới tới database.
 **→ 1:** Đây cũng là bản đồ của cả buổi: section 1 tới 3 là AuthN của người dùng — mật khẩu, server
-nhớ bạn bằng cách nào, rồi "Login with Google". Section 4 vẫn là AuthN, nhưng giữa các service. Section 5
-là AuthZ, cộng bốn attack để tự học.
+nhớ bạn bằng cách nào, rồi "Login with Google". Section 4 vẫn là AuthN, nhưng giữa các service. Trạm
+hai, AuthZ, hôm nay mình chạm tới qua `403` ở slide trước và `scope` ở section 4.
 
 ---
 
@@ -428,7 +426,7 @@ Bên phải: cookie `HttpOnly`. Browser vẫn tự gửi nó theo mọi request 
 trả về rỗng — JavaScript, kể cả script của attacker, không bao giờ thấy giá trị.
 **→ 1:** Mặc định: để token trong cookie `HttpOnly; Secure; SameSite=Lax`.
 **→ 2:** Đánh đổi: browser tự gửi cookie, nên mở cửa cho CSRF. `SameSite` đóng được phần lớn. XSS và
-CSRF hôm nay không mổ trên sân khấu — slide 5.4 có link lab để các bạn tự làm.
+CSRF hôm nay không mổ trên sân khấu — trên slide có link OWASP cheat sheet của cả hai để các bạn tự đọc.
 **→ 3:** Còn hai token thì sao? Access token: trong memory hoặc cookie `HttpOnly`. Refresh token: cookie
 `HttpOnly; Secure; SameSite=Strict; Path=/auth/refresh` — nhờ `Path`, browser chỉ gửi nó tới đúng endpoint
 refresh, không gửi theo mọi request.
@@ -766,96 +764,10 @@ _~70 s · ⏱ tới 54:30_
 
 ---
 
-# Phần 5 — Phân quyền & attack · ⏱ 54:30 → 61:30
+# Cảm ơn — Q&A + Kahoot · ⏱ 54:30 → ~64:30
 
-### 56 · Divider 05 — Permissions & attacks
-_~10 s · ⏱ tới 54:40_
-
-**Nói:** Xong phần "bạn là ai" — cho cả người lẫn service. Giờ là trạm hai: ai được làm gì. Và cuối
-cùng, bốn attack kinh điển để các bạn tự học.
-
-### 57 · Your code should ask "may this user delete orders?", never "is this user an admin?"
-_~70 s · ⏱ tới 55:50_
-
-**Nói:** **RBAC** — Role-Based Access Control. User có một role, role chỉ là một danh sách permission
-có tên. Bảng: `viewer` chỉ `orders:read`; `editor` thêm `orders:write`; `admin` có cả `orders:delete`.
-Bảng này nằm ở một chỗ — config hoặc một bảng DB — không rải khắp các handler. Giống `scope` của
-Payments ở 4.5: cũng là "được làm gì", chỉ là cho user.
-Code bên trái: `if (user.role === "admin")`. Thêm role mới là phải sửa mọi cái `if`.
-**→ 1:** Thay vào đó, kiểm *permission*: `if (can(user, "orders:delete"))`. Hàm `can()` tra role trong
-bảng.
-**→ 2:** Vì sao? Mai có thêm role `support` được phép xoá. Mình sửa một dòng trong bảng, chứ không phải
-40 câu `if`.
-
-### 58 · Your turn — The Delete button is hidden for viewers. Is the API safe? How would you check?
-_~60 s · ⏱ tới 56:50_
-
-**Nói:** Câu này cho các bạn frontend. Nút Delete đã ẩn với viewer. Vậy API có an toàn không, và kiểm tra
-bằng cách nào? Câu hỏi mở. "30 giây." Chờ, rồi nghe 1–2 câu. Ai nói "an toàn" thì hỏi: "ngoài cái nút ra,
-còn cách nào gửi một request `DELETE`?"
-**→ 1:** Không. Tự gửi `DELETE` bằng curl với cookie của một viewer là biết. curl không bao giờ thấy UI
-của bạn.
-**Chốt:** "Xem attacker làm chuyện đó thế nào."
-
-### 59 · The frontend hid the Delete button. Anyone with curl can still call the API.
-_~50 s · ⏱ tới 57:40_
-
-**Nói:** Viewer nhìn thấy dòng đơn hàng với nút View, còn nút Delete thì bị ẩn bằng
-`{user.role === "admin" && <DeleteButton />}`. Như vừa đoán: chưa an toàn. Browser là máy của user: họ
-mở DevTools, sửa trang, hoặc bỏ qua trang và dùng curl, Postman.
-**→ 1:** Attacker gõ `curl -X DELETE …/orders/1024` với cookie session của chính viewer đó → `204` — xoá
-mất. Bug: API tin UI sẽ kiểm. Không có gì trên server hỏi "user này có được xoá không?"
-**→ 2:** Fix nằm ở server: `requirePermission("orders:delete")` trước handler → `403 Forbidden`. Ẩn nút
-là để UI đẹp. Mọi kiểm tra quyền phải chạy cả ở backend, trên mọi request.
-
-### 60 · "Logged in" is not "allowed": check that the row belongs to this user
-_~80 s · ⏱ tới 59:00_
-
-**Nói:** An mở đơn của mình: `GET /orders/1024` → `200`, owner `"an"`. Endpoint này kiểm "có session
-hợp lệ không" rồi dừng. Hỏi phòng: An làm gì tiếp theo? (Chờ — thường có người đoán ra.)
-**→ 1:** An đổi một chữ số: `/orders/1025` → `200`, owner `"binh"`, kèm luôn địa chỉ. Đó là **IDOR** —
-Insecure Direct Object Reference: cái ID trên URL là ổ khoá duy nhất. Broken access control đứng số
-một trong OWASP Top 10, danh sách rủi ro web.
-**→ 2:** Fix: đưa chủ sở hữu vào chính câu query — `WHERE id = ? AND user_id = ?`, với `req.user.id`.
-Không có dòng nào → `404`, giống y như đơn không tồn tại. Lấy user từ session, không bao giờ từ request
-body. Còn ID random kiểu UUID thì khó đoán hơn, nhưng không phải cách fix — ID vẫn lộ qua log và link.
-**Chốt:** "Đã login" không có nghĩa là "được phép".
-
-### 61 · Four classic attacks, each with a one-line fix. The links have free hands-on labs.
-_~70 s · ⏱ tới 60:10_
-
-**Nói:** Bốn attack kinh điển. Hôm nay mình không mổ từng cái — mỗi card một dòng "là gì", một dòng
-fix, và hai link có lab miễn phí để tối nay về tự phá thử. Chụp slide này lại.
-- **SQL injection:** input nối vào câu SQL bằng `+` thành một phần của query — `' OR '1'='1` là login vào bằng ai cũng được. Fix: placeholder `?`, `db.query("… WHERE email = ?", [email])`.
-- **XSS:** trang render text của user thành HTML, nên `<script>` của attacker chạy trên browser mọi người đọc — và đọc được `localStorage`, nhớ 2.9. Fix: để framework escape, `{comment.text}`, không `innerHTML` với text của user.
-- **CSRF:** site khác submit form tới API của mình, browser tự gắn cookie của user. Fix: `SameSite=Lax` trên cookie, cộng CSRF token trong mọi form.
-- **Brute force & credential stuffing:** bot thử hàng triệu password, hoặc cặp email + password lộ từ site khác. Fix: rate-limit login, ví dụ 5 lần mỗi phút theo account và IP, và cho bật MFA (3.9).
-**Chỉ xuống dòng cuối:** bắt đầu từ OWASP Top 10, rồi PortSwigger Web Security Academy — lab miễn phí,
-có sẵn app lỗi để tấn công hợp pháp.
-**Chốt:** Bốn lỗi, bốn fix một dòng. Phần còn lại là luyện tay.
-
-### 62 · Ten things to check before you open a pull request that touches login or data
-_~80 s · ⏱ tới 61:30_
-
-**Nói:** Mười dòng gom từ tất cả slide "Do / Don't". Chụp hình slide này lại nha. Đọc nhanh theo nhãn:
-- **password:** hash bằng `bcrypt` hoặc `argon2` của thư viện, không lưu, không log, không trả password.
-  Login sai chỉ nói chung chung "sai email hoặc password", không bao giờ nói sai cái nào.
-- **token:** để trong cookie `HttpOnly; Secure; SameSite`, không `localStorage`. Verify mọi JWT bằng thư
-  viện với thuật toán cố định, payload không có gì bí mật. Access token ngắn 15 phút, logout xoá refresh
-  token trên server.
-- **oauth:** `client_secret` chỉ ở backend, từ env hoặc secret manager, xin scope nhỏ nhất.
-- **authz:** kiểm quyền ở backend, mọi request, kiểm permission chứ không kiểm tên role. Kiểm quyền sở
-  hữu ngay trong query: `WHERE id = ? AND user_id = ?`.
-- **attack:** SQLi, XSS, CSRF, brute force — làm theo link ở 5.4.
-- **service:** mỗi service một `client_id`, kiểm `aud` và `scope` trên mọi call.
-**Chốt:** Lần tới mở PR đụng tới login hay data, dò qua mười dòng này.
-
----
-
-# Cảm ơn — Q&A + Kahoot · ⏱ 61:30 → ~71:30
-
-### 63 · Thank you + Kahoot
-_~10 phút · ⏱ tới ~71:30_
+### 56 · Thank you + Kahoot
+_~10 phút · ⏱ tới ~64:30_
 
 **Nói:** Xong rồi đó. Cảm ơn mọi người đã nghe. Hỏi đáp trước, rồi một ván Kahoot ngắn: 401 hay 403, hash
 hay encrypt, cookie flag nào, và hai câu service-to-service.
@@ -886,7 +798,7 @@ Chỉ trả lời trong phạm vi slide; mỗi câu dẫn về slide tương ứ
 
 - **"Vậy nên dùng session hay JWT?"** → Slide 24. Web app một backend, cần logout ngay: session. Nhiều
   service tự kiểm token, hoặc mobile app: JWT, với access token ngắn + refresh token trên server.
-- **"Để token trong localStorage có sao không, team em đang làm vậy?"** → Slide 31 và 61. Một script XSS
+- **"Để token trong localStorage có sao không, team em đang làm vậy?"** → Slide 31. Một script XSS
   là đọc được. Mặc định là cookie `HttpOnly; Secure; SameSite=Lax`.
 - **"Sao không encrypt password, lỡ cần lấy lại cho user?"** → Slide 12. Không bao giờ cần đọc lại
   password, chỉ cần kiểm tra.
@@ -899,6 +811,5 @@ Chỉ trả lời trong phạm vi slide; mỗi câu dẫn về slide tương ứ
   mạng nội bộ. Mỗi service một danh tính, Payments kiểm trên mọi call.
 - **"Khi nào dùng mTLS / service mesh thay cho Client Credentials?"** → Slide 54. Khi có nhiều service và
   một platform team vận hành mesh; hôm nay chỉ cần biết khái niệm.
-- **"Dùng UUID thay cho ID tăng dần là hết IDOR rồi đúng không?"** → Slide 60. Khó đoán hơn, nhưng không
-  phải fix. Fix là `AND user_id = ?` trong query.
-- **"Ẩn nút ở frontend rồi, backend có cần kiểm nữa không?"** → Slide 59. Có. Ai có curl cũng gọi được API.
+- **"Ẩn nút ở frontend rồi, backend có cần kiểm nữa không?"** → Slide 8. Có. Trạm kiểm quyền là route
+  handler trên server; ai có curl cũng gọi thẳng API, không đi qua UI. Kiểm ở backend, trên mọi request.
