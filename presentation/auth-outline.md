@@ -3,7 +3,7 @@
 
 > **Đối tượng:** Intern Backend + Frontend (đã biết HTTP, REST, viết được API CRUD; chưa từng tự làm login)
 > **Presenter:** Truc Le — toàn bộ
-> **Thời lượng:** ~53 phút + ~10 phút Q&A/Kahoot · 56 slide (gồm 10 slide câu hỏi "Your turn", mỗi slide ~1 phút)
+> **Thời lượng:** ~59 phút + ~10 phút Q&A/Kahoot · 61 slide (gồm 11 slide câu hỏi "Your turn", mỗi slide ~1 phút)
 
 File này là nguồn nội dung cho slide. Slide là bản tiếng Anh của outline này, không viết lại tự do.
 Nội dung rút gọn từ [spartan-khanhdo/auth-security-lecture](https://github.com/spartan-khanhdo/auth-security-lecture) cho mức Intern.
@@ -16,7 +16,7 @@ Nội dung rút gọn từ [spartan-khanhdo/auth-security-lecture](https://githu
 - Trước vài khái niệm chính có **1 slide "Your turn"**: hỏi khán phòng, 30 s bàn với người bên cạnh, có câu 2–3 lựa chọn A/B/C, câu dễ thì để hỏi mở (không lựa chọn), bấm → mới lật đáp án. Không đánh số outline (để giữ nguyên 1.2, 2.4…).
 - **Service-to-service có section riêng (04)**: Client Credentials, nội dung token M2M, validate rồi authorize, GitHub → AWS bằng OIDC. mTLS và service mesh chỉ ở mức **khái niệm** (một card mỗi thứ), không demo handshake.
 - **Attack (SQLi, XSS, CSRF, brute force) là phần tự học**: một slide card, mỗi attack 1 dòng "là gì" + 1 dòng fix + link PortSwigger/OWASP có lab miễn phí. Không mổ từng attack trên sân khấu.
-- **Cắt khỏi bản gốc:** OAuth 1.0, PKCE chi tiết (chỉ 1 dòng), các grant type ngoài định nghĩa 1 dòng, refresh token reuse detection / rotation, key rotation / JWKS, mTLS handshake / cấu hình service mesh, ABAC, SAML, Micronaut config, timing attack chi tiết, slide riêng cho từng attack.
+- **Cắt khỏi bản gốc:** OAuth 1.0, PKCE chi tiết (chỉ 1 dòng), các grant type ngoài định nghĩa 1 dòng, chi tiết refresh token reuse detection (chỉ nhắc hậu quả ở 2.8), key rotation / JWKS, mTLS handshake / cấu hình service mesh, ABAC, SAML, Micronaut config, timing attack chi tiết, slide riêng cho từng attack.
 
 ---
 
@@ -24,7 +24,7 @@ Nội dung rút gọn từ [spartan-khanhdo/auth-security-lecture](https://githu
 
 0. Giới thiệu — AuthN vs AuthZ, 401 vs 403
 1. Mật khẩu — lưu sao cho DB bị lộ cũng không sao
-2. Giữ trạng thái đăng nhập — session cookie vs JWT, token để ở đâu
+2. Giữ trạng thái đăng nhập — session cookie vs JWT, refresh token, thu hồi token, token để ở đâu
 3. "Login with Google" — OAuth 2.0 qua ví dụ Claude, connector/MCP, grant types, OIDC, MFA
 4. Service-to-service — Client Credentials, token M2M, GitHub Actions → AWS bằng OIDC
 5. Phân quyền & attack — RBAC, ẩn nút ≠ phân quyền, IDOR, 4 attack để tự học
@@ -58,10 +58,15 @@ Nội dung rút gọn từ [spartan-khanhdo/auth-security-lecture](https://githu
 - **2.2 JWT (stateless, có decoder chạy trong browser):** 3 phần `header.payload.signature`, mỗi phần là base64url. Payload chứa `sub`, `role`, `exp`. Server ký bằng secret; request sau chỉ cần **kiểm chữ ký**, không cần tra DB. Dòng nhắc ngay trên slide: **không bao giờ** để password, số thẻ, CCCD, API key trong payload — ai cầm token cũng đọc được.
 - **Your turn (trước 2.3):** "Không có secret, đọc được payload JWT không? Bằng cách nào?" → được: `atob()` phần giữa hoặc dán vào jwt.io. Secret chỉ chống *sửa*.
 - **2.3 Sửa payload thì sao:** đổi `"role":"viewer"` → `"admin"` → chữ ký không khớp → `401`. Chữ ký chống *sửa*, không chống *đọc*. Bẫy đã từng xảy ra: server chấp nhận `alg: none` hoặc gọi `decode()` thay vì `verify()` → luôn verify bằng thư viện, chỉ định rõ thuật toán.
-- **2.4 Session vs JWT:** bảng — lưu ở đâu · tra DB mỗi request · logout ngay lập tức · kích thước · phù hợp. Session: web app 1 backend, cần logout tức thì. JWT: nhiều service cần tự kiểm tra, mobile app. Nhược điểm lớn của JWT: **không thu hồi được trước `exp`** → cách thường làm: `exp` ngắn (15 phút) + refresh token nằm trên server (chỉ 1 dòng, không còn slide riêng).
-- **Your turn (trước 2.5):** "Token để ở đâu trên browser?" A `localStorage` · B cookie `HttpOnly` · C biến JavaScript → B, mặc định.
-- **2.5 Lưu token ở đâu trên browser:** `localStorage` → bất kỳ script nào (kể cả script XSS) đọc được. Cookie `HttpOnly` → JavaScript không đọc được. Mặc định: cookie `HttpOnly; Secure; SameSite=Lax`. Đánh đổi: cookie tự gửi → CSRF, `SameSite` đóng phần lớn. XSS và CSRF có link tự học ở 5.4.
-- **2.6 Làm / Đừng làm:** verify (`jwt.verify` + `algorithms`) · payload (chỉ `sub`, `role`, `exp`) · storage (cookie `HttpOnly`) · lifetime (access 15 phút + refresh trên server) · secret (`process.env.JWT_SECRET`, không commit).
+- **2.4 Session vs JWT:** bảng — lưu ở đâu · tra DB mỗi request · logout ngay lập tức · kích thước · phù hợp. Session: web app 1 backend, cần logout tức thì. JWT: nhiều service cần tự kiểm tra, mobile app. Nhược điểm lớn của JWT: **không thu hồi được trước `exp`** → cách thường làm: `exp` ngắn (15 phút) + refresh token mà server xoá được (dòng chuyển sang 2.5).
+- **2.5 Access token + refresh token — ai lưu cái gì:** 2 card + bảng thời hạn + timeline. **Access token**: JWT, thường 5–15 phút, gửi mọi API call qua `Authorization: Bearer …`; server **không lưu gì**, chỉ kiểm signature + `exp` — đó là "stateless". **Refresh token**: chuỗi random (opaque), thường 7–30 ngày; server lưu **hash** trong bảng `refresh_tokens(user_id, token_hash, expires_at, revoked_at)` → có dòng nên xoá được; chỉ gửi tới `POST /auth/refresh`. Bảng (ghi "typical", là mặc định thường gặp, không phải chuẩn): access 5–15 phút, không lưu · refresh idle timeout ~7–14 ngày · refresh tối đa ~30–90 ngày rồi login lại · rotation: mỗi lần refresh trả refresh token mới, dòng cũ đánh dấu đã dùng · logout: xoá dòng refresh. Timeline `#s2-tl`: access token gia hạn mỗi 15 phút, logout cắt chuỗi (access đã phát vẫn chạy tới `exp`).
+- **2.6 Bài toán thu hồi (có animation, 5 bước):** 1 · vấn đề: admin ban user hoặc user bấm "log out of all devices" → dòng refresh bị xoá, nhưng access JWT đang cầm vẫn chạy tới `exp` (tối đa 15 phút nữa); server không lưu gì về nó nên không có gì để xoá → 2 · A, chờ: giữ `exp` ngắn, chấp nhận khoảng hở; đủ cho đa số app → 3 · B, token version: bảng `users` thêm cột `token_version`, access token mang claim `"tv": 3`; "log out everywhere", đổi password, đổi role → tăng lên 4; mỗi request so `tv` với giá trị hiện tại, khác → `401` → 4 · C, denylist: mỗi token có `jti` (ID riêng của token); server giữ các `jti` đã thu hồi trong Redis tới `exp` → giết một token thay vì tất cả → 5 · đánh đổi: B và C thêm một lần tra mỗi request, JWT không còn stateless hoàn toàn → cache (Redis hoặc in-memory TTL ngắn). Claim tên `tv`, không dùng `tid` (Microsoft Entra ID dùng `tid` cho tenant ID).
+- **Your turn (trước 2.7, hỏi mở):** "Access token hết hạn đúng lúc bạn đang gõ một tin nhắn dài. App phải làm gì để bạn không mất nó?" → refresh ngầm, hoặc gặp `401` thì refresh rồi gửi lại request; bản nháp vẫn nằm trên trang.
+- **2.7 Hai cách refresh (2 làn song song, có step):** **Silent refresh** (chủ động): timer chạy ~1 phút trước `exp`, gọi `POST /auth/refresh` ngầm, user không thấy gì. **Refresh on 401** (bị động): API trả `401` → gọi `/auth/refresh` → gửi lại request gốc **một lần**; refresh cũng fail → về trang login. Chốt: đa số app làm cả hai — timer lo trường hợp bình thường, handler `401` lo laptop ngủ hay tab bị bỏ ở nền.
+- **2.8 Cái bẫy: 5 request, 1 lần refresh (có animation):** trang gọi 5 API cùng lúc, cả 5 nhận `401`. Làm ngây thơ: 5 lần refresh; có rotation thì call 2–5 gửi refresh token đã dùng → server tưởng bị đánh cắp → logout user. Fix: **single-flight** — `401` đầu tiên bắt đầu refresh, các request khác chờ cùng một promise rồi retry. Slide có wrapper `fetch` ~11 dòng.
+- **Your turn (trước 2.9):** "Token để ở đâu trên browser?" A `localStorage` · B cookie `HttpOnly` · C biến JavaScript → B, mặc định.
+- **2.9 Lưu token ở đâu trên browser:** `localStorage` → bất kỳ script nào (kể cả script XSS) đọc được. Cookie `HttpOnly` → JavaScript không đọc được. Mặc định: cookie `HttpOnly; Secure; SameSite=Lax`. Đánh đổi: cookie tự gửi → CSRF, `SameSite` đóng phần lớn. XSS và CSRF có link tự học ở 5.4. Thêm một dòng phía browser: access token trong memory hoặc cookie `HttpOnly`; refresh token trong cookie `HttpOnly; Secure; SameSite=Strict; Path=/auth/refresh` nên chỉ đi tới endpoint refresh. (Phía server đã nói ở 2.5, không lặp lại.)
+- **2.10 Làm / Đừng làm:** verify (`jwt.verify` + `algorithms`) · payload (chỉ `sub`, `role`, `exp`) · storage (cookie `HttpOnly`) · lifetime (access 5–15 phút + refresh lưu dạng hash trên server, logout xoá dòng) · refresh (đừng để mỗi request tự refresh và retry mãi → một lần refresh dùng chung, retry một lần, rồi về login) · revoke (đừng lưu mọi access token vào DB → `exp` ngắn + `token_version` cho log out everywhere) · secret (`process.env.JWT_SECRET`, không commit).
 
 ## 3. "Login with Google"
 
@@ -113,4 +118,4 @@ Divider: "Ai được làm gì, và bốn attack kinh điển để tự học."
 - QR Kahoot + PIN gõ trên sân khấu (giống repo load-balancer).
 - Bộ 12 câu mức Intern trong `presentation/notes/kahoot-questions.md` (lấy và đơn giản hoá từ `checkpoint-quiz.md` của repo gốc), có 2 câu service-to-service.
 
-> **Không có demo live** ở bản Intern; các flow (3.3, 4.3, 4.6) là animation ngay trong slide.
+> **Không có demo live** ở bản Intern; các flow (2.6, 2.8, 3.3, 4.3, 4.6) là animation ngay trong slide.

@@ -146,6 +146,9 @@ Headless check without a browser window:
 Sections: 00 Introduction · 01 Passwords · 02 Staying logged in · 03 Login with Google (Claude as the running example) · 04 Service-to-service (Orders → Payments, GitHub Actions → AWS) · 05 Permissions & attacks · 99 Thanks + Kahoot.
 
 - **2.2 JWT decoder** (`02-sessions-jwt.html`): splits a sample token into three colored parts and decodes header + payload with `atob` in the browser; a paste box accepts any JWT.
+- **2.5 Access + refresh timeline** (`02-sessions-jwt.html`, `#s2-tl`): access tokens renewed every 15 min by the refresh token. `data-step` 1 shows logout deleting the refresh row.
+- **2.6 The revocation problem** (`02-sessions-jwt.html`, `Charts.scene()` + `steps()`, ids `s2-rv-*`): problem → wait → token version (`tv` claim vs `users.token_version`) → `jti` denylist → trade-off. 5 phases, 4 `data-step`s.
+- **2.8 Five requests, one refresh** (`02-sessions-jwt.html`, `Charts.scene()` + `steps()`, ids `s2-sf-*`): five 401s → five refreshes and rotation logs the user out → single-flight refresh. 3 phases. The `fetch` wrapper appears at the last step.
 - **3.3 Authorization Code flow · "Connect"** (`03-login-with-google.html`, `Charts.scene()` + `steps()`, ids `s3-flow-*`): you → Claude → accounts.google.com (log in + consent) → back with `code` → Claude's backend trades it for a token → Calendar API. 5 phases, 4 `data-step`s.
 - **4.3 Client Credentials flow** (`04-service-to-service.html`, `steps()`, ids `s4-cc-*`): orders-service → auth server `POST /oauth/token` → 5-minute JWT → `POST /charges` on payments-service. 4 phases, 3 `data-step`s, with the request / response code blocks revealed in step.
 - **4.6 GitHub Actions → AWS with OIDC** (`04-service-to-service.html`, `steps()`, ids `s4-gh-*`): push to main → GitHub OIDC token → AWS STS → trust policy check → 1-hour credentials → deploy. 5 phases, 4 `data-step`s.
