@@ -1,6 +1,6 @@
 # Kịch bản nói — Authentication & Authorization
 
-Mỗi slide một mục, theo đúng thứ tự deck (số slide = số ở footer, `12 / 61`). **Nói** là phần bạn
+Mỗi slide một mục, theo đúng thứ tự deck (số slide = số ở footer, `12 / 62`). **Nói** là phần bạn
 dẫn; các dòng **→ k** là những `data-step` (bấm mũi tên phải rồi nói dòng đó, kèm thứ vừa hiện
 ra trên màn hình); **Chốt** là câu để lại trong đầu mọi người trước khi qua slide tiếp theo.
 Thời gian ghi ở đầu mỗi slide là ước lượng, `⏱ tới m:ss` là đồng hồ tích luỹ khi rời slide đó.
@@ -15,7 +15,7 @@ làm login. Nói chậm, hỏi khán phòng nhiều, thuật ngữ kỹ thuật 
   bấm `F` để fullscreen.
 - Phím: `→` / `←` để step, `O` xem overview, `T` đổi theme sáng.
 - Chuẩn bị sẵn Kahoot (câu hỏi trong `presentation/notes/kahoot-questions.md`, 12 câu), mở game ở
-  một tab khác để lấy PIN cho slide 61.
+  một tab khác để lấy PIN cho slide 62.
 
 ## Thời lượng
 
@@ -24,29 +24,29 @@ làm login. Nói chậm, hỏi khán phòng nhiều, thuật ngữ kỹ thuật 
 | Cover + outline + 00 Giới thiệu | 1–8 | 5 phút | 0:00 → 5:00 |
 | 01 Mật khẩu | 9–17 | 9 phút | 5:00 → 14:00 |
 | 02 Session, JWT & refresh token | 18–32 | 16 phút | 14:00 → 30:00 |
-| 03 Login with Google | 33–41 | 10 phút | 30:00 → 40:00 |
-| 04 Service-to-service | 42–53 | 12 phút | 40:00 → 52:00 |
-| 05 Phân quyền & attack | 54–60 | 7 phút | 52:00 → 59:00 |
-| Cảm ơn: Q&A + Kahoot | 61 | ~10 phút | 59:00 → ~69:00 |
+| 03 Login with Google | 33–42 | 11,5 phút | 30:00 → 41:30 |
+| 04 Service-to-service | 43–54 | 12 phút | 41:30 → 53:30 |
+| 05 Phân quyền & attack | 55–61 | 7 phút | 53:30 → 60:30 |
+| Cảm ơn: Q&A + Kahoot | 62 | ~10 phút | 60:30 → ~70:30 |
 
-Có 11 slide **"Your turn"** (5, 11, 14, 19, 22, 27, 30, 44, 48, 50, 56), mỗi slide ~1 phút: đọc câu
+Có 11 slide **"Your turn"** (5, 11, 14, 19, 22, 27, 30, 45, 49, 51, 57), mỗi slide ~1 phút: đọc câu
 hỏi, chờ ~30 s cho mọi người bàn với người bên cạnh, nghe 1–2 câu trả lời, rồi `→` lật đáp án. Nhờ
-vậy phần nói dài **~59 phút**, cộng ~10 phút Q&A + Kahoot. Khung 60 phút gần như không còn chỗ dư:
-đọc kỹ danh sách cắt bên dưới trước khi lên sân khấu.
+vậy phần nói dài **~60,5 phút**, cộng ~10 phút Q&A + Kahoot. Khung 60 phút đã lố khoảng 30 s (slide PKCE
+3.5 thêm ~1,5 phút): đọc kỹ danh sách cắt bên dưới trước khi lên sân khấu.
 
 **Nếu bị trễ** (theo thứ tự, cắt cái trên trước):
 1. **2.8 Cái bẫy 5 request (slide 29):** bỏ hẳn slide, chỉ nói một câu ở 2.7: "nhiều request cùng `401`
    thì chỉ cho một cái refresh, mấy cái kia chờ". Hàng "refresh" ở 2.10 vẫn nhắc lại. Tiết kiệm ~1,5 phút.
 2. **Bước 4 của 2.6 (denylist, slide 26):** bấm qua, chỉ nói "còn cách giữ danh sách `jti` bị thu hồi
    trong Redis, dùng khi cần giết đúng một token". Tiết kiệm ~20 s.
-3. **3.7 MFA (slide 40):** chỉ đọc tiêu đề và câu "TOTP mặc định tốt, SMS yếu nhất, passkey mạnh
+3. **3.8 MFA (slide 41):** chỉ đọc tiêu đề và câu "TOTP mặc định tốt, SMS yếu nhất, passkey mạnh
    nhất", bỏ qua bảng — phần này intern quen nhất. Tiết kiệm ~1 phút.
-4. **4.2 API key vs Client Credentials (slide 45):** chỉ nói hàng "if it leaks" rồi qua 4.3 — slide
+4. **4.2 API key vs Client Credentials (slide 46):** chỉ nói hàng "if it leaks" rồi qua 4.3 — slide
    4.8 nhắc lại cùng ý. Tiết kiệm ~1 phút.
 5. **Rút ngắn "Your turn":** thời gian chờ xuống ~15 s và chỉ nghe một câu trả lời, đừng bỏ hẳn: đó là
    lúc cả phòng được nói. 11 slide × 30 s = ~5,5 phút.
-6. Các slide "Do / Don't" (17, 32, 41, 53): chỉ đọc tiêu đề và một hàng, vì slide 60 gom lại hết.
-7. 5.4 (slide 59) vốn là slide tự học: chỉ cần "chụp lại, tối về bấm link làm lab".
+6. Các slide "Do / Don't" (17, 32, 42, 54): chỉ đọc tiêu đề và một hàng, vì slide 61 gom lại hết.
+7. 5.4 (slide 60) vốn là slide tự học: chỉ cần "chụp lại, tối về bấm link làm lab".
 
 ---
 
@@ -447,7 +447,7 @@ _~60 s · ⏱ tới 30:00_
 
 ---
 
-# Phần 3 — "Login with Google" · ⏱ 30:00 → 40:00
+# Phần 3 — "Login with Google" · ⏱ 30:00 → 41:30
 
 ### 33 · Divider 03 — Login with Google
 _~10 s · ⏱ tới 30:10_
@@ -501,8 +501,8 @@ không bao giờ rời server.
 scope. Claude chỉ thấy những gì **tài khoản Google của bạn** thấy được, và chỉ phần bạn cho phép.
 Thu hồi lúc nào cũng được.
 **Chỉ xuống dòng ghi chú:** SPA, mobile app hay MCP client thì không giấu được `client_secret`, nên
-thêm **PKCE** — một bằng chứng random dùng một lần thay cho secret. Mọi MCP client bắt buộc dùng. Chỉ
-cần biết tên vậy thôi.
+thêm **PKCE** — một bằng chứng random dùng một lần thay cho secret. Mọi MCP client bắt buộc dùng. Hai
+slide nữa (3.5) mình xem nó chạy.
 
 ### 37 · Notion, Slack, GitHub, Atlassian: every Claude connector runs the same OAuth flow
 _~70 s · ⏱ tới 35:20_
@@ -513,20 +513,40 @@ nhận token riêng. MCP là giao thức đứng sau các connector, và nó dù
 chỉ bỏ đi mấy grant cũ rủi ro. Nhìn request bên trái: đây là thứ Claude gửi tới trang login của Notion
 — `response_type=code`, `client_id`, `redirect_uri`, `state`, và hai tham số mới.
 **→ 1:** `code_challenge` — đó là PKCE. Mọi MCP client phải gửi một bằng chứng dùng một lần, nên lỡ
-`code` bị đánh cắp giữa đường thì cũng vô dụng.
+`code` bị đánh cắp giữa đường thì cũng vô dụng. Slide sau xem vì sao.
 **→ 2:** `resource=https://mcp.notion.com/mcp` — token được xin cho **đúng một server**. Và server đó
 phải từ chối token làm cho ai khác. Nhớ ý này: ở section 4 nó có tên là `aud`.
 **→ 3:** Thu hồi theo từng app: Google Account → third-party connections, Notion → Settings →
 Connections, hoặc bấm Disconnect ngay trong Claude. Tối nay về mở thử xem mình đã cho bao nhiêu app.
 **Chốt:** Học một flow, dùng cho mọi connector.
 
-### 38 · OAuth has a few grant types: pick by who is asking
-_~60 s · ⏱ tới 36:20_
+### 38 · A phone app cannot hide a secret. PKCE proves that the app that started the login also finishes it.
+_~90 s · ⏱ tới 36:50_
+
+**Nói:** Quay lại cái dòng PKCE ở 3.3. Vấn đề: app mobile, SPA hay MCP client chạy trên máy của bạn,
+nên không giữ được `client_secret` — ai cũng mở bundle ra đọc được. Không có secret thì sao? Nếu một
+app xấu bắt được cái redirect chứa `code`, nó tự đổi `code` lấy token của bạn. Ba làn: app, `accounts.google.com`,
+Google API. Bước 0 chạy ngay khi vào slide: app không có secret, và một app xấu trên cùng điện thoại
+có thể đăng ký đúng cái link `myapp://callback`.
+**→ 1 (verifier + challenge):** App tạo một chuỗi random, gọi là `code_verifier`, và giữ trong máy. Nó
+chỉ gửi bản hash, `code_challenge = SHA-256(code_verifier)`, kèm redirect sang `/authorize`. Hash thì
+không đảo ngược được.
+**→ 2 (log in + Allow):** Bạn login trên trang Google, bấm Allow. Google lưu cái challenge cạnh `code`,
+rồi redirect về app với `?code=…`. Ai bắt được link này là có `code` — nhưng không có verifier.
+**→ 3 (code + verifier → tokens):** Giờ verifier mới đi ra lần đầu: `POST /token` với `code` +
+`code_verifier`. Google hash verifier, so với challenge đã lưu. Khớp → trả token, app gọi API với
+`Bearer …`.
+**→ 4 (a stolen code):** Chạy lại bước 2, nhưng lần này điện thoại mở link trong app xấu. Nó có `code`,
+không có verifier, và không đoán ngược được từ hash. Google trả `invalid_grant`.
+**Chốt:** Verifier không bao giờ rời máy cho tới bước cuối, và tới lúc đó `code` bị đánh cắp đã vô dụng.
+
+### 39 · OAuth has a few grant types: pick by who is asking
+_~60 s · ⏱ tới 37:50_
 
 **Nói:** "Grant type" là cách một app xin token. Hôm nay chỉ cần biết tên và chọn theo *ai đang xin*.
 Đọc nhanh từng hàng, cột phải là chỗ các bạn đã gặp:
 - **Authorization Code:** user login ở provider, app nhận code rồi đổi lấy token ở backend — connector Google của Claude, 3.3.
-- **Authorization Code + PKCE:** y vậy, thêm bằng chứng một lần thay cho secret — SPA, mobile, mọi MCP client, 3.4.
+- **Authorization Code + PKCE:** y vậy, thêm bằng chứng một lần thay cho secret — SPA, mobile, mọi MCP client, 3.5.
 - **Client Credentials:** một service tự login bằng chính nó, không có user — Orders gọi Payments, section 4.
 - **Device Authorization:** thiết bị không có bàn phím hiện một mã, bạn duyệt trên điện thoại — YouTube trên smart TV, `gh auth login`.
 - **Refresh Token:** đổi refresh token lấy access token mới, khỏi login lại.
@@ -534,8 +554,8 @@ _~60 s · ⏱ tới 36:20_
 Owner Password** — app tự thu password của bạn, đúng cái anti-pattern ở 3.1; OAuth 2.1 bỏ hẳn.
 **Chốt:** Có user và có backend → Authorization Code (+ PKCE). Không có user → Client Credentials.
 
-### 39 · Same Claude, two buttons. An access token says what Claude may do. An id_token says who you are.
-_~90 s · ⏱ tới 37:50_
+### 40 · Same Claude, two buttons. An access token says what Claude may do. An id_token says who you are.
+_~90 s · ⏱ tới 39:20_
 
 **Nói:** Một chỗ hay nhầm: OAuth là *authorization*, không phải login. Cùng là Claude, có hai nút
 Google khác nhau. Bên trái: **"Connect Google Calendar"** trong Claude — chỉ OAuth, `scope=calendar.readonly`,
@@ -551,8 +571,8 @@ sẽ chạy trên app của mình. Verify bốn thứ: signature bằng public k
 GitHub chứng minh một workflow là ai với AWS, ở section 4.
 **Chốt:** `access_token` = được làm gì. `id_token` = bạn là ai.
 
-### 40 · A stolen password is not enough when login also needs a second factor of a different kind
-_~70 s · ⏱ tới 39:00_
+### 41 · A stolen password is not enough when login also needs a second factor of a different kind
+_~70 s · ⏱ tới 40:30_
 
 **Nói:** Còn nếu password bị lộ thì sao? MFA. Ba loại yếu tố: thứ bạn *biết* — password, PIN; thứ bạn
 *có* — điện thoại, security key; thứ bạn *là* — vân tay, khuôn mặt. Hai yếu tố phải **khác loại**.
@@ -567,8 +587,8 @@ nên trang giả không có gì để lấy. Mạnh nhất.
 **Google** hỏi yếu tố thứ hai. Claude không bao giờ thấy, chỉ nhận `id_token`.
 _(Bị trễ: slide cắt đầu tiên — chỉ đọc tiêu đề + câu "TOTP tốt, SMS yếu nhất, passkey mạnh nhất".)_
 
-### 41 · Rent login from a provider, and keep the secret on the server
-_~60 s · ⏱ tới 40:00_
+### 42 · Rent login from a provider, and keep the secret on the server
+_~60 s · ⏱ tới 41:30_
 
 **Nói:** Mang về. Mỗi hàng: trái đừng làm, phải nên làm.
 - **Provider:** đừng hỏi password Google của user, đừng tự build OAuth server. Redirect sang Google và dùng SDK của nó, như Claude làm — hoặc Auth0, Keycloak, Cognito.
@@ -579,16 +599,16 @@ _~60 s · ⏱ tới 40:00_
 
 ---
 
-# Phần 4 — Service-to-service · ⏱ 40:00 → 52:00
+# Phần 4 — Service-to-service · ⏱ 41:30 → 53:30
 
-### 42 · Divider 04 — Service-to-service
-_~10 s · ⏱ tới 40:10_
+### 43 · Divider 04 — Service-to-service
+_~10 s · ⏱ tới 41:40_
 
 **Nói:** Tới giờ luôn có một người ngồi trước browser. Giờ bỏ người đi: không user, không browser,
 không form login. Service gọi service vẫn phải chứng minh mình là ai.
 
-### 43 · Inside the cluster, any pod can call Payments
-_~60 s · ⏱ tới 41:10_
+### 44 · Inside the cluster, any pod can call Payments
+_~60 s · ⏱ tới 42:40_
 
 **Nói:** Ví dụ xuyên suốt phần này: một shop có Frontend, user ở đó. Frontend gọi **Orders**, Orders
 gọi **Inventory** và **Payments** — Payments là chỗ trừ tiền thẻ. Nhìn bên phải: vì sao những gì vừa
@@ -598,8 +618,8 @@ Orders chạy lúc 3 giờ sáng một mình. Không ai ngồi đó bấm Allow 
 được nó trong mạng nội bộ. Một pod bị hack là trừ được tiền thẻ bất kỳ ai.
 **→ 2:** Thứ mình muốn: mỗi service có danh tính riêng, và Payments kiểm danh tính đó trên mọi call.
 
-### 44 · Your turn — Orders calls Payments, no user involved. How does Payments know the caller is really Orders?
-_~60 s · ⏱ tới 42:10_
+### 45 · Your turn — Orders calls Payments, no user involved. How does Payments know the caller is really Orders?
+_~60 s · ⏱ tới 43:40_
 
 **Nói:** Đọc to: Orders gọi Payments, không có user nào. Làm sao Payments biết người gọi đúng là Orders?
 Câu hỏi mở. "30 giây, bàn với người bên cạnh." Chờ ~30 s, nghe 1–2 câu. Ai nói "check IP" thì hỏi: "pod
@@ -609,8 +629,8 @@ sau xem nó hỏng ở đâu.
 Payments kiểm được. Giống y user login lấy vé ở section 2, chỉ là người login giờ là một service.
 **Chốt:** "Trước hết, xem cách mà ai cũng làm đầu tiên: một API key dùng chung."
 
-### 45 · A shared API key works until it leaks
-_~60 s · ⏱ tới 43:10_
+### 46 · A shared API key works until it leaks
+_~60 s · ⏱ tới 44:40_
 
 **Nói:** Cột trái: static API key. Orders gửi `X-Api-Key: sk_live_8f2a…`. Không bao giờ hết hạn, trừ khi
 có người rotate bằng tay. Không biết ai đang gọi, vì cùng một key được dán vào mọi service. Mở được mọi
@@ -622,8 +642,8 @@ xin: `scope: payments.charge`. Lộ thì 5 phút là thành rác, và secret th�
 service — chỉ đưa cho **auth server**, và nhận lại một token ngắn hạn có scope. Slide sau là cuộc trao đổi đó.
 _(Bị trễ: slide cắt thứ hai — chỉ nói hàng "if it leaks" rồi qua 4.3.)_
 
-### 46 · Orders logs in as itself and gets a 5-minute token
-_~80 s · ⏱ tới 44:30_
+### 47 · Orders logs in as itself and gets a 5-minute token
+_~80 s · ⏱ tới 46:00_
 
 **Nói:** Animation, giống flow của 3.3 nhưng không có browser. Bước 0 chạy ngay khi vào slide: Orders
 đã được đăng ký **một lần** với auth server. `client_id` + `client_secret` của nó là username và
@@ -636,10 +656,10 @@ Orders cache nó và dùng lại cho tới khi hết hạn, không xin mỗi req
 **→ 3 (call Payments):** `POST /charges` với `Authorization: Bearer …`. Payments tự kiểm token, không
 cần gọi lại auth server. Secret không bao giờ rời Orders.
 **Chỉ vào ghi chú:** cùng OAuth của section 3, chỉ bớt đi user. Đây chính là grant Client Credentials
-trong bảng grant types, slide 3.5.
+trong bảng grant types, slide 3.6.
 
-### 47 · The token says who is calling, for whom, and what it may do
-_~50 s · ⏱ tới 45:20_
+### 48 · The token says who is calling, for whom, and what it may do
+_~50 s · ⏱ tới 46:50_
 
 **Nói:** Mở token đó ra. `iss` — ai làm ra nó: Payments chỉ tin auth server của mình. `sub` — ai đang
 gọi: `orders-service`, một tên service chứ không phải user. `aud` — gửi cho ai: `payments-service`;
@@ -648,8 +668,8 @@ nào chết: 300 giây sau `iat`, token bị đánh cắp 5 phút là vô dụng
 **→ 1:** Và đây vẫn là JWT của section 2: header, payload, signature. Ai cũng đọc được, nên không có
 bí mật bên trong.
 
-### 48 · Your turn — Payments gets a correctly signed token, but aud is inventory-service. Accept it?
-_~60 s · ⏱ tới 46:20_
+### 49 · Your turn — Payments gets a correctly signed token, but aud is inventory-service. Accept it?
+_~60 s · ⏱ tới 47:50_
 
 **Nói:** Payments nhận một token ký đúng, signature hoàn toàn hợp lệ, nhưng `aud` là
 `inventory-service`. Nhận không? A: có, signature hợp lệ. B: không, token làm cho người khác. "30 giây."
@@ -659,8 +679,8 @@ khi bảo mật kém hơn — thì làm gì được với Payments?"
 đúng cái luật "reject others" của MCP ở 3.4.
 **Chốt:** Signature đúng chỉ nói "auth server làm ra nó", không nói "nó dành cho mình".
 
-### 49 · Payments checks the token, then the scope
-_~60 s · ⏱ tới 47:20_
+### 50 · Payments checks the token, then the scope
+_~60 s · ⏱ tới 48:50_
 
 **Nói:** Payments làm hai bước, theo thứ tự. Bước một, **validate**: token này thật không, và có dành
 cho mình không? Signature khớp public key của auth server, `iss` đúng `https://auth.shop.internal`,
@@ -672,18 +692,18 @@ audience })`. Sai bất kỳ cái nào → `401`.
 **→ 2:** Nhớ slide 0.3 không? Y chang với user: `401` = chưa biết bạn là ai, `403` = biết rồi, câu trả
 lời là không.
 
-### 50 · Your turn — Your GitHub Action deploys to AWS. Where do you keep the AWS keys?
-_~60 s · ⏱ tới 48:20_
+### 51 · Your turn — Your GitHub Action deploys to AWS. Where do you keep the AWS keys?
+_~60 s · ⏱ tới 49:50_
 
 **Nói:** Một service-to-service mà ai trong phòng cũng sẽ gặp: CI. GitHub Action của bạn deploy lên AWS.
 Vậy AWS key cất ở đâu? Câu hỏi mở. "30 giây." Chờ, nghe 1–2 câu. Thường sẽ có người nói "GitHub
 secrets" — đúng là cách phổ biến, hỏi lại: "key đó sống bao lâu? Ai rotate? Lộ thì sao?"
 **→ 1:** Không ở đâu cả. GitHub chứng minh repo và branch nào đang chạy bằng một **OIDC token**; AWS đổi
-nó lấy credentials hết hạn sau khoảng 1 giờ. Đây là cái `id_token` của 3.6, nhưng cho một workflow.
+nó lấy credentials hết hạn sau khoảng 1 giờ. Đây là cái `id_token` của 3.7, nhưng cho một workflow.
 **Chốt:** "Xem nó chạy thế nào."
 
-### 51 · GitHub deploys to AWS without a stored key
-_~90 s · ⏱ tới 49:50_
+### 52 · GitHub deploys to AWS without a stored key
+_~90 s · ⏱ tới 51:20_
 
 **Nói:** Animation bốn bước. Bước 0 chạy ngay khi vào slide: một push lên `main` khởi động workflow.
 Repo **không có AWS key** nào trong secrets. Nhìn YAML bên dưới: `permissions: id-token: write` cho
@@ -700,8 +720,8 @@ chối. Khớp thì STS trả credentials tạm, sống khoảng 1 giờ.
 có gì để lộ, không có gì để rotate. Credentials tự hết hạn. Link GitHub docs ở góc dưới, chụp lại.
 **Chốt:** Không lưu key nào là key không bao giờ lộ.
 
-### 52 · Other ways services prove who they are
-_~60 s · ⏱ tới 50:50_
+### 53 · Other ways services prove who they are
+_~60 s · ⏱ tới 52:20_
 
 **Nói:** Client Credentials không phải cách duy nhất. Ba cái tên các bạn sẽ nghe, chỉ cần biết khái
 niệm. **mTLS** — mutual TLS: HTTPS bình thường thì chỉ server chứng minh mình là ai; với mTLS, bên gọi
@@ -716,8 +736,8 @@ của mình: không hết hạn, không scope, không danh tính.
 **→ 3:** Một câu để nhớ: OAuth = cách lấy token · JWT = token trông thế nào · policy của Payments = bạn
 được làm gì.
 
-### 53 · One identity per service, and tokens that are short, narrow and addressed to one receiver
-_~70 s · ⏱ tới 52:00_
+### 54 · One identity per service, and tokens that are short, narrow and addressed to one receiver
+_~70 s · ⏱ tới 53:30_
 
 **Nói:** Mang về. Mỗi hàng: trái đừng làm, phải nên làm.
 - **Secret:** đừng `client_secret = "s3cr3t"` trong code hay git — ai có repo là có. Để trong secret manager (AWS Secrets Manager, Vault), rotate không cần redeploy.
@@ -729,16 +749,16 @@ _~70 s · ⏱ tới 52:00_
 
 ---
 
-# Phần 5 — Phân quyền & attack · ⏱ 52:00 → 59:00
+# Phần 5 — Phân quyền & attack · ⏱ 53:30 → 60:30
 
-### 54 · Divider 05 — Permissions & attacks
-_~10 s · ⏱ tới 52:10_
+### 55 · Divider 05 — Permissions & attacks
+_~10 s · ⏱ tới 53:40_
 
 **Nói:** Xong phần "bạn là ai" — cho cả người lẫn service. Giờ là trạm hai: ai được làm gì. Và cuối
 cùng, bốn attack kinh điển để các bạn tự học.
 
-### 55 · Your code should ask "may this user delete orders?", never "is this user an admin?"
-_~70 s · ⏱ tới 53:20_
+### 56 · Your code should ask "may this user delete orders?", never "is this user an admin?"
+_~70 s · ⏱ tới 54:50_
 
 **Nói:** **RBAC** — Role-Based Access Control. User có một role, role chỉ là một danh sách permission
 có tên. Bảng: `viewer` chỉ `orders:read`; `editor` thêm `orders:write`; `admin` có cả `orders:delete`.
@@ -750,8 +770,8 @@ bảng.
 **→ 2:** Vì sao? Mai có thêm role `support` được phép xoá. Mình sửa một dòng trong bảng, chứ không phải
 40 câu `if`.
 
-### 56 · Your turn — The Delete button is hidden for viewers. Is the API safe? How would you check?
-_~60 s · ⏱ tới 54:20_
+### 57 · Your turn — The Delete button is hidden for viewers. Is the API safe? How would you check?
+_~60 s · ⏱ tới 55:50_
 
 **Nói:** Câu này cho các bạn frontend. Nút Delete đã ẩn với viewer. Vậy API có an toàn không, và kiểm tra
 bằng cách nào? Câu hỏi mở. "30 giây." Chờ, rồi nghe 1–2 câu. Ai nói "an toàn" thì hỏi: "ngoài cái nút ra,
@@ -760,8 +780,8 @@ còn cách nào gửi một request `DELETE`?"
 của bạn.
 **Chốt:** "Xem attacker làm chuyện đó thế nào."
 
-### 57 · The frontend hid the Delete button. Anyone with curl can still call the API.
-_~50 s · ⏱ tới 55:10_
+### 58 · The frontend hid the Delete button. Anyone with curl can still call the API.
+_~50 s · ⏱ tới 56:40_
 
 **Nói:** Viewer nhìn thấy dòng đơn hàng với nút View, còn nút Delete thì bị ẩn bằng
 `{user.role === "admin" && <DeleteButton />}`. Như vừa đoán: chưa an toàn. Browser là máy của user: họ
@@ -771,8 +791,8 @@ mất. Bug: API tin UI sẽ kiểm. Không có gì trên server hỏi "user này
 **→ 2:** Fix nằm ở server: `requirePermission("orders:delete")` trước handler → `403 Forbidden`. Ẩn nút
 là để UI đẹp. Mọi kiểm tra quyền phải chạy cả ở backend, trên mọi request.
 
-### 58 · "Logged in" is not "allowed": check that the row belongs to this user
-_~80 s · ⏱ tới 56:30_
+### 59 · "Logged in" is not "allowed": check that the row belongs to this user
+_~80 s · ⏱ tới 58:00_
 
 **Nói:** An mở đơn của mình: `GET /orders/1024` → `200`, owner `"an"`. Endpoint này kiểm "có session
 hợp lệ không" rồi dừng. Hỏi phòng: An làm gì tiếp theo? (Chờ — thường có người đoán ra.)
@@ -784,21 +804,21 @@ Không có dòng nào → `404`, giống y như đơn không tồn tại. Lấy 
 body. Còn ID random kiểu UUID thì khó đoán hơn, nhưng không phải cách fix — ID vẫn lộ qua log và link.
 **Chốt:** "Đã login" không có nghĩa là "được phép".
 
-### 59 · Four classic attacks, each with a one-line fix. The links have free hands-on labs.
-_~70 s · ⏱ tới 57:40_
+### 60 · Four classic attacks, each with a one-line fix. The links have free hands-on labs.
+_~70 s · ⏱ tới 59:10_
 
 **Nói:** Bốn attack kinh điển. Hôm nay mình không mổ từng cái — mỗi card một dòng "là gì", một dòng
 fix, và hai link có lab miễn phí để tối nay về tự phá thử. Chụp slide này lại.
 - **SQL injection:** input nối vào câu SQL bằng `+` thành một phần của query — `' OR '1'='1` là login vào bằng ai cũng được. Fix: placeholder `?`, `db.query("… WHERE email = ?", [email])`.
 - **XSS:** trang render text của user thành HTML, nên `<script>` của attacker chạy trên browser mọi người đọc — và đọc được `localStorage`, nhớ 2.9. Fix: để framework escape, `{comment.text}`, không `innerHTML` với text của user.
 - **CSRF:** site khác submit form tới API của mình, browser tự gắn cookie của user. Fix: `SameSite=Lax` trên cookie, cộng CSRF token trong mọi form.
-- **Brute force & credential stuffing:** bot thử hàng triệu password, hoặc cặp email + password lộ từ site khác. Fix: rate-limit login, ví dụ 5 lần mỗi phút theo account và IP, và cho bật MFA (3.7).
+- **Brute force & credential stuffing:** bot thử hàng triệu password, hoặc cặp email + password lộ từ site khác. Fix: rate-limit login, ví dụ 5 lần mỗi phút theo account và IP, và cho bật MFA (3.8).
 **Chỉ xuống dòng cuối:** bắt đầu từ OWASP Top 10, rồi PortSwigger Web Security Academy — lab miễn phí,
 có sẵn app lỗi để tấn công hợp pháp.
 **Chốt:** Bốn lỗi, bốn fix một dòng. Phần còn lại là luyện tay.
 
-### 60 · Ten things to check before you open a pull request that touches login or data
-_~80 s · ⏱ tới 59:00_
+### 61 · Ten things to check before you open a pull request that touches login or data
+_~80 s · ⏱ tới 60:30_
 
 **Nói:** Mười dòng gom từ tất cả slide "Do / Don't". Chụp hình slide này lại nha. Đọc nhanh theo nhãn:
 - **password:** hash bằng `bcrypt` hoặc `argon2` của thư viện, không lưu, không log, không trả password.
@@ -815,10 +835,10 @@ _~80 s · ⏱ tới 59:00_
 
 ---
 
-# Cảm ơn — Q&A + Kahoot · ⏱ 59:00 → ~69:00
+# Cảm ơn — Q&A + Kahoot · ⏱ 60:30 → ~70:30
 
-### 61 · Thank you + Kahoot
-_~10 phút · ⏱ tới ~69:00_
+### 62 · Thank you + Kahoot
+_~10 phút · ⏱ tới ~70:30_
 
 **Nói:** Xong rồi đó. Cảm ơn mọi người đã nghe. Hỏi đáp trước, rồi một ván Kahoot ngắn: 401 hay 403, hash
 hay encrypt, cookie flag nào, và hai câu service-to-service.
@@ -849,19 +869,19 @@ Chỉ trả lời trong phạm vi slide; mỗi câu dẫn về slide tương ứ
 
 - **"Vậy nên dùng session hay JWT?"** → Slide 24. Web app một backend, cần logout ngay: session. Nhiều
   service tự kiểm token, hoặc mobile app: JWT, với access token ngắn + refresh token trên server.
-- **"Để token trong localStorage có sao không, team em đang làm vậy?"** → Slide 31 và 59. Một script XSS
+- **"Để token trong localStorage có sao không, team em đang làm vậy?"** → Slide 31 và 60. Một script XSS
   là đọc được. Mặc định là cookie `HttpOnly; Secure; SameSite=Lax`.
 - **"Sao không encrypt password, lỡ cần lấy lại cho user?"** → Slide 12. Không bao giờ cần đọc lại
   password, chỉ cần kiểm tra.
 - **"Server trả 401 hay 403 khi token hết hạn?"** → Slide 7: `401` — server không còn biết bạn là ai, đi
-  login (hoặc refresh) lại. Với service cũng vậy (slide 49).
+  login (hoặc refresh) lại. Với service cũng vậy (slide 50).
 - **"Claude có đọc được hết Gmail của em không?"** → Slide 36 và 37. Claude chỉ thấy những gì tài khoản
   Google của bạn thấy, trong phạm vi `scope` bạn đã Allow trên consent screen, và bạn Disconnect được bất
   cứ lúc nào. Đừng hứa thêm chi tiết về tính năng cụ thể của connector.
-- **"Service nội bộ sau firewall rồi, cần token làm gì?"** → Slide 43. Một pod bị chiếm là đứng ngay trong
+- **"Service nội bộ sau firewall rồi, cần token làm gì?"** → Slide 44. Một pod bị chiếm là đứng ngay trong
   mạng nội bộ. Mỗi service một danh tính, Payments kiểm trên mọi call.
-- **"Khi nào dùng mTLS / service mesh thay cho Client Credentials?"** → Slide 52. Khi có nhiều service và
+- **"Khi nào dùng mTLS / service mesh thay cho Client Credentials?"** → Slide 53. Khi có nhiều service và
   một platform team vận hành mesh; hôm nay chỉ cần biết khái niệm.
-- **"Dùng UUID thay cho ID tăng dần là hết IDOR rồi đúng không?"** → Slide 58. Khó đoán hơn, nhưng không
+- **"Dùng UUID thay cho ID tăng dần là hết IDOR rồi đúng không?"** → Slide 59. Khó đoán hơn, nhưng không
   phải fix. Fix là `AND user_id = ?` trong query.
-- **"Ẩn nút ở frontend rồi, backend có cần kiểm nữa không?"** → Slide 57. Có. Ai có curl cũng gọi được API.
+- **"Ẩn nút ở frontend rồi, backend có cần kiểm nữa không?"** → Slide 58. Có. Ai có curl cũng gọi được API.
