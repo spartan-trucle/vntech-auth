@@ -4,7 +4,7 @@
   <div class="section-tag"><i></i>SECTION 5</div>
   <h2>Permissions &amp; attacks</h2>
   <p class="lead">Who can do what, and four common attacks to study on your own.</p>
-  <div class="foot"><span>54 / 61</span><span>section 5 · permissions &amp; attacks</span></div>
+  <div class="foot"><span>55 / 62</span><span>section 5 · permissions &amp; attacks</span></div>
 </section>
 
 <!-- 5.1 RBAC -->
@@ -43,7 +43,7 @@ if (can(user, <span class="hl">"orders:delete"</span>)) {
       </ul>
     </div>
   </div>
-  <div class="foot"><span>55 / 61</span><span>section 5 · permissions &amp; attacks</span></div>
+  <div class="foot"><span>56 / 62</span><span>section 5 · permissions &amp; attacks</span></div>
 </section>
 
 <!-- your turn · before 5.2 -->
@@ -53,7 +53,7 @@ if (can(user, <span class="hl">"orders:delete"</span>)) {
     <h2 class="ask-q">The Delete button is hidden for viewers. Is the API safe? How would you check?</h2>
     <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>No.</strong> Send the <code>DELETE</code> yourself with <code>curl</code> and a viewer&#39;s cookie. curl never sees your UI.</span></p>
   </div>
-  <div class="foot"><span>56 / 61</span><span>section 5 · permissions &amp; attacks</span></div>
+  <div class="foot"><span>57 / 62</span><span>section 5 · permissions &amp; attacks</span></div>
 </section>
 
 <!-- 5.2 Hiding the button is not authorization -->
@@ -84,7 +84,7 @@ HTTP/1.1 <span class="s5-ok">403 Forbidden</span></pre>
       <li data-step="2"><span class="chip ok">rule</span>Hiding buttons is for a nice UI. Every permission check must also run on the backend, on every request.</li>
     </ul>
   </div>
-  <div class="foot"><span>57 / 61</span><span>section 5 · permissions &amp; attacks</span></div>
+  <div class="foot"><span>58 / 62</span><span>section 5 · permissions &amp; attacks</span></div>
 </section>
 
 <!-- 5.3 Broken access control / IDOR -->
@@ -113,7 +113,7 @@ HTTP/1.1 <span class="s5-ok">403 Forbidden</span></pre>
       <li data-step="2">Random IDs (UUIDs) make guessing harder, but they are not the fix. IDs leak in logs and links.</li>
     </ul>
   </div>
-  <div class="foot"><span>58 / 61</span><span>section 5 · permissions &amp; attacks</span></div>
+  <div class="foot"><span>59 / 62</span><span>section 5 · permissions &amp; attacks</span></div>
 </section>
 
 <!-- 5.4 Attacks to study on your own -->
@@ -147,7 +147,7 @@ HTTP/1.1 <span class="s5-ok">403 Forbidden</span></pre>
     </div>
   </div>
   <p class="s5-more">Start with the <a href="https://owasp.org/Top10/" target="_blank" rel="noopener">OWASP Top 10</a> · <a href="https://portswigger.net/web-security" target="_blank" rel="noopener">PortSwigger Web Security Academy</a>: free hands-on labs</p>
-  <div class="foot"><span>59 / 61</span><span>section 5 · permissions &amp; attacks</span></div>
+  <div class="foot"><span>60 / 62</span><span>section 5 · permissions &amp; attacks</span></div>
 </section>
 
 <!-- 5.5 Take-home checklist -->
@@ -170,5 +170,5 @@ HTTP/1.1 <span class="s5-ok">403 Forbidden</span></pre>
       <li><span class="chip">service</span>Each service has its own <code>client_id</code>. Check <code>aud</code> and <code>scope</code> on every call.</li>
     </ul>
   </div>
-  <div class="foot"><span>60 / 61</span><span>section 5 · permissions &amp; attacks</span></div>
+  <div class="foot"><span>61 / 62</span><span>section 5 · permissions &amp; attacks</span></div>
 </section>

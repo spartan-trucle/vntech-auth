@@ -898,12 +898,12 @@ body.overview .backdrop { display: none; }
   .s3-stepper { display: flex; gap: 10px; flex-wrap: wrap; }
   .s3-code-sm { fill: var(--ink); font-family: var(--mono); font-size: 14px; }
   .s3-note { margin: 0; font-size: 16px; color: var(--muted); }
-  /* 3.4 · access token vs id token */
+  /* 3.7 · access token vs id token */
   .s3-tok .card { padding: 14px 18px; gap: 6px; }
   .s3-tok .card p { font-size: 16.5px; }
   .s3-tok .code { font-size: 15px; padding: 12px 16px; }
   .s3-jwt { color: var(--muted); }
-  /* 3.5 · compact factor cards above the comparison table */
+  /* 3.8 · compact factor cards above the comparison table */
   .s3-factors { gap: 16px; }
   .s3-factors .card { flex-direction: row; align-items: center; gap: 14px; padding: 12px 16px; border-radius: var(--r-md); }
   .s3-factors .card .t { font-size: 19px; }
@@ -1022,20 +1022,29 @@ body.overview .ask .ask-opt:not(.is-right) { opacity: 0.38; }
   .s3-src a { color: var(--accent-strong); text-decoration: none; font-weight: 600; }
   .s3-src a:hover { text-decoration: underline; }
 
-  /* 3.5 · grant types */
+  /* 3.6 · grant types */
   .s3-grants td { padding: 11px 14px; font-size: 18px; }
   .s3-grants td.name { width: 24%; }
   .s3-grants td:last-child { width: 30%; color: var(--muted); }
   .s3-grants tr.s3-legacy td { opacity: 0.6; border-bottom: 0; }
   .s3-grants tr.s3-legacy td.name { color: var(--muted); }
 
-  /* 3.6 · connector vs sign-in, two columns */
+  /* 3.7 · connector vs sign-in, two columns */
   .s3-cols { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 32px; align-content: start; }
   .s3-cols .card { padding: 12px 18px; gap: 6px; }
   .s3-cols .card .t { font-size: 20px; }
   .s3-cols .card p { font-size: 16px; }
   .s3-cols .code { font-size: 14.5px; padding: 10px 16px; line-height: 1.5; }
   .s3-cols .points.tight li { font-size: 16.5px; padding: 7px 0; }
+
+/* ---------- section 03 · pkce ----------
+   3.5 · problem line above the stepped flow; lane dividers and the bad app live in the SVG (#s3-pk-flow). */
+  .s3-pk-problem { margin: 0; font-size: 16.5px; line-height: 1.4; color: var(--body); }
+  .s3-pk-problem .chip { margin-right: 6px; padding-top: 2px; padding-bottom: 2px; }
+  .s3-pk-lane { stroke: var(--muted-soft); stroke-width: 1.5; stroke-dasharray: 4 6; }
+  #s3-pk-readout { font-size: 17px; line-height: 1.4; }
+  /* wrapper keeps the caption out of the entrance stagger, which would show a top-level data-step at once */
+  .s3-pk-cap { min-height: 23px; }
 
 /* ---------- section 04 · service-to-service ---------- */
 /* ---------- section 04 · service-to-service ----------

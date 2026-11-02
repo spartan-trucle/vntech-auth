@@ -4,7 +4,7 @@
   <div class="section-tag"><i></i>INTRODUCTION</div>
   <h2>Introduction</h2>
   <p class="lead">Two questions every request must answer, and the two status codes that go with them.</p>
-  <div class="foot"><span>3 / 61</span><span>introduction</span></div>
+  <div class="foot"><span>3 / 62</span><span>introduction</span></div>
 </section>
 
 <!-- 0.1 The problem: an endpoint with no checks -->
@@ -31,7 +31,7 @@ HTTP/1.1 <span class="s0-bad">204 No Content</span>   <span class="c">// user 42
       <li data-step="2">Every request must answer both questions before it touches the database.</li>
     </ul>
   </div>
-  <div class="foot"><span>4 / 61</span><span>introduction</span></div>
+  <div class="foot"><span>4 / 62</span><span>introduction</span></div>
 </section>
 
 <!-- 0.2 AuthN vs AuthZ -->
@@ -42,7 +42,7 @@ HTTP/1.1 <span class="s0-bad">204 No Content</span>   <span class="c">// user 42
     <h2 class="ask-q">AuthN and AuthZ: what&#39;s the difference? Which one runs first?</h2>
     <p class="ask-answer" data-step="1"><span class="chip ok">answer</span><span><strong>AuthN</strong> checks who you are (password, OTP, Google). <strong>AuthZ</strong> decides what you may do (a viewer can&#39;t delete users). AuthN always runs first.</span></p>
   </div>
-  <div class="foot"><span>5 / 61</span><span>introduction</span></div>
+  <div class="foot"><span>5 / 62</span><span>introduction</span></div>
 </section>
 
 <section class="slide" data-section="intro-authn-authz">
@@ -71,7 +71,7 @@ HTTP/1.1 <span class="s0-bad">204 No Content</span>   <span class="c">// user 42
     </div>
   </div>
   <p class="caption" data-step="1" style="margin:0; font-size:17px;"><span class="chip hot" style="margin-right:8px;">order</span>AuthN always runs first. You cannot decide what someone may do before you know who they are.</p>
-  <div class="foot"><span>6 / 61</span><span>introduction</span></div>
+  <div class="foot"><span>6 / 62</span><span>introduction</span></div>
 </section>
 
 <!-- 0.3 401 vs 403 -->
@@ -105,7 +105,7 @@ HTTP/1.1 <span class="s0-bad">403 Forbidden</span></pre>
     </div>
   </div>
   <p class="caption" data-step="1" style="margin:0; font-size:17px;"><span class="chip risk" style="margin-right:8px;">common bug</span>Return <code>401</code> to a logged-in viewer and the frontend sends them to login, they log in, hit <code>401</code> again: an endless loop.</p>
-  <div class="foot"><span>7 / 61</span><span>introduction</span></div>
+  <div class="foot"><span>7 / 62</span><span>introduction</span></div>
 </section>
 
 <!-- 0.4 Where auth sits in one request -->
@@ -159,5 +159,5 @@ HTTP/1.1 <span class="s0-bad">403 Forbidden</span></pre>
     </svg>
     <figcaption data-step="1">Map of the talk: passwords, how the server remembers you, "Login with Google", then how services prove who they are. After that, permissions, plus four attacks to study on your own.</figcaption>
   </div>
-  <div class="foot"><span>8 / 61</span><span>introduction</span></div>
+  <div class="foot"><span>8 / 62</span><span>introduction</span></div>
 </section>

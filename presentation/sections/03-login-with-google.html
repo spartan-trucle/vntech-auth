@@ -6,7 +6,7 @@
   <div class="section-tag"><i></i>SECTION 3</div>
   <h2>Login with Google</h2>
   <p class="lead">OAuth lets an app act for you; OIDC adds who you are on top.</p>
-  <div class="foot"><span>33 / 61</span><span>section 3 · login with google</span></div>
+  <div class="foot"><span>33 / 62</span><span>section 3 · login with google</span></div>
 </section>
 
 <!-- 3.1 -->
@@ -35,7 +35,7 @@
       <li data-step="3"><span class="chip hot">what we want</span> Read the calendar only · take it back per app · the password <b>never leaves Google</b>.</li>
     </ul>
   </div>
-  <div class="foot"><span>34 / 61</span><span>section 3 · login with google</span></div>
+  <div class="foot"><span>34 / 62</span><span>section 3 · login with google</span></div>
 </section>
 
 <!-- 3.2 -->
@@ -80,7 +80,7 @@
       </div>
     </div>
   </div>
-  <div class="foot"><span>35 / 61</span><span>section 3 · login with google</span></div>
+  <div class="foot"><span>35 / 62</span><span>section 3 · login with google</span></div>
 </section>
 
 <!-- 3.3 -->
@@ -96,8 +96,8 @@
   </div>
   <div class="chart meter"><svg id="s3-flow-flow" role="img" aria-label="Authorization Code flow between your browser, Claude's backend, accounts.google.com and the Google Calendar API"></svg></div>
   <div class="flow-ctl"><div class="seg"><button id="s3-flow-replay" class="icon" aria-label="Replay" title="Replay"><svg class="ic"><use href="#ic-replay"/></svg></button></div><p class="readout" id="s3-flow-readout"></p></div>
-  <p class="s3-note">SPA, mobile app or MCP client? It cannot hide a <code>client_secret</code>, so it adds <b>PKCE</b>: a random one-time proof sent in place of the secret. Every MCP client must use it.</p>
-  <div class="foot"><span>36 / 61</span><span>section 3 · login with google</span></div>
+  <p class="s3-note">SPA, mobile app or MCP client? It cannot hide a <code>client_secret</code>, so it adds <b>PKCE</b>: a random one-time proof sent in place of the secret. Every MCP client must use it. How it works: 3.5.</p>
+  <div class="foot"><span>36 / 62</span><span>section 3 · login with google</span></div>
 </section>
 
 <!-- 3.4 -->
@@ -122,25 +122,43 @@ GET /authorize?response_type=code
     </div>
     <ul class="points tight">
       <li><span class="chip hot">OAuth 2.1</span> MCP, the protocol behind connectors, uses OAuth 2.1: the same code flow, with the risky old grants removed.</li>
-      <li data-step="1"><span class="chip hot">PKCE required</span> Every MCP client must send a one-time proof (<code>code_challenge</code>), so a stolen code is useless.</li>
+      <li data-step="1"><span class="chip hot">PKCE required</span> Every MCP client must send a one-time proof (<code>code_challenge</code>), so a stolen code is useless. See 3.5.</li>
       <li data-step="2"><span class="chip hot">one server</span> The token is asked for one server: <code>resource=https://mcp.notion.com/mcp</code>.</li>
       <li data-step="2"><span class="chip risk">reject others</span> That server must reject tokens made for anyone else. Remember <code>aud</code>: it comes back in section 4.</li>
       <li data-step="3"><span class="chip ok">revoke per app</span> Google Account → third-party connections · Notion → Settings → Connections · or Disconnect in Claude.</li>
     </ul>
   </div>
   <p class="s3-src">source: <a href="https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization" target="_blank" rel="noopener">modelcontextprotocol.io · MCP authorization spec (2025-06-18)</a></p>
-  <div class="foot"><span>37 / 61</span><span>section 3 · login with google</span></div>
+  <div class="foot"><span>37 / 62</span><span>section 3 · login with google</span></div>
 </section>
 
 <!-- 3.5 -->
+<section class="slide" data-section="oauth-pkce">
+  <div class="eyebrow"><svg class="ic"><use href="#ic-hash"/></svg>3.5 · PKCE · a stolen code is useless</div>
+  <h2>A phone app cannot hide a secret. PKCE proves that the app that started the login also finishes it.</h2>
+  <p class="s3-pk-problem"><span class="chip risk">problem</span> A mobile app, SPA or MCP client runs on your device, so it cannot keep a <code>client_secret</code>. If a bad app catches the redirect code, it can trade the code for your tokens.</p>
+  <div class="s3-stepper">
+    <span class="chip risk">0 · no secret</span>
+    <span class="chip hot" data-step="1">1 · verifier + challenge</span>
+    <span class="chip hot" data-step="2">2 · log in + Allow</span>
+    <span class="chip hot" data-step="3">3 · code + verifier → tokens</span>
+    <span class="chip risk" data-step="4">4 · a stolen code</span>
+  </div>
+  <div class="chart meter"><svg id="s3-pk-flow" role="img" aria-label="PKCE between the app, accounts.google.com and the Google API: the app keeps a random code_verifier, sends its SHA-256 hash as code_challenge, later sends the verifier with the code to get tokens. A bad app with only the code gets invalid_grant."></svg></div>
+  <div class="flow-ctl"><div class="seg"><button id="s3-pk-replay" class="icon" aria-label="Replay" title="Replay"><svg class="ic"><use href="#ic-replay"/></svg></button></div><p class="readout" id="s3-pk-readout"></p></div>
+  <div class="s3-pk-cap"><p class="s3-note" data-step="4">The verifier never travels until the last step, and by then a stolen code is useless.</p></div>
+  <div class="foot"><span>38 / 62</span><span>section 3 · login with google</span></div>
+</section>
+
+<!-- 3.6 -->
 <section class="slide" data-section="oauth-grant-types">
-  <div class="eyebrow"><svg class="ic"><use href="#ic-list"/></svg>3.5 · OAuth grant types</div>
+  <div class="eyebrow"><svg class="ic"><use href="#ic-list"/></svg>3.6 · OAuth grant types</div>
   <h2>OAuth has a few grant types: pick by who is asking</h2>
   <table class="tbl s3-grants">
     <thead><tr><th>Grant</th><th>What it is</th><th>You've seen it</th></tr></thead>
     <tbody>
       <tr><td class="name">Authorization Code</td><td>The user logs in at the provider. The app gets a one-time code and trades it for tokens on its backend.</td><td>Claude's Google connector (3.3)</td></tr>
-      <tr><td class="name">Authorization Code + PKCE</td><td>Same, plus a one-time proof instead of a secret, for apps that can't keep one.</td><td>SPAs, mobile apps, every MCP client (3.4)</td></tr>
+      <tr><td class="name">Authorization Code + PKCE</td><td>Same, plus a one-time proof instead of a secret, for apps that can't keep one.</td><td>SPAs, mobile apps, every MCP client (3.5)</td></tr>
       <tr><td class="name">Client Credentials</td><td>A service logs in as itself. No user involved.</td><td>Orders → Payments (section 4)</td></tr>
       <tr><td class="name">Device Authorization</td><td>A device with no keyboard shows a code. You approve on your phone.</td><td>YouTube on a smart TV, <code>gh auth login</code></td></tr>
       <tr><td class="name">Refresh Token</td><td>Trade a refresh token for a new access token. No login again.</td><td>Staying logged in for weeks</td></tr>
@@ -148,12 +166,12 @@ GET /authorize?response_type=code
     </tbody>
   </table>
   <p class="s3-src" style="margin-top:auto;">definitions: <a href="https://auth0.com/intro-to-iam/what-is-oauth-2" target="_blank" rel="noopener">auth0.com/intro-to-iam/what-is-oauth-2</a></p>
-  <div class="foot"><span>38 / 61</span><span>section 3 · login with google</span></div>
+  <div class="foot"><span>39 / 62</span><span>section 3 · login with google</span></div>
 </section>
 
-<!-- 3.6 -->
+<!-- 3.7 -->
 <section class="slide" data-section="oidc-id-token">
-  <div class="eyebrow"><svg class="ic"><use href="#ic-token"/></svg>3.6 · &ldquo;Login with Google&rdquo; = OIDC + OAuth</div>
+  <div class="eyebrow"><svg class="ic"><use href="#ic-token"/></svg>3.7 · &ldquo;Login with Google&rdquo; = OIDC + OAuth</div>
   <h2>Same Claude, two buttons. An access token says what Claude may do. An <code>id_token</code> says who you are.</h2>
   <div class="s3-cols">
     <div class="card">
@@ -186,12 +204,12 @@ GET /authorize?response_type=code
     </div>
   </div>
   <p class="s3-note" data-step="2">OIDC also works without a human: GitHub proves who a workflow is to AWS, in section 4.</p>
-  <div class="foot"><span>39 / 61</span><span>section 3 · login with google</span></div>
+  <div class="foot"><span>40 / 62</span><span>section 3 · login with google</span></div>
 </section>
 
-<!-- 3.7 -->
+<!-- 3.8 -->
 <section class="slide" data-section="mfa">
-  <div class="eyebrow"><svg class="ic"><use href="#ic-fingerprint"/></svg>3.7 · MFA · multi-factor authentication</div>
+  <div class="eyebrow"><svg class="ic"><use href="#ic-fingerprint"/></svg>3.8 · MFA · multi-factor authentication</div>
   <h2>A stolen password is not enough when login also needs a second factor of a different kind</h2>
   <div class="body s3-mfa" style="gap:14px;">
     <div class="trio s3-factors">
@@ -212,12 +230,12 @@ GET /authorize?response_type=code
       <li><span class="chip hot">MFA is AuthN</span> It happens at login. With "Continue with Google" on claude.ai, <b>Google</b> asks for the second factor. Claude never sees it; it just receives the <code>id_token</code>.</li>
     </ul>
   </div>
-  <div class="foot"><span>40 / 61</span><span>section 3 · login with google</span></div>
+  <div class="foot"><span>41 / 62</span><span>section 3 · login with google</span></div>
 </section>
 
-<!-- 3.8 -->
+<!-- 3.9 -->
 <section class="slide" data-section="google-do-dont">
-  <div class="eyebrow"><svg class="ic"><use href="#ic-shield"/></svg>3.8 · Do / Don't</div>
+  <div class="eyebrow"><svg class="ic"><use href="#ic-shield"/></svg>3.9 · Do / Don't</div>
   <h2>Rent login from a provider, and keep the secret on the server</h2>
   <div class="dd-grid">
     <div class="dd-row dd-head"><span></span><span class="dd-no">✗ don't</span><span class="dd-yes">✓ do</span></div>
@@ -247,7 +265,7 @@ GET /authorize?response_type=code
       <div class="dd-cell dd-yes"><div class="dd-code"><em>verify</em> id_token<em>, key users by</em> sub</div><div class="dd-why">sub never changes</div></div>
     </div>
   </div>
-  <div class="foot"><span>41 / 61</span><span>section 3 · login with google</span></div>
+  <div class="foot"><span>42 / 62</span><span>section 3 · login with google</span></div>
 </section>
 
 <script>
@@ -426,6 +444,161 @@ GET /authorize?response_type=code
   const story = [redirect, consent, callback, exchange, api];
   steps('s3-flow', w, story.map((fn, k) => async (w) => {
     for (let i = 0; i < k; i++) await story[i](w, false);
+    await fn(w, true);
+  }));
+
+  // ---------- 3.5 PKCE: the app keeps a verifier, sends its hash, proves it at /token ----------
+  // RFC 7636 sample pair: SHA-256(verifier), base64url, is the challenge below. Fixed, no live hashing.
+  const VER = 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk';
+  const CH = 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM';
+  const K = { pop: [200, 170], A: [180, 170], G: [550, 170], R: [920, 170], bad: [200, 212] };
+
+  const pk = scene($('s3-pk-flow'), '0 0 1100 240', (svg) => {
+    line(svg, 'M365 0 V240', 's3-pk-lane');
+    line(svg, 'M735 0 V240', 's3-pk-lane');
+    const wires = el('g', {}, svg);
+    const L = {
+      AG: line(wires, 'M225 170 H505', 'sv-line-soft'),
+      GR: line(wires, 'M595 170 H875', 'sv-line-soft'),
+      XG: line(wires, 'M244 226 C350 226 455 212 505 188', 'sv-line-soft'),
+    };
+    // one lane per actor: picture on top, name, role, then two status lines a phase can fill
+    const lane = (cx, icon, name, sub) => {
+      const g = glyph(svg, { icon, x: cx - 22, y: 0, size: 44 });
+      txt(svg, cx, 66, 'sv-lbl', name, 'middle');
+      txt(svg, cx, 86, 'sv-lbl-sm', sub, 'middle');
+      return { g, s1: txt(svg, cx, 110, 'sv-hot', '', 'middle'), s2: txt(svg, cx, 130, 'sv-lbl-sm', '', 'middle') };
+    };
+    const A = lane(180, 'gl-client', 'App', 'mobile · SPA · MCP client');
+    const G = lane(550, 'gl-server', 'accounts.google.com', 'authorization server');
+    const R = lane(920, 'gl-server', 'Google API', 'resource server');
+    // the bad app sits in the app's lane: same phone, same myapp:// link
+    const X = { g: glyph(svg, { icon: 'gl-client', x: 6, y: 206, size: 34, state: 'quiet' }) };
+    txt(svg, 48, 216, 'sv-lbl-sm', 'bad app · same phone');
+    X.s1 = txt(svg, 48, 236, 'sv-risk', '');
+    const lanes = { A, G, R, X };
+    return {
+      L, lanes,
+      clear() {
+        [A, G, R].forEach((n) => { n.g.set(''); n.s1.textContent = ''; n.s2.textContent = ''; n.s1.setAttribute('class', 'sv-hot'); });
+        X.g.set('quiet'); X.s1.textContent = '';
+        Object.values(L).forEach((l) => l.setAttribute('class', 'sv-line-soft'));
+      },
+    };
+  });
+
+  const say1 = (w, who, text, cls) => { const t = w.lanes[who].s1; t.textContent = text; if (cls) t.setAttribute('class', cls); };
+  const say2 = (w, who, text) => { w.lanes[who].s2.textContent = text; };
+  const glow = (w, key, cls = 'sv-hot-line') => w.L[key].setAttribute('class', cls);
+  const dim = (w, key) => w.L[key].setAttribute('class', 'sv-line-soft');
+  async function fly(w, lines, from, to, { cls = 'sv-box-hot', wire, keep = false, wireCls } = {}) {
+    const c = card(w.layer, lines, cls);
+    put(c, ...from);
+    (Array.isArray(wire) ? wire : wire ? [wire] : []).forEach((k) => glow(w, k, wireCls));
+    move(w, c, ...to);
+    await w.sleep(650);
+    (Array.isArray(wire) ? wire : wire ? [wire] : []).forEach((k) => dim(w, k));
+    if (!keep) fade(w, c);
+    return c;
+  }
+  async function pop(w, lines, at, ms, cls = 'sv-box') {
+    const c = card(w.layer, lines, cls);
+    put(c, ...at);
+    await w.sleep(ms);
+    fade(w, c);
+  }
+
+  async function noSecret(w, animate) {
+    if (animate) {
+      w.say('Same code flow as 3.3, but this app has <strong>no <code>client_secret</code></strong>. A bad app on the phone can claim the same <code>myapp://callback</code> link.');
+    }
+    say1(w, 'A', 'no client_secret', 'sv-risk');
+  }
+
+  async function challenge(w, animate) {
+    if (animate) {
+      w.lanes.A.g.set('hot');
+      await pop(w, ['code_verifier = random 43 chars', VER], K.pop, 1500);
+      say1(w, 'A', 'keeps code_verifier', 'sv-hot');
+      say2(w, 'A', 'dBjftJeZ… · not sent yet');
+      w.say('The app makes a random <strong><code>code_verifier</code></strong> and keeps it in memory.');
+      await w.sleep(900);
+      await pop(w, ['code_challenge = SHA-256(code_verifier)', CH], K.pop, 1500, 'sv-box-hot');
+      w.say('It sends only the hash, <strong><code>code_challenge</code></strong>, with the redirect to <code>/authorize</code>.');
+      await fly(w, ['GET /authorize?client_id=…', '  &code_challenge=E9Melhoa2Owv…', '  &code_challenge_method=S256'], K.A, K.G, { wire: 'AG' });
+      w.lanes.A.g.set('');
+      w.lanes.G.g.set('hot');
+    }
+    say1(w, 'A', 'keeps code_verifier', 'sv-hot');
+    say2(w, 'A', 'dBjftJeZ… · not sent yet');
+    say1(w, 'G', 'got code_challenge', 'sv-hot');
+  }
+
+  async function login(w, animate) {
+    if (animate) {
+      w.lanes.G.g.set('hot');
+      await pop(w, ['Sign in · you@gmail.com', '  [ Cancel ]   [ Allow ]'], K.G, 1300);
+      w.say('You log in on Google\'s page and click <strong>Allow</strong>. Google stores the challenge next to the code.');
+      say1(w, 'G', 'stores challenge', 'sv-hot');
+      say2(w, 'G', 'E9Melhoa… → code 4/0AXy9…');
+      await w.sleep(700);
+      await fly(w, ['302 → myapp://callback', '  ?code=4/0AXy9…'], K.G, K.A, { wire: 'AG' });
+      w.lanes.G.g.set('');
+      w.lanes.A.g.set('hot');
+      w.say('Google redirects back with <code>?code=…</code>. Anyone who catches this link has the code. Not the verifier.');
+    }
+    say1(w, 'G', 'stores challenge', 'sv-hot');
+    say2(w, 'G', 'E9Melhoa… → code 4/0AXy9…');
+    say2(w, 'A', 'has code 4/0AXy9…');
+  }
+
+  async function token(w, animate) {
+    if (animate) {
+      w.lanes.A.g.set('hot');
+      await fly(w, ['POST /token', '  code=4/0AXy9…', '  code_verifier=dBjftJeZ4CVP…'], K.A, K.G, { wire: 'AG' });
+      w.lanes.G.g.set('hot');
+      w.say('Now the verifier travels, for the first time. Google hashes it and compares it with the stored challenge.');
+      await pop(w, ['SHA-256(code_verifier)', '  == code_challenge  ✓'], K.G, 1300, 'sv-box-hot');
+      say1(w, 'G', 'SHA-256(verifier) ✓', 'sv-ok');
+      await fly(w, ['access_token: ya29.a0Af…', 'expires_in: 3600'], K.G, K.A, { wire: 'AG' });
+      w.lanes.G.g.set('');
+      w.say('A match, so Google returns the <strong>tokens</strong>. The app calls the API with <code>Bearer ya29…</code>.');
+      w.lanes.R.g.set('hot');
+      await fly(w, ['Authorization: Bearer ya29…'], K.A, K.R, { wire: ['AG', 'GR'] });
+      say1(w, 'R', '200 OK', 'sv-ok');
+    }
+    say1(w, 'A', 'has access_token', 'sv-hot');
+    say2(w, 'A', 'verifier used once');
+    say1(w, 'G', 'SHA-256(verifier) ✓', 'sv-ok');
+    say2(w, 'G', 'match → tokens');
+    say1(w, 'R', '200 OK', 'sv-ok');
+  }
+
+  async function stolen(w, animate) {
+    w.lanes.X.g.set('risk');
+    say2(w, 'A', 'the code went to the bad app');
+    if (animate) {
+      w.say('Replay step 2, but the phone opens <code>myapp://callback?code=…</code> in the <strong>bad app</strong>.');
+      w.lanes.G.g.set('hot');
+      await fly(w, ['302 → myapp://callback', '  ?code=4/0AXy9…'], K.G, K.bad, { cls: 'sv-box-risk', wire: 'XG', wireCls: 'sv-risk-line' });
+      await w.sleep(500);
+      await fly(w, ['POST /token', '  code=4/0AXy9…', '  code_verifier= ???'], K.bad, K.G, { cls: 'sv-box-risk', wire: 'XG', wireCls: 'sv-risk-line' });
+      w.lanes.G.g.set('risk');
+      say1(w, 'G', 'no verifier ✗', 'sv-risk');
+      w.say('It has the code but not the verifier, and the hash cannot be turned back. Google answers <code>invalid_grant</code>.');
+      await fly(w, ['400 invalid_grant'], K.G, K.bad, { cls: 'sv-box-risk', wire: 'XG', wireCls: 'sv-risk-line' });
+    }
+    w.lanes.G.g.set('risk');
+    say1(w, 'G', 'no verifier ✗', 'sv-risk');
+    say2(w, 'G', 'code alone is not enough');
+    w.lanes.X.s1.textContent = '400 invalid_grant';
+  }
+
+  // step 4 branches off after step 2: the bad app catches the code instead of the real app
+  const pkStory = [noSecret, challenge, login, token, stolen];
+  const pkBase = [[], [0], [0, 1], [0, 1, 2], [0, 1, 2]];
+  steps('s3-pk', pk, pkStory.map((fn, k) => async (w) => {
+    for (const i of pkBase[k]) await pkStory[i](w, false);
     await fn(w, true);
   }));
 })();
